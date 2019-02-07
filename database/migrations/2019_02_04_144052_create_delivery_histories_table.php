@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateLocationPaletteTable extends Migration
+class CreateDeliveryHistoriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,17 @@ class CreateLocationPaletteTable extends Migration
      */
     public function up()
     {
-        Schema::create('location_palette', function (Blueprint $table) {
+        Schema::create('delivery_histories', function (Blueprint $table) {
             $table->increments('id');
+            $table->unsignedInteger('product_stock_id')->comment('商品在庫ID');
             $table->unsignedInteger('location_id')->comment('拠点ID');
-            $table->unsignedInteger('palette_id')->comment('パレットID');
-            $table->integer('quantity')->comment('数量')->nullable()->default('0');
+            $table->integer('quantity')->comment('数量');
+            $table->text('note')->comment('備考')->nullable();
+            $table->timestamp('delivery_at')->comment('納品日')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamps();
 
+            $table->foreign('product_stock_id')->references('id')->on('product_stocks')->onUpdate('cascade')->onDelete('cascade');
             $table->foreign('location_id')->references('id')->on('locations')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreign('palette_id')->references('id')->on('palettes')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 
@@ -32,6 +34,6 @@ class CreateLocationPaletteTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('location_palette');
+        Schema::dropIfExists('delivery_histories');
     }
 }

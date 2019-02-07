@@ -17,7 +17,10 @@ class CreateOrderHistoriesTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('product_stock_id')->comment('商品在庫ID');
             $table->unsignedInteger('location_id')->comment('拠点ID');
-            $table->integer('number')->comment('数量');
+            $table->integer('quantity')->comment('数量');
+            $table->text('delivery')->comment('納期')->nullable();
+            $table->text('note')->comment('備考')->nullable();
+            $table->timestamp('order_at')->comment('発注日')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamps();
 
             $table->foreign('product_stock_id')->references('id')->on('product_stocks')->onUpdate('cascade')->onDelete('cascade');

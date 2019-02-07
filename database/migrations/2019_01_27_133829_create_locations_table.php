@@ -16,6 +16,7 @@ class CreateLocationsTable extends Migration
         Schema::create('locations', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name')->comment('名称');
+            $table->smallInteger('type')->comment('拠点種別: 1.自社 2.倉庫会社 3.作成会社');
             $table->timestamps();
         });
     }

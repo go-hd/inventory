@@ -18,7 +18,7 @@ class CreateProductStocksTable extends Migration
             $table->unsignedInteger('product_id')->comment('商品ID');
             $table->unsignedInteger('location_id')->comment('拠点ID');
             $table->date('expiration_date')->comment('賞味期限')->nullable();
-            $table->integer('number')->comment('数量')->nullable()->default('0');
+            $table->integer('quantity')->comment('数量')->nullable()->default('0');
             $table->timestamps();
 
             $table->foreign('product_id')->references('id')->on('products')->onUpdate('cascade')->onDelete('cascade');
