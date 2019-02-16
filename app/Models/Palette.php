@@ -61,11 +61,11 @@ class Palette extends Model
     /**
      * パレットに紐づく拠点を取得（パレット保管情報）
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function locations()
     {
-        return $this->belongsToMany(Location::class);
+        return $this->hasMany(Location::class);
     }
 
     /**

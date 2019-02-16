@@ -7,17 +7,15 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Product
+ * Class Brand
  * @property int $id ID
  * @property string $name 名称
- * @property string $code 商品コード
- * @property string $supplier 仕入れ先
- * @property string $maker メーカー
+ * @property string $code コード
+ * @property string $note 備考
  * @property Carbon $created_at 作成日
  * @property Carbon $updated_at 更新日
- * @property Collection|OrderHistory[] $productStocks 商品在庫
  */
-class Product extends Model
+class Brand extends Model
 {
     /**
      * 複数代入する属性
@@ -27,8 +25,7 @@ class Product extends Model
     protected $fillable = [
         'name',
         'code',
-        'supplier',
-        'maker'
+        'note'
     ];
 
     /**
@@ -40,14 +37,4 @@ class Product extends Model
         'created_at',
         'updated_at'
     ];
-
-    /**
-     * 商品に紐づく商品在庫を取得
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function productStocks()
-    {
-        return $this->belongsToMany(ProductStock::class);
-    }
 }

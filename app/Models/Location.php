@@ -9,16 +9,20 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * Class Location
  * @property int $id ID
+ * @property int $company_id 会社ID
  * @property string $name 名称
- * @property int $type 拠点種別
+ * @property int $location_type_id 拠点種別ID
+ * @property string $location_code 拠点コード
+ * @property string $location_number 拠点ナンバー
  * @property Carbon $created_at 作成日
  * @property Carbon $updated_at 更新日
- * @property Palette $palette パレット
+ * @property LocationType $type 拠点種別
+ * @property Company $company 会社
  * @property Collection|Palette[] $palettes パレット
  * @property Collection|User[] $users ユーザー
- * @property Collection|ProductStock[] $productStocks 商品在庫
- * @property Collection|OrderHistory[] $orderHistories 発注履歴
- * @property Collection|DeliveryHistory[] $deliveryHistories 納品履歴
+ * @property Collection|Lot[] $lots ロット
+ * @property Collection|stockHistory[] $stockHistories 在庫履歴
+ * @property Collection|stockMove[] $stockMoves 在庫移動
  */
 class Location extends Model
 {
@@ -28,8 +32,11 @@ class Location extends Model
      * @var array
      */
     protected $fillable = [
+        'company_id',
         'name',
-        'type'
+        'location_type_id',
+        'location_code',
+        'location_number'
     ];
 
     /**
@@ -38,57 +45,107 @@ class Location extends Model
      * @var array
      */
     protected $dates = [
-        'updated_at',
-        'deleted_at'
+        'created_at',
+        'updated_at'
     ];
 
     /**
-     * 拠点に紐づくパレットを取得
+     * モデルの配列形態に追加するアクセサ
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @var array
      */
-    public function palettes()
+    protected $appends = [
+        'company_name',
+        'location_type_name'
+    ];
+
+    /**
+     * 拠点に紐づく種別を取得
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function type()
     {
-        return $this->belongsToMany(Palette::class);
+        return $this->belongsTo(LocationType::class);
+    }
+
+    /**
+     * 拠点に紐づく会社を取得
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
     }
 
     /**
      * 拠点に紐づくユーザーを取得
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function users()
     {
-        return $this->belongsToMany(User::class);
+        return $this->hasMany(User::class);
     }
 
     /**
-     * 拠点に紐づく商品在庫を取得
+     * 拠点に紐づくパレットを取得
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function productStocks()
+    public function palettes()
     {
-        return $this->belongsToMany(ProductStock::class);
+        return $this->hasMany(Palette::class);
     }
 
     /**
-     * 拠点に紐づく発注履歴を取得
+     * 拠点に紐づくロットを取得
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function orderHistories()
+    public function lots()
     {
-        return $this->belongsToMany(OrderHistory::class);
+        return $this->hasMany(Lot::class);
     }
 
     /**
-     * 拠点に紐づく納品履歴を取得
+     * 拠点に紐づく在庫履歴を取得
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function deliveryHistories()
+    public function stockHistories()
     {
-        return $this->belongsToMany(DeliveryHistory::class);
+        return $this->hasMany(StockHistory::class);
+    }
+
+    /**
+     * 拠点に紐づく在庫移動を取得
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function stockMoves()
+    {
+        return $this->hasMany(StockMove::class);
+    }
+
+    /**
+     * 会社名を取得する
+     *
+     * @return string
+     */
+    public function getCompanyNameAttribute()
+    {
+        return $this->company->name;
+    }
+
+    /**
+     * 会社名を取得する
+     *
+     * @return string
+     */
+    public function getLocationTypeNameAttribute()
+    {
+        return $this->type->name;
     }
 }

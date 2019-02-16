@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateProductsTable extends Migration
+class CreateStockHistoryTypesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,11 @@ class CreateProductsTable extends Migration
      */
     public function up()
     {
-        Schema::create('products', function (Blueprint $table) {
+        Schema::create('stock_history_types', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name')->comment('名称');
-            $table->string('code')->comment('商品コード')->nullable();
-            $table->string('supplier')->comment('仕入れ先')->nullable();
-            $table->string('maker')->comment('メーカー')->nullable();
+            $table->string('name')->comment('名前');
+            $table->text('note')->comment('備考')->nullable();
+
             $table->timestamps();
         });
     }
@@ -30,6 +29,6 @@ class CreateProductsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('products');
+        Schema::dropIfExists('stock_history_types');
     }
 }

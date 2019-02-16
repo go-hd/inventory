@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateLocationsTable extends Migration
+class CreateCompaniesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,13 @@ class CreateLocationsTable extends Migration
      */
     public function up()
     {
-        Schema::create('locations', function (Blueprint $table) {
+        Schema::create('companies', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name')->comment('名称');
-            $table->smallInteger('type')->comment('拠点種別: 1.自社 2.倉庫会社 3.作成会社');
+            $table->unsignedInteger('main_location_id')->comment('メイン拠点ID');
             $table->timestamps();
+
+            // main_location_idの外部キーは2019_02_16_150428_create_locations_table.phpで設定
         });
     }
 
@@ -28,6 +30,6 @@ class CreateLocationsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('locations');
+        Schema::dropIfExists('companies');
     }
 }
