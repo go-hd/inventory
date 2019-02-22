@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class LocationRequest extends FormRequest
+class StockHistoryRequest extends FormRequest
 {
     /**
      * ユーザーがこのリクエストの権限を持っているかを判断する
@@ -24,9 +24,10 @@ class LocationRequest extends FormRequest
     public function rules()
     {
         return [
-            'location.company_id' => 'required',
-            'location.name' => 'required',
-            'location.location_type_id' => 'required'
+            'stockHistory.location_id' => 'required',
+            'stockHistory.lot_id' => 'required',
+            'stockHistory.stock_history_type_id' => 'required',
+            'stockHistory.quantity' => 'required'
         ];
     }
 
@@ -50,9 +51,10 @@ class LocationRequest extends FormRequest
     public function attributes()
     {
         return [
-            'location.company_id' => '会社',
-            'location.name' => '名称',
-            'location.location_type_id' => '拠点種別'
+            'stockHistory.location_id' => '拠点',
+            'stockHistory.lot_id' => 'ロット',
+            'stockHistory.stock_history_type_id' => '在庫履歴種別',
+            'stockHistory.quantity' => '数量'
         ];
     }
 }

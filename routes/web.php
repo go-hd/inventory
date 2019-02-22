@@ -15,11 +15,15 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::resource('/users', 'UserController');
+Route::resource('/brands', 'BrandController');
+Route::resource('/companies', 'CompanyController');
 Route::resource('/locations', 'LocationController');
-Route::resource('/products', 'ProductController');
-Route::resource('/product-stocks', 'ProductStockController');
-Route::resource('/palettes', 'PaletteController');
-Route::resource('/delivery-histories', 'DeliveryHistoryController');
-Route::resource('/order-histories', 'OrderHistoryController');
+Route::resource('/location_types', 'LocationTypeController');
+Route::resource('/lots', 'LotController');
+Route::resource('/pallets', 'PalletController');
+Route::resource('/recipes', 'RecipeController');
+Route::resource('/stock_histories', 'StockHistoryController');
+Route::resource('/stock_history_types', 'StockHistoryTypeController');
+Route::resource('/stock_moves', 'StockMoveController');
+Route::resource('/users', 'UserController');
 

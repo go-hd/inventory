@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ProductStockRequest extends FormRequest
+class StockMoveRequest extends FormRequest
 {
     /**
      * ユーザーがこのリクエストの権限を持っているかを判断する
@@ -24,10 +24,10 @@ class ProductStockRequest extends FormRequest
     public function rules()
     {
         return [
-            'productStock.product_id' => 'required',
-            'productStock.location_id' => 'required',
-            'productStock.expiration_date' => 'required|date',
-            'productStock.quantity' => 'numeric'
+            'stockMove.shipping_id' => 'required',
+            'stockMove.recieving_id' => 'required',
+            'stockMove.location_id' => 'required',
+            'stockMove.quantity' => 'required'
         ];
     }
 
@@ -39,9 +39,7 @@ class ProductStockRequest extends FormRequest
     public function messages()
     {
         return [
-            'required'=>':attributeは必須項目です。',
-            'numeric' => ':attributeは数値で入力してください。',
-            'date' => ':attributeは日付で入力してください。'
+            'required'=>':attributeは必須項目です。'
         ];
     }
 
@@ -53,10 +51,10 @@ class ProductStockRequest extends FormRequest
     public function attributes()
     {
         return [
-            'productStock.product_id'=>'商品',
-            'productStock.location_id'=>'拠点',
-            'productStock.expiration_date'=>'賞味期限',
-            'productStock.quantity'=>'数量'
+            'stockMove.shipping_id' => '出庫拠点',
+            'stockMove.recieving_id' => '入庫拠点',
+            'stockMove.location_id' => '相手拠点',
+            'stockMove.quantity' => '移動個数'
         ];
     }
 }

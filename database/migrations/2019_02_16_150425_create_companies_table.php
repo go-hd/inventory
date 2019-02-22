@@ -16,7 +16,7 @@ class CreateCompaniesTable extends Migration
         Schema::create('companies', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name')->comment('名称');
-            $table->unsignedInteger('main_location_id')->comment('メイン拠点ID');
+            $table->unsignedInteger('main_location_id')->comment('メイン拠点ID')->nullable();
             $table->timestamps();
 
             // main_location_idの外部キーは2019_02_16_150428_create_locations_table.phpで設定

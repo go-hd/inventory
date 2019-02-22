@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class OrderHistoryRequest extends FormRequest
+class RecipeRequest extends FormRequest
 {
     /**
      * ユーザーがこのリクエストの権限を持っているかを判断する
@@ -24,10 +24,8 @@ class OrderHistoryRequest extends FormRequest
     public function rules()
     {
         return [
-            'orderHistory.product_stock_id' => 'required',
-            'orderHistory.location_id' => 'required',
-            'orderHistory.quantity' => 'required|numeric',
-            'orderHistory.order_at' => 'required|date'
+            'recipe.parent_lot_id' => 'required',
+            'recipe.child_lot_id' => 'required'
         ];
     }
 
@@ -39,9 +37,7 @@ class OrderHistoryRequest extends FormRequest
     public function messages()
     {
         return [
-            'required'=>':attributeは必須項目です。',
-            'numeric' => ':attributeは数値で入力してください。',
-            'date' => ':attributeは日付で入力してください。'
+            'required'=>':attributeは必須項目です。'
         ];
     }
 
@@ -53,10 +49,8 @@ class OrderHistoryRequest extends FormRequest
     public function attributes()
     {
         return [
-            'orderHistory.product_stock_id'=>'商品在庫',
-            'orderHistory.location_id'=>'拠点',
-            'orderHistory.quantity'=>'数量',
-            'orderHistory.order_at'=>'発注日'
+            'recipe.parent_lot_id' => '親ロット',
+            'recipe.child_lot_id' => '子ロット'
         ];
     }
 }

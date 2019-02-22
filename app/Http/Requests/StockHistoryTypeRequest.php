@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ProductRequest extends FormRequest
+class StockHistoryTypeRequest extends FormRequest
 {
     /**
      * ユーザーがこのリクエストの権限を持っているかを判断する
@@ -24,7 +24,7 @@ class ProductRequest extends FormRequest
     public function rules()
     {
         return [
-            'product.name' => 'required'
+            'stockHistoryType.name' => 'required'
         ];
     }
 
@@ -48,7 +48,7 @@ class ProductRequest extends FormRequest
     public function attributes()
     {
         return [
-            'product.product_id'=>'商品'
+            'stockHistoryType.name' => '名称'
         ];
     }
 }
