@@ -1,20 +1,32 @@
 <?php
 
-namespace App\Models;
+namespace App;
 
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Palette
- * @property int $id ID
+ * App\Recipe
+ *
+ * @property int $id
  * @property int $parent_lot_id 親ロットID
  * @property int $child_lot_id 子ロットID
- * @property string $note 備考
- * @property Carbon $created_at 作成日
- * @property Carbon $updated_at 更新日
- * @property Lot $parentLot 親ロット
- * @property Lot $childLot 子ロット
+ * @property string|null $note 備考
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Lot $childLot
+ * @property-read string $child_lot_name
+ * @property-read string $parent_lot_name
+ * @property-read \App\Lot $parentLot
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Recipe newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Recipe newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Recipe query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Recipe whereChildLotId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Recipe whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Recipe whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Recipe whereNote($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Recipe whereParentLotId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Recipe whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class Recipe extends Model
 {

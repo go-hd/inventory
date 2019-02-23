@@ -1,28 +1,41 @@
 <?php
 
-namespace App\Models;
+namespace App;
 
-use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Location
- * @property int $id ID
+ * App\Location
+ *
+ * @property int $id
  * @property int $company_id 会社ID
  * @property string $name 名称
  * @property int $location_type_id 拠点種別ID
- * @property string $location_code 拠点コード
- * @property string $location_number 拠点ナンバー
- * @property Carbon $created_at 作成日
- * @property Carbon $updated_at 更新日
- * @property LocationType $type 拠点種別
- * @property Company $company 会社
- * @property Collection|Palette[] $palettes パレット
- * @property Collection|User[] $users ユーザー
- * @property Collection|Lot[] $lots ロット
- * @property Collection|stockHistory[] $stockHistories 在庫履歴
- * @property Collection|stockMove[] $stockMoves 在庫移動
+ * @property string|null $location_code 拠点コード
+ * @property string|null $location_number 拠点ナンバー
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Company $company
+ * @property-read string $company_name
+ * @property-read string $location_type_name
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Lot[] $lots
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Palette[] $palettes
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\StockHistory[] $stockHistories
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\StockMove[] $stockMoves
+ * @property-read \App\LocationType $type
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\User[] $users
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Location newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Location newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Location query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Location whereCompanyId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Location whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Location whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Location whereLocationCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Location whereLocationNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Location whereLocationTypeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Location whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Location whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class Location extends Model
 {

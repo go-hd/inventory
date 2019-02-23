@@ -1,20 +1,30 @@
 <?php
 
-namespace App\Models;
+namespace App;
 
-use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Palette
- * @property int $id ID
+ * App\Palette
+ *
+ * @property int $id
  * @property int $location_id 拠点ID
  * @property string $type 種別
- * @property Carbon $created_at 作成日
- * @property Carbon $updated_at 更新日
- * @property Location $location 拠点
- * @property Collection|Location[] $locations 拠点
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read string $location_name
+ * @property-read string $location_type
+ * @property-read \App\Location $location
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Location[] $locations
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Palette newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Palette newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Palette query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Palette whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Palette whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Palette whereLocationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Palette whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Palette whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class Palette extends Model
 {

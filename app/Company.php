@@ -1,19 +1,29 @@
 <?php
 
-namespace App\Models;
+namespace App;
 
-use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Company
- * @property int $id ID
+ * App\Company
+ *
+ * @property int $id
  * @property string $name 名称
- * @property int $main_location_id メイン拠点ID
- * @property Carbon $created_at 作成日
- * @property Carbon $updated_at 更新日
- * @property Location $mainLocation 拠点
+ * @property int|null $main_location_id メイン拠点ID
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read string $main_location_name
+ * @property-read string $main_location_type
+ * @property-read \App\Location|null $mainLocation
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Company newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Company newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Company query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Company whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Company whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Company whereMainLocationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Company whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Company whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class Company extends Model
 {

@@ -1,22 +1,33 @@
 <?php
 
-namespace App\Models;
+namespace App;
 
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class StockMove
- * @property int $id ID
- * @property int $shipping_id 出庫ID
- * @property int $recieving_id 入庫ID
- * @property int $location_id 拠点ID
+ * App\StockMove
+ *
+ * @property int $id
+ * @property int $shipping_id 出庫ID（在庫履歴）
+ * @property int $recieving_id 入庫ID（在庫履歴）
+ * @property int $location_id 相手拠点ID
  * @property int $quantity 移動個数
- * @property Carbon $created_at 作成日
- * @property Carbon $updated_at 更新日
- * @property StockHistory $shippingStockHistory 出庫在庫履歴
- * @property StockHistory $recievingStockHistory 入庫在庫履歴
- * @property Location $location 拠点
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Location $location
+ * @property-read \App\StockHistory $recievingStockHistory
+ * @property-read \App\StockHistory $shippingStockHistory
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\StockMove newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\StockMove newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\StockMove query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\StockMove whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\StockMove whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\StockMove whereLocationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\StockMove whereQuantity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\StockMove whereRecievingId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\StockMove whereShippingId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\StockMove whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class StockMove extends Model
 {

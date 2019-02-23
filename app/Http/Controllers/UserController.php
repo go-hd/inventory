@@ -3,72 +3,87 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UserRequest;
-use App\Models\User;
-use Illuminate\Contracts\Routing\ResponseFactory;
+use App\User;
 
 class UserController extends Controller
 {
     /**
-     * @var \App\Models\User
+     * ユーザーのインスタンス
+     *
+     * @var \App\User
      */
     private $user;
 
+    /**
+     * ユーザーコントローラーのインスタンスを作成
+     *
+     * @param  \App\User $user
+     * @return void
+     */
     public function __construct(User $user) {
         $this->user = $user;
     }
 
     /**
      * 一覧
-     * @return ResponseFactory
+     *
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index()
     {
         $users = $this->user->all();
+
         return response()->json($users, 200, [], JSON_PRETTY_PRINT);
     }
 
     /**
      * 詳細
+     *
      * @param  int $id
-     * @return ResponseFactory
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show($id)
     {
         $user = $this->user->findOrFail($id);
+
         return response()->json($user, 200, [], JSON_PRETTY_PRINT);
     }
 
     /**
      * 新規作成
-     * @param  UserRequest $request
-     * @return ResponseFactory
+     *
+     * @param  \App\Http\Requests\UserRequest $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(UserRequest $request)
     {
         $this->user->create($request->get('user'));
         $response = ['status' => 'OK'];
+
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }
 
     /**
      * 編集
+     *
      * @param  int $id
-     * @param  UserRequest $request
-     * @return ResponseFactory
+     * @param  \App\Http\Requests\UserRequest $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update($id, UserRequest $request)
     {
         $user = $this->user->findOrFail($id);
         $user->update($request->get('user'));
         $response = ['status' => 'OK'];
+
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }
 
     /**
      * 削除
+     *
      * @param  int $id
-     * @param  UserRequest $request
-     * @return ResponseFactory
+     * @return \Illuminate\Http\JsonResponse
      * @throws \Exception
      */
     public function destroy($id)
@@ -76,6 +91,7 @@ class UserController extends Controller
         $user = $this->user->findOrFail($id);
         $user->delete();
         $response = ['status' => 'OK'];
+
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }
 }
