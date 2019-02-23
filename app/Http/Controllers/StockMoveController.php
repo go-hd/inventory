@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StockMoveRequest;
 use App\Models\StockMove;
-use Illuminate\Contracts\Routing\ResponseFactory;
+
 
 class StockMoveController extends Controller
 {
@@ -13,13 +13,20 @@ class StockMoveController extends Controller
      */
     private $stockMove;
 
+    /**
+     * StockMoveControllerの初期化を行う
+     *
+     * @param \App\Models\StockMove $stockMove
+     * @return void
+     */
     public function __construct(StockMove $stockMove) {
         $this->stockMove = $stockMove;
     }
 
     /**
      * 一覧
-     * @return ResponseFactory
+     *
+     * @return \Illuminate\Routing\ResponseFactory
      */
     public function index()
     {
@@ -29,8 +36,9 @@ class StockMoveController extends Controller
 
     /**
      * 詳細
+     *
      * @param  int $id
-     * @return ResponseFactory
+     * @return \Illuminate\Routing\ResponseFactory
      */
     public function show($id)
     {
@@ -40,8 +48,9 @@ class StockMoveController extends Controller
 
     /**
      * 新規作成
+     *
      * @param  StockMoveRequest $request
-     * @return ResponseFactory
+     * @return \Illuminate\Routing\ResponseFactory
      */
     public function store(StockMoveRequest $request)
     {
@@ -52,9 +61,10 @@ class StockMoveController extends Controller
 
     /**
      * 編集
+     *
      * @param  int $id
      * @param  StockMoveRequest $request
-     * @return ResponseFactory
+     * @return \Illuminate\Routing\ResponseFactory
      */
     public function update($id, StockMoveRequest $request)
     {
@@ -66,11 +76,11 @@ class StockMoveController extends Controller
 
     /**
      * 削除
+     *
      * @param  int $id
-     * @param  StockMoveRequest $request
-     * @return ResponseFactory
+     * @return \Illuminate\Routing\ResponseFactory
      */
-    public function destroy($id, StockMoveRequest $request)
+    public function destroy($id)
     {
         $stockMove = $this->stockMove->findOrFail($id);
         $stockMove->delete();

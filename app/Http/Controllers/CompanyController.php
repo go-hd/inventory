@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CompanyRequest;
 use App\Models\Company;
-use Illuminate\Contracts\Routing\ResponseFactory;
 
 class CompanyController extends Controller
 {
@@ -13,24 +12,32 @@ class CompanyController extends Controller
      */
     private $company;
 
+    /**
+     * CompanyControllerの初期化を行う
+     *
+     * @param \App\Models\Company $company
+     * @return void
+     */
     public function __construct(Company $company) {
         $this->company = $company;
     }
 
     /**
      * 一覧
-     * @return ResponseFactory
+     * 
+     * @return \Illuminate\Routing\ResponseFactory
      */
     public function index()
     {
-        $companys = $this->company->all();
-        return response()->json($companys, 200, [], JSON_PRETTY_PRINT);
+        $companies = $this->company->all();
+        return response()->json($companies, 200, [], JSON_PRETTY_PRINT);
     }
 
     /**
      * 詳細
+     * 
      * @param  int $id
-     * @return ResponseFactory
+     * @return \Illuminate\Routing\ResponseFactory
      */
     public function show($id)
     {
@@ -40,8 +47,9 @@ class CompanyController extends Controller
 
     /**
      * 新規作成
+     * 
      * @param  CompanyRequest $request
-     * @return ResponseFactory
+     * @return \Illuminate\Routing\ResponseFactory
      */
     public function store(CompanyRequest $request)
     {
@@ -52,9 +60,10 @@ class CompanyController extends Controller
 
     /**
      * 編集
+     * 
      * @param  int $id
      * @param  CompanyRequest $request
-     * @return ResponseFactory
+     * @return \Illuminate\Routing\ResponseFactory
      */
     public function update($id, CompanyRequest $request)
     {
@@ -66,11 +75,11 @@ class CompanyController extends Controller
 
     /**
      * 削除
+     * 
      * @param  int $id
-     * @param  CompanyRequest $request
-     * @return ResponseFactory
+     * @return \Illuminate\Routing\ResponseFactory
      */
-    public function destroy($id, CompanyRequest $request)
+    public function destroy($id)
     {
         $company = $this->company->findOrFail($id);
         $company->delete();

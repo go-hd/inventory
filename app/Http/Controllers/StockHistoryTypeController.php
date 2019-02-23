@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StockHistoryTypeRequest;
 use App\Models\StockHistoryType;
-use Illuminate\Contracts\Routing\ResponseFactory;
+
 
 class StockHistoryTypeController extends Controller
 {
@@ -13,13 +13,20 @@ class StockHistoryTypeController extends Controller
      */
     private $stockHistoryType;
 
+    /**
+     * StockHistoryTypeControllerの初期化を行う
+     *
+     * @param \App\Models\StockHistoryType $stockHistoryType
+     * @return void
+     */
     public function __construct(StockHistoryType $stockHistoryType) {
         $this->stockHistoryType = $stockHistoryType;
     }
 
     /**
      * 一覧
-     * @return ResponseFactory
+     *
+     * @return \Illuminate\Routing\ResponseFactory
      */
     public function index()
     {
@@ -29,8 +36,9 @@ class StockHistoryTypeController extends Controller
 
     /**
      * 詳細
+     *
      * @param  int $id
-     * @return ResponseFactory
+     * @return \Illuminate\Routing\ResponseFactory
      */
     public function show($id)
     {
@@ -40,8 +48,9 @@ class StockHistoryTypeController extends Controller
 
     /**
      * 新規作成
+     *
      * @param  StockHistoryTypeRequest $request
-     * @return ResponseFactory
+     * @return \Illuminate\Routing\ResponseFactory
      */
     public function store(StockHistoryTypeRequest $request)
     {
@@ -52,9 +61,10 @@ class StockHistoryTypeController extends Controller
 
     /**
      * 編集
+     *
      * @param  int $id
      * @param  StockHistoryTypeRequest $request
-     * @return ResponseFactory
+     * @return \Illuminate\Routing\ResponseFactory
      */
     public function update($id, StockHistoryTypeRequest $request)
     {
@@ -66,11 +76,11 @@ class StockHistoryTypeController extends Controller
 
     /**
      * 削除
+     *
      * @param  int $id
-     * @param  StockHistoryTypeRequest $request
-     * @return ResponseFactory
+     * @return \Illuminate\Routing\ResponseFactory
      */
-    public function destroy($id, StockHistoryTypeRequest $request)
+    public function destroy($id)
     {
         $stockHistoryType = $this->stockHistoryType->findOrFail($id);
         $stockHistoryType->delete();

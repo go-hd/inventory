@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\BrandRequest;
 use App\Models\Brand;
-use Illuminate\Contracts\Routing\ResponseFactory;
 
 class BrandController extends Controller
 {
@@ -13,13 +12,20 @@ class BrandController extends Controller
      */
     private $brand;
 
+    /**
+     * BrandControllerの初期化を行う
+     *
+     * @param \App\Models\Brand $brand
+     * @return void
+     */
     public function __construct(Brand $brand) {
         $this->brand = $brand;
     }
 
     /**
      * 一覧
-     * @return ResponseFactory
+     *
+     * @return \Illuminate\Routing\ResponseFactory
      */
     public function index()
     {
@@ -29,8 +35,9 @@ class BrandController extends Controller
 
     /**
      * 詳細
+     *
      * @param  int $id
-     * @return ResponseFactory
+     * @return \Illuminate\Routing\ResponseFactory
      */
     public function show($id)
     {
@@ -40,8 +47,9 @@ class BrandController extends Controller
 
     /**
      * 新規作成
+     *
      * @param  BrandRequest $request
-     * @return ResponseFactory
+     * @return \Illuminate\Routing\ResponseFactory
      */
     public function store(BrandRequest $request)
     {
@@ -52,9 +60,10 @@ class BrandController extends Controller
 
     /**
      * 編集
+     *
      * @param  int $id
      * @param  BrandRequest $request
-     * @return ResponseFactory
+     * @return \Illuminate\Routing\ResponseFactory
      */
     public function update($id, BrandRequest $request)
     {
@@ -66,11 +75,11 @@ class BrandController extends Controller
 
     /**
      * 削除
+     *
      * @param  int $id
-     * @param  BrandRequest $request
-     * @return ResponseFactory
+     * @return \Illuminate\Routing\ResponseFactory
      */
-    public function destroy($id, BrandRequest $request)
+    public function destroy($id)
     {
         $brand = $this->brand->findOrFail($id);
         $brand->delete();

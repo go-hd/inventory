@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\PaletteRequest;
 use App\Models\Palette;
-use Illuminate\Contracts\Routing\ResponseFactory;
+
 
 class PaletteController extends Controller
 {
@@ -13,13 +13,20 @@ class PaletteController extends Controller
      */
     private $palette;
 
+    /**
+     * PaletteControllerの初期化を行う
+     *
+     * @param \App\Models\Palette $palette
+     * @return void
+     */
     public function __construct(Palette $palette) {
         $this->palette = $palette;
     }
 
     /**
      * 一覧
-     * @return ResponseFactory
+     *
+     * @return \Illuminate\Routing\ResponseFactory
      */
     public function index()
     {
@@ -29,8 +36,9 @@ class PaletteController extends Controller
 
     /**
      * 詳細
+     *
      * @param  int $id
-     * @return ResponseFactory
+     * @return \Illuminate\Routing\ResponseFactory
      */
     public function show($id)
     {
@@ -40,8 +48,9 @@ class PaletteController extends Controller
 
     /**
      * 新規作成
+     *
      * @param  PaletteRequest $request
-     * @return ResponseFactory
+     * @return \Illuminate\Routing\ResponseFactory
      */
     public function store(PaletteRequest $request)
     {
@@ -52,9 +61,10 @@ class PaletteController extends Controller
 
     /**
      * 編集
+     *
      * @param  int $id
      * @param  PaletteRequest $request
-     * @return ResponseFactory
+     * @return \Illuminate\Routing\ResponseFactory
      */
     public function update($id, PaletteRequest $request)
     {
@@ -66,11 +76,11 @@ class PaletteController extends Controller
 
     /**
      * 削除
+     *
      * @param  int $id
-     * @param  PaletteRequest $request
-     * @return ResponseFactory
+     * @return \Illuminate\Routing\ResponseFactory
      */
-    public function destroy($id, PaletteRequest $request)
+    public function destroy($id)
     {
         $palette = $this->palette->findOrFail($id);
         $palette->delete();
