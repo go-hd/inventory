@@ -79,7 +79,7 @@ class Location extends Model
      */
     public function type()
     {
-        return $this->belongsTo(LocationType::class);
+        return $this->belongsTo(LocationType::class, 'location_type_id');
     }
 
     /**

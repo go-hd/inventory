@@ -20,7 +20,7 @@ Route::resource('/companies', 'CompanyController');
 Route::resource('/locations', 'LocationController');
 Route::resource('/location_types', 'LocationTypeController');
 Route::resource('/lots', 'LotController');
-Route::resource('/pallets', 'PalletController');
+Route::resource('/pallets', 'PaletteController');
 Route::resource('/recipes', 'RecipeController');
 Route::resource('/stock_histories', 'StockHistoryController');
 Route::resource('/stock_history_types', 'StockHistoryTypeController');
