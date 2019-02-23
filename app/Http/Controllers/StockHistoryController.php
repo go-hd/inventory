@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StockHistoryRequest;
 use App\Models\StockHistory;
-use Illuminate\Contracts\Routing\ResponseFactory;
+
 
 class StockHistoryController extends Controller
 {
@@ -13,13 +13,20 @@ class StockHistoryController extends Controller
      */
     private $stockHistory;
 
+    /**
+     * StockHistoryControllerの初期化を行う
+     *
+     * @param \App\Models\StockHistory $stockHistory
+     * @return void
+     */
     public function __construct(StockHistory $stockHistory) {
         $this->stockHistory = $stockHistory;
     }
 
     /**
      * 一覧
-     * @return ResponseFactory
+     *
+     * @return \Illuminate\Routing\ResponseFactory
      */
     public function index()
     {
@@ -29,8 +36,9 @@ class StockHistoryController extends Controller
 
     /**
      * 詳細
+     *
      * @param  int $id
-     * @return ResponseFactory
+     * @return \Illuminate\Routing\ResponseFactory
      */
     public function show($id)
     {
@@ -40,8 +48,9 @@ class StockHistoryController extends Controller
 
     /**
      * 新規作成
+     *
      * @param  StockHistoryRequest $request
-     * @return ResponseFactory
+     * @return \Illuminate\Routing\ResponseFactory
      */
     public function store(StockHistoryRequest $request)
     {
@@ -52,9 +61,10 @@ class StockHistoryController extends Controller
 
     /**
      * 編集
+     *
      * @param  int $id
      * @param  StockHistoryRequest $request
-     * @return ResponseFactory
+     * @return \Illuminate\Routing\ResponseFactory
      */
     public function update($id, StockHistoryRequest $request)
     {
@@ -66,11 +76,11 @@ class StockHistoryController extends Controller
 
     /**
      * 削除
+     *
      * @param  int $id
-     * @param  StockHistoryRequest $request
-     * @return ResponseFactory
+     * @return \Illuminate\Routing\ResponseFactory
      */
-    public function destroy($id, StockHistoryRequest $request)
+    public function destroy($id)
     {
         $stockHistory = $this->stockHistory->findOrFail($id);
         $stockHistory->delete();

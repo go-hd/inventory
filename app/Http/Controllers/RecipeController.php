@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\RecipeRequest;
 use App\Models\Recipe;
-use Illuminate\Contracts\Routing\ResponseFactory;
+
 
 class RecipeController extends Controller
 {
@@ -13,13 +13,20 @@ class RecipeController extends Controller
      */
     private $recipe;
 
+    /**
+     * RecipeControllerの初期化を行う
+     *
+     * @param \App\Models\Recipe $recipe
+     * @return void
+     */
     public function __construct(Recipe $recipe) {
         $this->recipe = $recipe;
     }
 
     /**
      * 一覧
-     * @return ResponseFactory
+     *
+     * @return \Illuminate\Routing\ResponseFactory
      */
     public function index()
     {
@@ -29,8 +36,9 @@ class RecipeController extends Controller
 
     /**
      * 詳細
+     *
      * @param  int $id
-     * @return ResponseFactory
+     * @return \Illuminate\Routing\ResponseFactory
      */
     public function show($id)
     {
@@ -40,8 +48,9 @@ class RecipeController extends Controller
 
     /**
      * 新規作成
+     *
      * @param  RecipeRequest $request
-     * @return ResponseFactory
+     * @return \Illuminate\Routing\ResponseFactory
      */
     public function store(RecipeRequest $request)
     {
@@ -52,9 +61,10 @@ class RecipeController extends Controller
 
     /**
      * 編集
+     *
      * @param  int $id
      * @param  RecipeRequest $request
-     * @return ResponseFactory
+     * @return \Illuminate\Routing\ResponseFactory
      */
     public function update($id, RecipeRequest $request)
     {
@@ -66,11 +76,11 @@ class RecipeController extends Controller
 
     /**
      * 削除
+     *
      * @param  int $id
-     * @param  RecipeRequest $request
-     * @return ResponseFactory
+     * @return \Illuminate\Routing\ResponseFactory
      */
-    public function destroy($id, RecipeRequest $request)
+    public function destroy($id)
     {
         $recipe = $this->recipe->findOrFail($id);
         $recipe->delete();

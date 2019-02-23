@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LotRequest;
 use App\Models\Lot;
-use Illuminate\Contracts\Routing\ResponseFactory;
+
 
 class LotController extends Controller
 {
@@ -13,13 +13,20 @@ class LotController extends Controller
      */
     private $lot;
 
+    /**
+     * LotControllerの初期化を行う
+     *
+     * @param \App\Models\Lot $lot
+     * @return void
+     */
     public function __construct(Lot $lot) {
         $this->lot = $lot;
     }
 
     /**
      * 一覧
-     * @return ResponseFactory
+     *
+     * @return \Illuminate\Routing\ResponseFactory
      */
     public function index()
     {
@@ -29,8 +36,9 @@ class LotController extends Controller
 
     /**
      * 詳細
+     *
      * @param  int $id
-     * @return ResponseFactory
+     * @return \Illuminate\Routing\ResponseFactory
      */
     public function show($id)
     {
@@ -40,8 +48,9 @@ class LotController extends Controller
 
     /**
      * 新規作成
+     *
      * @param  LotRequest $request
-     * @return ResponseFactory
+     * @return \Illuminate\Routing\ResponseFactory
      */
     public function store(LotRequest $request)
     {
@@ -52,9 +61,10 @@ class LotController extends Controller
 
     /**
      * 編集
+     *
      * @param  int $id
      * @param  LotRequest $request
-     * @return ResponseFactory
+     * @return \Illuminate\Routing\ResponseFactory
      */
     public function update($id, LotRequest $request)
     {
@@ -66,11 +76,11 @@ class LotController extends Controller
 
     /**
      * 削除
+     *
      * @param  int $id
-     * @param  LotRequest $request
-     * @return ResponseFactory
+     * @return \Illuminate\Routing\ResponseFactory
      */
-    public function destroy($id, LotRequest $request)
+    public function destroy($id)
     {
         $lot = $this->lot->findOrFail($id);
         $lot->delete();

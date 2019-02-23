@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LocationTypeRequest;
 use App\Models\LocationType;
-use Illuminate\Contracts\Routing\ResponseFactory;
+
 
 class LocationTypeController extends Controller
 {
@@ -13,13 +13,20 @@ class LocationTypeController extends Controller
      */
     private $locationType;
 
+    /**
+     * LocationTypeControllerの初期化を行う
+     *
+     * @param \App\Models\LocationType $locationType
+     * @return void
+     */
     public function __construct(LocationType $locationType) {
         $this->locationType = $locationType;
     }
 
     /**
      * 一覧
-     * @return ResponseFactory
+     *
+     * @return \Illuminate\Routing\ResponseFactory
      */
     public function index()
     {
@@ -29,8 +36,9 @@ class LocationTypeController extends Controller
 
     /**
      * 詳細
+     *
      * @param  int $id
-     * @return ResponseFactory
+     * @return \Illuminate\Routing\ResponseFactory
      */
     public function show($id)
     {
@@ -40,8 +48,9 @@ class LocationTypeController extends Controller
 
     /**
      * 新規作成
+     *
      * @param  LocationTypeRequest $request
-     * @return ResponseFactory
+     * @return \Illuminate\Routing\ResponseFactory
      */
     public function store(LocationTypeRequest $request)
     {
@@ -52,9 +61,10 @@ class LocationTypeController extends Controller
 
     /**
      * 編集
+     *
      * @param  int $id
      * @param  LocationTypeRequest $request
-     * @return ResponseFactory
+     * @return \Illuminate\Routing\ResponseFactory
      */
     public function update($id, LocationTypeRequest $request)
     {
@@ -66,11 +76,11 @@ class LocationTypeController extends Controller
 
     /**
      * 削除
+     *
      * @param  int $id
-     * @param  LocationTypeRequest $request
-     * @return ResponseFactory
+     * @return \Illuminate\Routing\ResponseFactory
      */
-    public function destroy($id, LocationTypeRequest $request)
+    public function destroy($id)
     {
         $locationType = $this->locationType->findOrFail($id);
         $locationType->delete();

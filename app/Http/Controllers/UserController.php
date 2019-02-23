@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\UserRequest;
 use App\Models\User;
-use Illuminate\Contracts\Routing\ResponseFactory;
+
 
 class UserController extends Controller
 {
@@ -13,13 +13,20 @@ class UserController extends Controller
      */
     private $user;
 
+    /**
+     * UserControllerの初期化を行う
+     *
+     * @param \App\Models\User $user
+     * @return void
+     */
     public function __construct(User $user) {
         $this->user = $user;
     }
 
     /**
      * 一覧
-     * @return ResponseFactory
+     *
+     * @return \Illuminate\Routing\ResponseFactory
      */
     public function index()
     {
@@ -29,8 +36,9 @@ class UserController extends Controller
 
     /**
      * 詳細
+     *
      * @param  int $id
-     * @return ResponseFactory
+     * @return \Illuminate\Routing\ResponseFactory
      */
     public function show($id)
     {
@@ -40,8 +48,9 @@ class UserController extends Controller
 
     /**
      * 新規作成
+     *
      * @param  UserRequest $request
-     * @return ResponseFactory
+     * @return \Illuminate\Routing\ResponseFactory
      */
     public function store(UserRequest $request)
     {
@@ -52,9 +61,10 @@ class UserController extends Controller
 
     /**
      * 編集
+     *
      * @param  int $id
      * @param  UserRequest $request
-     * @return ResponseFactory
+     * @return \Illuminate\Routing\ResponseFactory
      */
     public function update($id, UserRequest $request)
     {
@@ -66,11 +76,11 @@ class UserController extends Controller
 
     /**
      * 削除
+     *
      * @param  int $id
-     * @param  UserRequest $request
-     * @return ResponseFactory
+     * @return \Illuminate\Routing\ResponseFactory
      */
-    public function destroy($id, UserRequest $request)
+    public function destroy($id)
     {
         $user = $this->user->findOrFail($id);
         $user->delete();

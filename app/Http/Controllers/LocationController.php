@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LocationRequest;
 use App\Models\Location;
-use Illuminate\Contracts\Routing\ResponseFactory;
 
 class LocationController extends Controller
 {
@@ -13,13 +12,20 @@ class LocationController extends Controller
      */
     private $location;
 
+    /**
+     * LocationControllerの初期化を行う
+     *
+     * @param \App\Models\Location $location
+     * @return void
+     */
     public function __construct(Location $location) {
         $this->location = $location;
     }
 
     /**
      * 一覧
-     * @return ResponseFactory
+     *
+     * @return \Illuminate\Routing\ResponseFactory
      */
     public function index()
     {
@@ -29,8 +35,9 @@ class LocationController extends Controller
 
     /**
      * 詳細
+     *
      * @param  int $id
-     * @return ResponseFactory
+     * @return \Illuminate\Routing\ResponseFactory
      */
     public function show($id)
     {
@@ -40,8 +47,9 @@ class LocationController extends Controller
 
     /**
      * 新規作成
+     *
      * @param  LocationRequest $request
-     * @return ResponseFactory
+     * @return \Illuminate\Routing\ResponseFactory
      */
     public function store(LocationRequest $request)
     {
@@ -52,9 +60,10 @@ class LocationController extends Controller
 
     /**
      * 編集
+     *
      * @param  int $id
      * @param  LocationRequest $request
-     * @return ResponseFactory
+     * @return \Illuminate\Routing\ResponseFactory
      */
     public function update($id, LocationRequest $request)
     {
@@ -66,11 +75,11 @@ class LocationController extends Controller
 
     /**
      * 削除
+     *
      * @param  int $id
-     * @param  LocationRequest $request
-     * @return ResponseFactory
+     * @return \Illuminate\Routing\ResponseFactory
      */
-    public function destroy($id, LocationRequest $request)
+    public function destroy($id)
     {
         $location = $this->location->findOrFail($id);
         $location->delete();
