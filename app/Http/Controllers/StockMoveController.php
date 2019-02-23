@@ -46,7 +46,7 @@ class StockMoveController extends Controller
     public function store(StockMoveRequest $request)
     {
         $this->stockMove->create($request->get('stockMove'));
-        $response = array('status' => 'OK');
+        $response = ['status' => 'OK'];
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }
 
@@ -60,7 +60,7 @@ class StockMoveController extends Controller
     {
         $stockMove = $this->stockMove->findOrFail($id);
         $stockMove->update($request->get('stockMove'));
-        $response = array('status' => 'OK');
+        $response = ['status' => 'OK'];
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }
 
@@ -69,12 +69,13 @@ class StockMoveController extends Controller
      * @param  int $id
      * @param  StockMoveRequest $request
      * @return ResponseFactory
+     * @throws \Exception
      */
-    public function destroy($id, StockMoveRequest $request)
+    public function destroy($id)
     {
         $stockMove = $this->stockMove->findOrFail($id);
         $stockMove->delete();
-        $response = array('status' => 'OK');
+        $response = ['status' => 'OK'];
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }
 }

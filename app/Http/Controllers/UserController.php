@@ -46,7 +46,7 @@ class UserController extends Controller
     public function store(UserRequest $request)
     {
         $this->user->create($request->get('user'));
-        $response = array('status' => 'OK');
+        $response = ['status' => 'OK'];
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }
 
@@ -60,7 +60,7 @@ class UserController extends Controller
     {
         $user = $this->user->findOrFail($id);
         $user->update($request->get('user'));
-        $response = array('status' => 'OK');
+        $response = ['status' => 'OK'];
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }
 
@@ -69,12 +69,13 @@ class UserController extends Controller
      * @param  int $id
      * @param  UserRequest $request
      * @return ResponseFactory
+     * @throws \Exception
      */
-    public function destroy($id, UserRequest $request)
+    public function destroy($id)
     {
         $user = $this->user->findOrFail($id);
         $user->delete();
-        $response = array('status' => 'OK');
+        $response = ['status' => 'OK'];
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }
 }

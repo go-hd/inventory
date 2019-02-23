@@ -46,7 +46,7 @@ class StockHistoryController extends Controller
     public function store(StockHistoryRequest $request)
     {
         $this->stockHistory->create($request->get('stockHistory'));
-        $response = array('status' => 'OK');
+        $response = ['status' => 'OK'];
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }
 
@@ -60,7 +60,7 @@ class StockHistoryController extends Controller
     {
         $stockHistory = $this->stockHistory->findOrFail($id);
         $stockHistory->update($request->get('stockHistory'));
-        $response = array('status' => 'OK');
+        $response = ['status' => 'OK'];
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }
 
@@ -69,12 +69,13 @@ class StockHistoryController extends Controller
      * @param  int $id
      * @param  StockHistoryRequest $request
      * @return ResponseFactory
+     * @throws \Exception
      */
-    public function destroy($id, StockHistoryRequest $request)
+    public function destroy($id)
     {
         $stockHistory = $this->stockHistory->findOrFail($id);
         $stockHistory->delete();
-        $response = array('status' => 'OK');
+        $response = ['status' => 'OK'];
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }
 }

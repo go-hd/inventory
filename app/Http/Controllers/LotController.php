@@ -46,7 +46,7 @@ class LotController extends Controller
     public function store(LotRequest $request)
     {
         $this->lot->create($request->get('lot'));
-        $response = array('status' => 'OK');
+        $response = ['status' => 'OK'];
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }
 
@@ -60,7 +60,7 @@ class LotController extends Controller
     {
         $lot = $this->lot->findOrFail($id);
         $lot->update($request->get('lot'));
-        $response = array('status' => 'OK');
+        $response = ['status' => 'OK'];
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }
 
@@ -69,12 +69,13 @@ class LotController extends Controller
      * @param  int $id
      * @param  LotRequest $request
      * @return ResponseFactory
+     * @throws \Exception
      */
-    public function destroy($id, LotRequest $request)
+    public function destroy($id)
     {
         $lot = $this->lot->findOrFail($id);
         $lot->delete();
-        $response = array('status' => 'OK');
+        $response = ['status' => 'OK'];
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }
 }

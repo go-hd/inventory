@@ -46,7 +46,7 @@ class BrandController extends Controller
     public function store(BrandRequest $request)
     {
         $this->brand->create($request->get('brand'));
-        $response = array('status' => 'OK');
+        $response = ['status' => 'OK'];
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }
 
@@ -60,7 +60,7 @@ class BrandController extends Controller
     {
         $brand = $this->brand->findOrFail($id);
         $brand->update($request->get('brand'));
-        $response = array('status' => 'OK');
+        $response = ['status' => 'OK'];
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }
 
@@ -69,12 +69,13 @@ class BrandController extends Controller
      * @param  int $id
      * @param  BrandRequest $request
      * @return ResponseFactory
+     * @throws \Exception
      */
-    public function destroy($id, BrandRequest $request)
+    public function destroy($id)
     {
         $brand = $this->brand->findOrFail($id);
         $brand->delete();
-        $response = array('status' => 'OK');
+        $response = ['status' => 'OK'];
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }
 }

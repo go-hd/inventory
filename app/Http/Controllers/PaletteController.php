@@ -46,7 +46,7 @@ class PaletteController extends Controller
     public function store(PaletteRequest $request)
     {
         $this->palette->create($request->get('palette'));
-        $response = array('status' => 'OK');
+        $response = ['status' => 'OK'];
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }
 
@@ -60,7 +60,7 @@ class PaletteController extends Controller
     {
         $palette = $this->palette->findOrFail($id);
         $palette->update($request->get('palette'));
-        $response = array('status' => 'OK');
+        $response = ['status' => 'OK'];
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }
 
@@ -69,12 +69,13 @@ class PaletteController extends Controller
      * @param  int $id
      * @param  PaletteRequest $request
      * @return ResponseFactory
+     * @throws \Exception
      */
-    public function destroy($id, PaletteRequest $request)
+    public function destroy($id)
     {
         $palette = $this->palette->findOrFail($id);
         $palette->delete();
-        $response = array('status' => 'OK');
+        $response = ['status' => 'OK'];
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }
 }

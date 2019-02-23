@@ -46,7 +46,7 @@ class RecipeController extends Controller
     public function store(RecipeRequest $request)
     {
         $this->recipe->create($request->get('recipe'));
-        $response = array('status' => 'OK');
+        $response = ['status' => 'OK'];
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }
 
@@ -60,7 +60,7 @@ class RecipeController extends Controller
     {
         $recipe = $this->recipe->findOrFail($id);
         $recipe->update($request->get('recipe'));
-        $response = array('status' => 'OK');
+        $response = ['status' => 'OK'];
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }
 
@@ -69,12 +69,13 @@ class RecipeController extends Controller
      * @param  int $id
      * @param  RecipeRequest $request
      * @return ResponseFactory
+     * @throws \Exception
      */
-    public function destroy($id, RecipeRequest $request)
+    public function destroy($id)
     {
         $recipe = $this->recipe->findOrFail($id);
         $recipe->delete();
-        $response = array('status' => 'OK');
+        $response = ['status' => 'OK'];
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }
 }
