@@ -36,7 +36,7 @@ class Lot extends Model
         'name',
         'jan_code',
         'expiration_date',
-        'ordered_at'
+        'ordered_at',
     ];
 
     /**
@@ -48,7 +48,7 @@ class Lot extends Model
         'expiration_date',
         'ordered_at',
         'created_at',
-        'updated_at'
+        'updated_at',
     ];
 
     /**
@@ -59,7 +59,7 @@ class Lot extends Model
     protected $appends = [
         'location_name',
         'location_type_name',
-        'brand_name'
+        'brand_name',
     ];
 
     /**

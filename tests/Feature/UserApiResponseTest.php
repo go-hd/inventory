@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Location;
 use App\Models\User;
+use Illuminate\Support\Facades\Artisan;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -20,6 +21,7 @@ class UserApiResponseTest extends TestCase
     public function setUp()
     {
         parent::setUp();
+        $this->artisan('migrate:refresh');
         $this->artisan('db:seed');
     }
 
@@ -60,10 +62,12 @@ class UserApiResponseTest extends TestCase
     public function testStore()
     {
         $data = [
-            'location_id' => Location::query()->first()->id,
-            'name' => 'testUser',
-            'email' => 'testUser@gmail.com',
-            'password' => '$2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm',
+            'user' => [
+                'location_id' => Location::query()->first()->id,
+                'name' => 'testUser',
+                'email' => 'testUser@gmail.com',
+                'password' => '$2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm',
+            ]
         ];
         $response = $this->post('/users', $data);
         $response->assertSuccessful()->assertJson(['status' => 'OK']);
@@ -76,12 +80,16 @@ class UserApiResponseTest extends TestCase
      */
     public function testUpdate()
     {
-        $user = factory(User::class)->create();
+        $user = factory(User::class)->create([
+            'location_id' => Location::query()->first()->id
+        ]);
 
         $data = [
-            'location_id' => Location::query()->first()->id,
-            'name' => 'testUpdateUser',
-            'email' => 'testUpdateUser@gmail.com',
+            'user' => [
+                'location_id' => Location::query()->first()->id,
+                'name' => 'testUpdateUser',
+                'email' => 'testUpdateUser@gmail.com',
+            ]
         ];
 
         $this->put('/users/'. $user->id, $data)
@@ -90,7 +98,8 @@ class UserApiResponseTest extends TestCase
 
         $updatedData = User::query()->find($user->id)->toArray();
 
-        foreach ($data as $key => $value) {
+        unset($data['user']['location_id']);
+        foreach ($data['user'] as $key => $value) {
             $this->assertSame($value, $updatedData[$key]);
         }
     }
@@ -102,7 +111,9 @@ class UserApiResponseTest extends TestCase
      */
     public function testDestroy()
     {
-        $user = factory(User::class)->create();
+        $user = factory(User::class)->create([
+            'location_id' => Location::query()->first()->id
+        ]);
         $count = User::query()->count();
 
         $this->delete('/users/'. $user->id)

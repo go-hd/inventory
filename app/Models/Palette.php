@@ -25,7 +25,7 @@ class Palette extends Model
      */
     protected $fillable = [
         'location_id',
-        'type'
+        'type',
     ];
 
     /**
@@ -35,7 +35,7 @@ class Palette extends Model
      */
     protected $dates = [
         'created_at',
-        'updated_at'
+        'updated_at',
     ];
 
     /**
@@ -45,7 +45,7 @@ class Palette extends Model
      */
     protected $appends = [
         'location_name',
-        'location_type'
+        'location_type',
     ];
 
     /**

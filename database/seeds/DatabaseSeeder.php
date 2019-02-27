@@ -17,15 +17,15 @@ class DatabaseSeeder extends Seeder
 
         $locations = collect();
 
-        foreach ($location_types as $location_type) {
+        foreach ($location_types as$index => $location_type) {
             /** @var \App\Models\LocationType $location_type */
             $locations[] = factory(\App\Models\Location::class, 10)->create([
                 'location_type_id' => $location_type->id,
                 'company_id' => $company->id,
             ]);
+            factory(\App\Models\User::class, 1)->create([
+                'location_id' => $locations->get($index)[0]->id
+            ]);
         }
-
-        $company->main_location_id = $locations->first()[0]->id;
-        $company->save();
     }
 }

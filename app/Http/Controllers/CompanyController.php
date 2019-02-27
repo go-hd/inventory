@@ -41,7 +41,7 @@ class CompanyController extends Controller
      */
     public function show($id)
     {
-        $company = $this->company->findOrFail($id);
+        $company = $this->company->findOrFail($id)->setAppends(['locations']);
         return response()->json($company, 200, [], JSON_PRETTY_PRINT);
     }
 

@@ -25,7 +25,7 @@ class Brand extends Model
     protected $fillable = [
         'name',
         'code',
-        'note'
+        'note',
     ];
 
     /**
@@ -35,6 +35,6 @@ class Brand extends Model
      */
     protected $dates = [
         'created_at',
-        'updated_at'
+        'updated_at',
     ];
 }

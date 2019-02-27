@@ -19,6 +19,7 @@ class CompanyApiResponseTest extends TestCase
     public function setUp()
     {
         parent::setUp();
+        $this->artisan('migrate:refresh');
         $this->artisan('db:seed');
     }
 
@@ -44,7 +45,7 @@ class CompanyApiResponseTest extends TestCase
      */
     public function testShow()
     {
-        $company = Company::query()->first();
+        $company = Company::query()->first()->setAppends(['locations']);
 
         $this->get('/companies/' . $company->id)
             ->assertSuccessful()
@@ -58,7 +59,7 @@ class CompanyApiResponseTest extends TestCase
      */
     public function testStore()
     {
-        $data = ['name' => 'TestCompany'];
+        $data = ['company' => ['name' => 'TestCompany']];
         $response = $this->post('/companies', $data);
         $response->assertSuccessful()->assertJson(['status' => 'OK']);
     }
@@ -72,7 +73,7 @@ class CompanyApiResponseTest extends TestCase
     {
         $company = factory(Company::class)->create();
 
-        $data = ['name' => 'UpdatedTestCompany'];
+        $data = ['company' => ['name' => 'UpdatedTestCompany']];
 
         $this->put('/companies/'. $company->id, $data)
             ->assertSuccessful()
@@ -80,7 +81,7 @@ class CompanyApiResponseTest extends TestCase
 
         $updatedData = Company::query()->find($company->id)->toArray();
 
-        foreach ($data as $key => $value) {
+        foreach ($data['company'] as $key => $value) {
             $this->assertSame($value, $updatedData[$key]);
         }
     }

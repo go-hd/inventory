@@ -16,8 +16,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $location_number 拠点ナンバー
  * @property Carbon $created_at 作成日
  * @property Carbon $updated_at 更新日
- * @property LocationType $type 拠点種別
+ * @property LocationType $location_type 拠点種別
  * @property Company $company 会社
+ * @property Collection|Palette[] $own_palettes パレット
  * @property Collection|Palette[] $palettes パレット
  * @property Collection|User[] $users ユーザー
  * @property Collection|Lot[] $lots ロット
@@ -36,7 +37,19 @@ class Location extends Model
         'name',
         'location_type_id',
         'location_code',
-        'location_number'
+        'location_number',
+    ];
+
+    /**
+     * 配列に含めない属性
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'company_id',
+        'location_type_id',
+        'remember_token',
+        'location_type',
     ];
 
     /**
@@ -46,7 +59,7 @@ class Location extends Model
      */
     protected $dates = [
         'created_at',
-        'updated_at'
+        'updated_at',
     ];
 
     /**
@@ -55,16 +68,91 @@ class Location extends Model
      * @var array
      */
     protected $appends = [
-        'company_name',
-        'location_type_name'
+        'location_type_name',
+        'company',
+        'location_type',
+        'users',
+        'lots',
+        'own_palettes',
+        'palettes',
     ];
+
+    /**
+     * 会社を取得する
+     *
+     * @return string
+     */
+    public function getCompanyAttribute()
+    {
+        return $this->company()->getResults();
+    }
+
+    /**
+     * 拠点種別名を取得する
+     *
+     * @return string
+     */
+    public function getLocationTypeNameAttribute()
+    {
+        return $this->location_type->name;
+    }
+
+    /**
+     * 拠点種別を取得する
+     *
+     * @return string
+     */
+    public function getLocationTypeAttribute()
+    {
+        return $this->location_type()->getResults();
+    }
+
+    /**
+     * ユーザーを取得する
+     *
+     * @return string
+     */
+    public function getUsersAttribute()
+    {
+        return $this->users()->getResults()->makeHidden(['location', 'company']);
+    }
+
+    /**
+     * ロットを取得する
+     *
+     * @return string
+     */
+    public function getLotsAttribute()
+    {
+        return $this->lots()->getResults()->makeHidden(['location_name', 'location_type_name']);
+    }
+
+    /**
+     * 自身のパレットを取得する
+     *
+     * @return string
+     */
+    public function getOwnPalettesAttribute()
+    {
+        return $this->own_palettes()->getResults()->makeHidden(['location_name', 'location_type']);
+    }
+
+    /**
+     * 保管しているパレットを取得する
+     *
+     * @return string
+     */
+    public function getPalettesAttribute()
+    {
+        return $this->palettes()->getResults()->makeHidden(['location_name', 'location_type']);
+    }
 
     /**
      * 拠点に紐づく種別を取得
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function type()
+    public function location_type()
     {
         return $this->belongsTo(LocationType::class, 'location_type_id');
     }
@@ -94,9 +182,19 @@ class Location extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function palettes()
+    public function own_palettes()
     {
         return $this->hasMany(Palette::class);
+    }
+
+    /**
+     * 拠点が保管しているパレットを取得
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function palettes()
+    {
+        return $this->belongsToMany(Palette::class);
     }
 
     /**
@@ -127,25 +225,5 @@ class Location extends Model
     public function stockMoves()
     {
         return $this->hasMany(StockMove::class);
-    }
-
-    /**
-     * 会社名を取得する
-     *
-     * @return string
-     */
-    public function getCompanyNameAttribute()
-    {
-        return $this->company->name;
-    }
-
-    /**
-     * 会社名を取得する
-     *
-     * @return string
-     */
-    public function getLocationTypeNameAttribute()
-    {
-        return $this->type->name;
     }
 }

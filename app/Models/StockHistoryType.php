@@ -22,7 +22,7 @@ class StockHistoryType extends Model
      */
     protected $fillable = [
         'name',
-        'note'
+        'note',
     ];
 
     /**
@@ -32,7 +32,7 @@ class StockHistoryType extends Model
      */
     protected $dates = [
         'created_at',
-        'updated_at'
+        'updated_at',
     ];
 
 }
