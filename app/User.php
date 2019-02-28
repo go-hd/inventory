@@ -42,7 +42,8 @@ class User extends Authenticatable
         'location_id',
         'name',
         'email',
-        'password'
+        'password',
+        'level',
     ];
 
     /**
@@ -51,6 +52,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
+        'location_id',
         'password',
         'remember_token',
     ];
@@ -71,8 +73,8 @@ class User extends Authenticatable
      * @var array
      */
     protected $appends = [
-        'location_name',
-        'location_type'
+        'location',
+        'company',
     ];
 
     /**
@@ -86,6 +88,31 @@ class User extends Authenticatable
     }
 
     /**
+     * 拠点を取得する
+     *
+     * @return string
+     */
+    public function getLocationAttribute()
+    {
+        return $this->location()
+                    ->getResults()
+                    ->makeHidden([
+                        'company_id', 'location_type_id', 'company_name', 'location_type',
+                        'company', 'users', 'lots', 'own_palettes', 'palettes'
+                    ]);
+    }
+
+    /**
+     * 会社を取得する
+     *
+     * @return string
+     */
+    public function getCompanyAttribute()
+    {
+        return $this->location()->getResults()->company;
+    }
+
+    /**
      * ユーザーに紐づく拠点を取得
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -93,25 +120,5 @@ class User extends Authenticatable
     public function location()
     {
         return $this->belongsTo(Location::class);
-    }
-
-    /**
-     * 拠点名を取得する
-     *
-     * @return string
-     */
-    public function getLocationNameAttribute()
-    {
-        return $this->location->name;
-    }
-
-    /**
-     * 拠点種別を取得する
-     *
-     * @return string
-     */
-    public function getLocationTypeAttribute()
-    {
-        return $this->location->type;
     }
 }

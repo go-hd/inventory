@@ -21,6 +21,7 @@ class LocationApiResponseTest extends TestCase
     public function setUp()
     {
         parent::setUp();
+        $this->artisan('migrate:refresh');
         $this->artisan('db:seed');
     }
 
@@ -31,7 +32,7 @@ class LocationApiResponseTest extends TestCase
      */
     public function testIndex()
     {
-        $locations = Location::all();
+        $locations = Location::all()->makeHidden(['users', 'lots', 'own_palettes', 'palettes']);
 
         $this->get('/locations')
             ->assertSuccessful()
@@ -46,11 +47,11 @@ class LocationApiResponseTest extends TestCase
      */
     public function testShow()
     {
-        $Location = Location::query()->first();
+        $location = Location::query()->first();
 
-        $this->get('/locations/' . $Location->id)
+        $this->get('/locations/' . $location->id)
             ->assertSuccessful()
-            ->assertJson($Location->toArray());
+            ->assertJson($location->toArray());
     }
 
     /**
@@ -61,11 +62,13 @@ class LocationApiResponseTest extends TestCase
     public function testStore()
     {
         $data = [
-            'company_id' => Company::query()->first()->id,
-            'name' => 'testLocation',
-            'location_type_id' => LocationType::query()->first()->id,
-            'location_code' => 'AA',
-            'location_number' => '1234',
+            'location' => [
+                'company_id' => Company::query()->first()->id,
+                'name' => 'testLocation',
+                'location_type_id' => LocationType::query()->first()->id,
+                'location_code' => 'AA',
+                'location_number' => '1234',
+            ]
         ];
         $response = $this->post('/locations', $data);
         $response->assertSuccessful()->assertJson(['status' => 'OK']);
@@ -78,22 +81,30 @@ class LocationApiResponseTest extends TestCase
      */
     public function testUpdate()
     {
-        $Location = factory(Location::class)->create();
+        $location = factory(Location::class)->create([
+            'location_type_id' => LocationType::query()->first()->id,
+            'company_id' => Company::query()->first()->id,
+        ]);
 
         $data = [
-            'name' => 'testUpdateLocation',
-            'location_type_id' => LocationType::query()->get()->random()->id,
-            'location_code' => 'BB',
-            'location_number' => '5678',
+            'location' => [
+                'company_id' => Company::query()->first()->id,
+                'name' => 'testUpdateLocation',
+                'location_type_id' => LocationType::query()->get()->random()->id,
+                'location_code' => 'BB',
+                'location_number' => '5678',
+            ]
         ];
 
-        $this->put('/locations/'. $Location->id, $data)
+        $this->put('/locations/'. $location->id, $data)
             ->assertSuccessful()
             ->assertJson(['status' => 'OK']);
 
-        $updatedData = Location::query()->find($Location->id)->toArray();
+        $updatedData = Location::query()->find($location->id)->toArray();
 
-        foreach ($data as $key => $value) {
+        unset($data['location']['company_id']);
+        unset($data['location']['location_type_id']);
+        foreach ($data['location'] as $key => $value) {
             $this->assertSame($value, $updatedData[$key]);
         }
     }
@@ -105,10 +116,13 @@ class LocationApiResponseTest extends TestCase
      */
     public function testDestroy()
     {
-        $Location = factory(Location::class)->create();
+        $location = factory(Location::class)->create([
+            'location_type_id' => LocationType::query()->first()->id,
+            'company_id' => Company::query()->first()->id,
+        ]);
         $count = Location::query()->count();
 
-        $this->delete('/locations/'. $Location->id)
+        $this->delete('/locations/'. $location->id)
             ->assertSuccessful()
             ->assertJson(['status' => 'OK']);
 

@@ -19,6 +19,7 @@ class LocationTypeTypeApiResponseTest extends TestCase
     public function setUp()
     {
         parent::setUp();
+        $this->artisan('migrate:refresh');
         $this->artisan('db:seed');
     }
 
@@ -44,7 +45,7 @@ class LocationTypeTypeApiResponseTest extends TestCase
      */
     public function testShow()
     {
-        $LocationType = LocationType::query()->first();
+        $LocationType = LocationType::query()->first()->setAppends(['locations']);
 
         $this->get('/location_types/' . $LocationType->id)
             ->assertSuccessful()
@@ -58,7 +59,7 @@ class LocationTypeTypeApiResponseTest extends TestCase
      */
     public function testStore()
     {
-        $data = ['name' => 'TestLocationType'];
+        $data = ['locationType' => ['name' => 'TestLocationType']];
         $response = $this->post('/location_types', $data);
         $response->assertSuccessful()->assertJson(['status' => 'OK']);
     }
@@ -72,7 +73,7 @@ class LocationTypeTypeApiResponseTest extends TestCase
     {
         $LocationType = factory(LocationType::class)->create();
 
-        $data = ['name' => 'UpdatedTestLocationType'];
+        $data = ['locationType' => ['name' => 'UpdatedTestLocationType']];
 
         $this->put('/location_types/'. $LocationType->id, $data)
             ->assertSuccessful()
@@ -80,7 +81,7 @@ class LocationTypeTypeApiResponseTest extends TestCase
 
         $updatedData = LocationType::query()->find($LocationType->id)->toArray();
 
-        foreach ($data as $key => $value) {
+        foreach ($data['locationType'] as $key => $value) {
             $this->assertSame($value, $updatedData[$key]);
         }
     }

@@ -34,7 +34,6 @@ class Company extends Model
      */
     protected $fillable = [
         'name',
-        'main_location_id'
     ];
 
     /**
@@ -44,7 +43,7 @@ class Company extends Model
      */
     protected $dates = [
         'created_at',
-        'updated_at'
+        'updated_at',
     ];
 
     /**
@@ -53,37 +52,30 @@ class Company extends Model
      * @var array
      */
     protected $appends = [
-        'main_location_name',
-        'main_location_type'
     ];
 
     /**
-     * 会社に紐づくメイン拠点を取得
+     * 拠点を取得する
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function mainLocation()
+    public function getLocationsAttribute()
     {
-        return $this->belongsTo(Location::class, 'main_location_id');
+        return $this->locations()
+                    ->getResults()
+                    ->makeHidden([
+                        'company_id', 'location_type_id', 'company_name', 'location_type',
+                        'company', 'users', 'lots', 'own_palettes', 'palettes'
+                    ]);
     }
 
     /**
-     * メイン拠点名を取得する
+     * 会社に紐づく拠点を取得
      *
-     * @return string
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function getMainLocationNameAttribute()
+    public function locations()
     {
-        return $this->mainLocation->name;
-    }
-
-    /**
-     * メイン拠点種別を取得する
-     *
-     * @return string
-     */
-    public function getMainLocationTypeAttribute()
-    {
-        return $this->mainLocation->type->name;
+        return $this->hasMany(Location::class);
     }
 }

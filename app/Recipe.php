@@ -38,7 +38,7 @@ class Recipe extends Model
     protected $fillable = [
         'parent_lot_id',
         'child_lot_id',
-        'note'
+        'note',
     ];
 
     /**
@@ -48,7 +48,7 @@ class Recipe extends Model
      */
     protected $dates = [
         'created_at',
-        'updated_at'
+        'updated_at',
     ];
 
     /**
@@ -58,7 +58,7 @@ class Recipe extends Model
      */
     protected $appends = [
         'parent_lot_name',
-        'child_lot_name'
+        'child_lot_name',
     ];
 
     /**

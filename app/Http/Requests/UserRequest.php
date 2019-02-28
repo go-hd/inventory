@@ -27,11 +27,12 @@ class UserRequest extends FormRequest
         $rules = [
             'user.location_id' => 'required',
             'user.name' => 'required',
-            'user.email' => 'required|email|unique:users,email,,,deleted_at,NULL',
-            'user.password' => 'required'
+            'user.email' => 'required|email|unique:users,email',
         ];
         if ($this->method() === 'PUT' || $this->method() === 'PATCH') {
-            $rules['user.email'] = ['required', 'email', Rule::unique('users','email')->whereNull('deleted_at')->ignore($this->id)];
+            $rules['user.email'] = ['required', 'email', Rule::unique('users','email')->ignore($this->id)];
+        } else {
+            $rules['user.password'] = 'required';
         }
         return $rules;
     }

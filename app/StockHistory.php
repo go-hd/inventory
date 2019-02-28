@@ -47,7 +47,7 @@ class StockHistory extends Model
         'lot_id',
         'stock_history_type_id',
         'quantity',
-        'note'
+        'note',
     ];
 
     /**
@@ -57,7 +57,7 @@ class StockHistory extends Model
      */
     protected $dates = [
         'created_at',
-        'updated_at'
+        'updated_at',
     ];
 
     /**
@@ -68,7 +68,7 @@ class StockHistory extends Model
     protected $appends = [
         'stock_history_type_name',
         'location_name',
-        'lot_name'
+        'lot_name',
     ];
 
     /**

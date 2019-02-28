@@ -40,7 +40,7 @@ class StockMove extends Model
         'shipping_id',
         'recieving_id',
         'location_id',
-        'quantity'
+        'quantity',
     ];
 
     /**
@@ -50,7 +50,7 @@ class StockMove extends Model
      */
     protected $dates = [
         'created_at',
-        'updated_at'
+        'updated_at',
     ];
 
     /**
@@ -59,7 +59,7 @@ class StockMove extends Model
      * @var array
      */
     protected $appends = [
-        'location_name'
+        'location_name',
     ];
 
     /**
