@@ -3,19 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CompanyRequest;
-use App\Models\Company;
+use App\Company;
 
 class CompanyController extends Controller
 {
     /**
-     * @var \App\Models\Company
+     * 会社のインスタンス
+     *
+     * @var \App\Company
      */
     private $company;
 
     /**
-     * CompanyControllerの初期化を行う
+     * 会社コントローラーのインスタンスを作成
      *
-     * @param \App\Models\Company $company
+     * @param  \App\Company $company
      * @return void
      */
     public function __construct(Company $company) {
@@ -24,20 +26,21 @@ class CompanyController extends Controller
 
     /**
      * 一覧
-     * 
-     * @return \Illuminate\Routing\ResponseFactory
+     *
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index()
     {
         $companies = $this->company->all();
+
         return response()->json($companies, 200, [], JSON_PRETTY_PRINT);
     }
 
     /**
      * 詳細
-     * 
+     *
      * @param  int $id
-     * @return \Illuminate\Routing\ResponseFactory
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show($id)
     {
@@ -47,43 +50,47 @@ class CompanyController extends Controller
 
     /**
      * 新規作成
-     * 
-     * @param  CompanyRequest $request
-     * @return \Illuminate\Routing\ResponseFactory
+     *
+     * @param  \App\Http\Requests\CompanyRequest $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(CompanyRequest $request)
     {
         $this->company->create($request->get('company'));
-        $response = array('status' => 'OK');
+        $response = ['status' => 'OK'];
+
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }
 
     /**
      * 編集
-     * 
+     *
      * @param  int $id
-     * @param  CompanyRequest $request
-     * @return \Illuminate\Routing\ResponseFactory
+     * @param  \App\Http\Requests\CompanyRequest $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update($id, CompanyRequest $request)
     {
         $company = $this->company->findOrFail($id);
         $company->update($request->get('company'));
-        $response = array('status' => 'OK');
+        $response = ['status' => 'OK'];
+
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }
 
     /**
      * 削除
-     * 
+     *
      * @param  int $id
-     * @return \Illuminate\Routing\ResponseFactory
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
     public function destroy($id)
     {
         $company = $this->company->findOrFail($id);
         $company->delete();
-        $response = array('status' => 'OK');
+        $response = ['status' => 'OK'];
+
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }
 }

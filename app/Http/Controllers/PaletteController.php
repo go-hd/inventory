@@ -3,20 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\PaletteRequest;
-use App\Models\Palette;
-
+use App\Palette;
 
 class PaletteController extends Controller
 {
     /**
-     * @var \App\Models\Palette
+     * パレットのインスタンスを作成
+     *
+     * @var \App\Palette
      */
     private $palette;
 
     /**
-     * PaletteControllerの初期化を行う
+     * パレットコントローラーのインスタンスを作成
      *
-     * @param \App\Models\Palette $palette
+     * @param  \App\Palette $palette
      * @return void
      */
     public function __construct(Palette $palette) {
@@ -26,11 +27,12 @@ class PaletteController extends Controller
     /**
      * 一覧
      *
-     * @return \Illuminate\Routing\ResponseFactory
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index()
     {
         $palettes = $this->palette->all();
+
         return response()->json($palettes, 200, [], JSON_PRETTY_PRINT);
     }
 
@@ -38,24 +40,26 @@ class PaletteController extends Controller
      * 詳細
      *
      * @param  int $id
-     * @return \Illuminate\Routing\ResponseFactory
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show($id)
     {
         $palette = $this->palette->findOrFail($id);
+
         return response()->json($palette, 200, [], JSON_PRETTY_PRINT);
     }
 
     /**
      * 新規作成
      *
-     * @param  PaletteRequest $request
-     * @return \Illuminate\Routing\ResponseFactory
+     * @param  \App\Http\Requests\PaletteRequest $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(PaletteRequest $request)
     {
         $this->palette->create($request->get('palette'));
-        $response = array('status' => 'OK');
+        $response = ['status' => 'OK'];
+
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }
 
@@ -63,14 +67,15 @@ class PaletteController extends Controller
      * 編集
      *
      * @param  int $id
-     * @param  PaletteRequest $request
-     * @return \Illuminate\Routing\ResponseFactory
+     * @param  \App\Http\Requests\PaletteRequest $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update($id, PaletteRequest $request)
     {
         $palette = $this->palette->findOrFail($id);
         $palette->update($request->get('palette'));
-        $response = array('status' => 'OK');
+        $response = ['status' => 'OK'];
+
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }
 
@@ -78,13 +83,15 @@ class PaletteController extends Controller
      * 削除
      *
      * @param  int $id
-     * @return \Illuminate\Routing\ResponseFactory
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
     public function destroy($id)
     {
         $palette = $this->palette->findOrFail($id);
         $palette->delete();
-        $response = array('status' => 'OK');
+        $response = ['status' => 'OK'];
+
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }
 }

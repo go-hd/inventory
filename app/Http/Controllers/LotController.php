@@ -3,20 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\LotRequest;
-use App\Models\Lot;
-
+use App\Lot;
 
 class LotController extends Controller
 {
     /**
-     * @var \App\Models\Lot
+     * ロットのインスタンス
+     *
+     * @var \App\Lot
      */
     private $lot;
 
     /**
-     * LotControllerの初期化を行う
+     * ロットコントローラーのインスタンスを作成
      *
-     * @param \App\Models\Lot $lot
+     * @param  \App\Lot $lot
      * @return void
      */
     public function __construct(Lot $lot) {
@@ -26,11 +27,12 @@ class LotController extends Controller
     /**
      * 一覧
      *
-     * @return \Illuminate\Routing\ResponseFactory
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index()
     {
         $lots = $this->lot->all();
+
         return response()->json($lots, 200, [], JSON_PRETTY_PRINT);
     }
 
@@ -38,24 +40,26 @@ class LotController extends Controller
      * 詳細
      *
      * @param  int $id
-     * @return \Illuminate\Routing\ResponseFactory
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show($id)
     {
         $lot = $this->lot->findOrFail($id);
+
         return response()->json($lot, 200, [], JSON_PRETTY_PRINT);
     }
 
     /**
      * 新規作成
      *
-     * @param  LotRequest $request
-     * @return \Illuminate\Routing\ResponseFactory
+     * @param  \App\Http\Requests\LotRequest $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(LotRequest $request)
     {
         $this->lot->create($request->get('lot'));
-        $response = array('status' => 'OK');
+        $response = ['status' => 'OK'];
+
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }
 
@@ -63,14 +67,15 @@ class LotController extends Controller
      * 編集
      *
      * @param  int $id
-     * @param  LotRequest $request
-     * @return \Illuminate\Routing\ResponseFactory
+     * @param  \App\Http\Requests\LotRequest $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update($id, LotRequest $request)
     {
         $lot = $this->lot->findOrFail($id);
         $lot->update($request->get('lot'));
-        $response = array('status' => 'OK');
+        $response = ['status' => 'OK'];
+
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }
 
@@ -78,13 +83,15 @@ class LotController extends Controller
      * 削除
      *
      * @param  int $id
-     * @return \Illuminate\Routing\ResponseFactory
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
     public function destroy($id)
     {
         $lot = $this->lot->findOrFail($id);
         $lot->delete();
-        $response = array('status' => 'OK');
+        $response = ['status' => 'OK'];
+
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }
 }

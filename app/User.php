@@ -1,21 +1,35 @@
 <?php
 
-namespace App\Models;
+namespace App;
 
-use Carbon\Carbon;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 /**
- * Class User
- * @property int $id ID
+ * App\User
+ *
+ * @property int $id
  * @property int $location_id 拠点ID
- * @property string $name 名称
- * @property string $email メールアドレス
- * @property string $password パスワード
- * @property string $remember_token トークン
- * @property Carbon $created_at 作成日
- * @property Carbon $updated_at 更新日
- * @property Location $location 拠点
+ * @property string $name
+ * @property string $email
+ * @property string $password
+ * @property string|null $remember_token
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read string $location_name
+ * @property-read string $location_type
+ * @property-read \App\Location $location
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\User newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\User newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\User query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereLocationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\User wherePassword($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereRememberToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class User extends Authenticatable
 {

@@ -3,20 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StockHistoryRequest;
-use App\Models\StockHistory;
-
+use App\StockHistory;
 
 class StockHistoryController extends Controller
 {
     /**
-     * @var \App\Models\StockHistory
+     * 在庫履歴のインスタンス
+     *
+     * @var \App\StockHistory
      */
     private $stockHistory;
 
     /**
-     * StockHistoryControllerの初期化を行う
+     * 在庫履歴コントローラーのインスタンスを作成
      *
-     * @param \App\Models\StockHistory $stockHistory
+     * @param  \App\StockHistory $stockHistory
      * @return void
      */
     public function __construct(StockHistory $stockHistory) {
@@ -26,36 +27,39 @@ class StockHistoryController extends Controller
     /**
      * 一覧
      *
-     * @return \Illuminate\Routing\ResponseFactory
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index()
     {
-        $stockHistorys = $this->stockHistory->all();
-        return response()->json($stockHistorys, 200, [], JSON_PRETTY_PRINT);
+        $stockHistories = $this->stockHistory->all();
+
+        return response()->json($stockHistories, 200, [], JSON_PRETTY_PRINT);
     }
 
     /**
      * 詳細
      *
      * @param  int $id
-     * @return \Illuminate\Routing\ResponseFactory
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show($id)
     {
         $stockHistory = $this->stockHistory->findOrFail($id);
+
         return response()->json($stockHistory, 200, [], JSON_PRETTY_PRINT);
     }
 
     /**
      * 新規作成
      *
-     * @param  StockHistoryRequest $request
-     * @return \Illuminate\Routing\ResponseFactory
+     * @param  \App\Http\Requests\StockHistoryRequest $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(StockHistoryRequest $request)
     {
         $this->stockHistory->create($request->get('stockHistory'));
-        $response = array('status' => 'OK');
+        $response = ['status' => 'OK'];
+
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }
 
@@ -63,14 +67,15 @@ class StockHistoryController extends Controller
      * 編集
      *
      * @param  int $id
-     * @param  StockHistoryRequest $request
-     * @return \Illuminate\Routing\ResponseFactory
+     * @param  \App\Http\Requests\StockHistoryRequest $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update($id, StockHistoryRequest $request)
     {
         $stockHistory = $this->stockHistory->findOrFail($id);
         $stockHistory->update($request->get('stockHistory'));
-        $response = array('status' => 'OK');
+        $response = ['status' => 'OK'];
+
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }
 
@@ -78,13 +83,15 @@ class StockHistoryController extends Controller
      * 削除
      *
      * @param  int $id
-     * @return \Illuminate\Routing\ResponseFactory
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
     public function destroy($id)
     {
         $stockHistory = $this->stockHistory->findOrFail($id);
         $stockHistory->delete();
-        $response = array('status' => 'OK');
+        $response = ['status' => 'OK'];
+
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }
 }

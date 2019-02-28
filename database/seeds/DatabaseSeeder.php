@@ -11,15 +11,16 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $location_types = factory(\App\Models\LocationType::class, 3)->create();
-        /** @var \App\Models\Company $company */
-        $company = factory(\App\Models\Company::class)->create();
+        /** @var \App\LocationType[] $location_types */
+        $location_types = factory(\App\LocationType::class, 3)->create();
+        /** @var \App\Company $company */
+        $company = factory(\App\Company::class)->create();
 
         $locations = collect();
 
-        foreach ($location_types as$index => $location_type) {
+        foreach ($location_types as $index => $location_type) {
             /** @var \App\Models\LocationType $location_type */
-            $locations[] = factory(\App\Models\Location::class, 10)->create([
+            $locations[] = factory(\App\Location::class, 10)->create([
                 'location_type_id' => $location_type->id,
                 'company_id' => $company->id,
             ]);

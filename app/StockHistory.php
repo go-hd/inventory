@@ -1,25 +1,39 @@
 <?php
 
-namespace App\Models;
+namespace App;
 
-use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class StockHistory
- * @property int $id ID
- * @property int $location_id 拠点ID
+ * App\StockHistory
+ *
+ * @property int $id
+ * @property int $location_id 相手拠点ID
  * @property int $lot_id ロットID
  * @property int $stock_history_type_id 在庫履歴種別ID
  * @property int $quantity 数量
- * @property string $note 備考
- * @property Carbon $created_at 作成日
- * @property Carbon $updated_at 更新日
- * @property Location $location 拠点
- * @property StockHistoryType $type 在庫履歴種別
- * @property Lot $lot ロット
- * @property Collection|StockMove[] $stockMoves 在庫移動
+ * @property string|null $note 備考
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read string $location_name
+ * @property-read string $lot_name
+ * @property-read string $stock_history_type_name
+ * @property-read \App\Location $location
+ * @property-read \App\Lot $lot
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\StockMove[] $stockMoves
+ * @property-read \App\StockHistoryType $type
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\StockHistory newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\StockHistory newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\StockHistory query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\StockHistory whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\StockHistory whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\StockHistory whereLocationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\StockHistory whereLotId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\StockHistory whereNote($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\StockHistory whereQuantity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\StockHistory whereStockHistoryTypeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\StockHistory whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class StockHistory extends Model
 {
