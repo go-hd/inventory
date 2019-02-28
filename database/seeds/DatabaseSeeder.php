@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
         $palettes = collect();
 
         foreach ($location_types as $index => $location_type) {
-            /** @var \App\Models\LocationType $location_type */
+            /** @var \App\LocationType $location_type */
             $locations[] = factory(\App\Location::class, 10)->create([
                 'location_type_id' => $location_type->id,
                 'company_id' => $company->id,

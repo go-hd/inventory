@@ -75,7 +75,7 @@ class CompanyApiResponseTest extends TestCase
 
         $data = ['company' => ['name' => 'UpdatedTestCompany']];
 
-        $this->put('/companies/'. $company->id, $data)
+        $this->put('/companies/' . $company->id, $data)
             ->assertSuccessful()
             ->assertJson(['status' => 'OK']);
 
@@ -96,10 +96,11 @@ class CompanyApiResponseTest extends TestCase
         $company = factory(Company::class)->create();
         $count = Company::query()->count();
 
-        $this->delete('/companies/'. $company->id)
+        $this->delete('/companies/' . $company->id)
             ->assertSuccessful()
             ->assertJson(['status' => 'OK']);
 
         $this->assertCount($count - 1, Company::query()->get());
+        $this->assertDatabaseMissing('companies', ['id' => $company->id]);
     }
 }
