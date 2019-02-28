@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
         $company = factory(\App\Company::class)->create();
 
         $locations = collect();
+        $palettes = collect();
 
         foreach ($location_types as $index => $location_type) {
             /** @var \App\Models\LocationType $location_type */
@@ -24,9 +25,21 @@ class DatabaseSeeder extends Seeder
                 'location_type_id' => $location_type->id,
                 'company_id' => $company->id,
             ]);
-            factory(\App\Models\User::class, 1)->create([
-                'location_id' => $locations->get($index)[0]->id
-            ]);
+            foreach ($locations[$index] as $location) {
+                factory(\App\User::class, 1)->create([
+                    'location_id' => $location->id
+                ]);
+                $palettes[] = factory(\App\Palette::class, 1)->create([
+                    'location_id' => $location->id
+                ]);
+            }
+            DB::table('location_palette')->insert(
+                [
+                    'location_id' => $locations[0]->random()->id,
+                    'palette_id' => $palettes[0]->random()->id,
+                    'quantity' => 100,
+                ]
+            );
         }
     }
 }

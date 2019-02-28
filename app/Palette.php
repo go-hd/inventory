@@ -39,6 +39,15 @@ class Palette extends Model
     ];
 
     /**
+     * 配列に含めない属性
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'location_id',
+    ];
+
+    /**
      * 日付へキャストする属性
      *
      * @var array
@@ -54,9 +63,29 @@ class Palette extends Model
      * @var array
      */
     protected $appends = [
-        'location_name',
-        'location_type',
+        'location',
+        'locations',
     ];
+
+    /**
+     * 拠点を取得する
+     *
+     * @return string
+     */
+    public function getLocationAttribute()
+    {
+        return $this->location()->getResults()->makeHidden(['location', 'company', 'users', 'lots', 'pivot', 'own_palettes', 'palettes']);
+    }
+
+    /**
+     * 拠点（保管されている場所）を取得する
+     *
+     * @return string
+     */
+    public function getLocationsAttribute()
+    {
+        return $this->locations()->getResults()->makeHidden(['location', 'company', 'users', 'lots', 'own_palettes', 'palettes']);
+    }
 
     /**
      * パレットに紐づく拠点を取得
@@ -71,30 +100,10 @@ class Palette extends Model
     /**
      * パレットに紐づく拠点を取得（パレット保管情報）
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function locations()
     {
-        return $this->hasMany(Location::class);
-    }
-
-    /**
-     * 拠点名を取得する
-     *
-     * @return string
-     */
-    public function getLocationNameAttribute()
-    {
-        return $this->location->name;
-    }
-
-    /**
-     * 拠点種別を取得する
-     *
-     * @return string
-     */
-    public function getLocationTypeAttribute()
-    {
-        return $this->location->type;
+        return $this->belongsToMany(Location::class)->withPivot('quantity');
     }
 }

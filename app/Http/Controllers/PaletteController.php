@@ -31,7 +31,7 @@ class PaletteController extends Controller
      */
     public function index()
     {
-        $palettes = $this->palette->all();
+        $palettes = $this->palette->all()->makeHidden(['locations']);
 
         return response()->json($palettes, 200, [], JSON_PRETTY_PRINT);
     }

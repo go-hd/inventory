@@ -60,7 +60,6 @@ class Location extends Model
     protected $hidden = [
         'company_id',
         'location_type_id',
-        'remember_token',
         'location_type',
     ];
 

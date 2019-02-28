@@ -3,12 +3,12 @@
 namespace Tests\Feature;
 
 use App\Location;
-use App\User;
+use App\Palette;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class UserApiResponseTest extends TestCase
+class PaletteApiResponseTest extends TestCase
 {
     use WithFaker, RefreshDatabase;
 
@@ -25,100 +25,97 @@ class UserApiResponseTest extends TestCase
     }
 
     /**
-     * ユーザーのリストを取得するテスト
+     * パレットのリストを取得するテスト
      *
      * @return void
      */
     public function testIndex()
     {
-        $users = User::all();
+        $palettes = Palette::all()->makeHidden(['locations']);
 
-        $this->get('/users')
+        $this->get('/palettes')
             ->assertSuccessful()
-            ->assertJsonCount($users->count())
-            ->assertJson($users->toArray());
+            ->assertJsonCount($palettes->count())
+            ->assertJson($palettes->toArray());
     }
 
     /**
-     * ユーザーの詳細を取得するテスト
+     * パレットの詳細を取得するテスト
      *
      * @return void
      */
     public function testShow()
     {
-        $user = User::query()->first();
+        $palette = Palette::query()->first();
 
-        $this->get('/users/' . $user->id)
+        $this->get('/palettes/' . $palette->id)
             ->assertSuccessful()
-            ->assertJson($user->toArray());
+            ->assertJson($palette->toArray());
     }
 
     /**
-     * ユーザーを新規登録するテスト
+     * パレットを新規登録するテスト
      *
      * @return void
      */
     public function testStore()
     {
         $data = [
-            'user' => [
+            'palette' => [
                 'location_id' => Location::query()->first()->id,
-                'name' => 'testUser',
-                'email' => 'testUser@gmail.com',
-                'password' => '$2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm',
+                'type' => 'TestPalette',
             ]
         ];
-        $response = $this->post('/users', $data);
+        $response = $this->post('/palettes', $data);
         $response->assertSuccessful()->assertJson(['status' => 'OK']);
     }
 
     /**
-     * ユーザーを更新するテスト
+     * パレットを更新するテスト
      *
      * @return void
      */
     public function testUpdate()
     {
-        $user = factory(User::class)->create([
+        $palette = factory(Palette::class)->create([
             'location_id' => Location::query()->first()->id
         ]);
 
         $data = [
-            'user' => [
+            'palette' => [
                 'location_id' => Location::query()->first()->id,
-                'name' => 'testUpdateUser',
-                'email' => 'testUpdateUser@gmail.com',
+                'type' => 'UpdatedTestPalette',
             ]
         ];
 
-        $this->put('/users/'. $user->id, $data)
+        $this->put('/palettes/'. $palette->id, $data)
             ->assertSuccessful()
             ->assertJson(['status' => 'OK']);
 
-        $updatedData = User::query()->find($user->id)->toArray();
+        $updatedData = Palette::query()->find($palette->id)->toArray();
 
-        unset($data['user']['location_id']);
-        foreach ($data['user'] as $key => $value) {
+        unset($data['palette']['location_id']);
+        foreach ($data['palette'] as $key => $value) {
             $this->assertSame($value, $updatedData[$key]);
         }
     }
 
     /**
-     * ユーザーを削除するテスト
+     * パレットを削除するテスト
      *
      * @return void
      */
     public function testDestroy()
     {
-        $user = factory(User::class)->create([
+        $palette = factory(Palette::class)->create([
             'location_id' => Location::query()->first()->id
         ]);
-        $count = User::query()->count();
+        $count = Palette::query()->count();
 
-        $this->delete('/users/'. $user->id)
+        $this->delete('/palettes/'. $palette->id)
             ->assertSuccessful()
             ->assertJson(['status' => 'OK']);
 
-        $this->assertCount($count - 1, User::query()->get());
+        $this->assertCount($count - 1, Palette::query()->get());
     }
 }
