@@ -55,7 +55,7 @@ class LocationType extends Model
             ->getResults()
             ->makeHidden([
                 'company_id', 'location_type_id', 'company_name', 'location_type',
-                'users', 'lots', 'own_palettes', 'palettes'
+                'users', 'lots', 'own_palettes', 'shared_palettes'
             ]);
     }
 
