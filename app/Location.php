@@ -60,7 +60,6 @@ class Location extends Model
     protected $hidden = [
         'company_id',
         'location_type_id',
-        'location_type',
     ];
 
     /**
@@ -85,7 +84,7 @@ class Location extends Model
         'users',
         'lots',
         'own_palettes',
-        'palettes',
+        'shared_palettes',
     ];
 
     /**
@@ -145,17 +144,23 @@ class Location extends Model
      */
     public function getOwnPalettesAttribute()
     {
-        return $this->own_palettes()->getResults()->makeHidden(['location_name', 'location_type']);
+        return $this->own_palettes()->getResults()->makeHidden(['location_name', 'location_type', 'location', 'shared_locations']);
     }
 
     /**
      * 保管しているパレットを取得する
      *
-     * @return string
+     * @return array
      */
-    public function getPalettesAttribute()
+    public function getSharedPalettesAttribute()
     {
-        return $this->palettes()->getResults()->makeHidden(['location_name', 'location_type']);
+        $sharedPalettes = $this->palettes()
+                                ->getResults()
+                                ->makeHidden(['location_name', 'location_type', 'location', 'shared_locations', 'pivot']);
+        foreach ($sharedPalettes as $index => $palette) {
+            $sharedPalettes[$index]['quantity'] = $palette->pivot->quantity;
+        }
+        return $sharedPalettes;
     }
 
     /**
@@ -205,7 +210,7 @@ class Location extends Model
      */
     public function palettes()
     {
-        return $this->belongsToMany(Palette::class);
+        return $this->belongsToMany(Palette::class)->withPivot('quantity');
     }
 
     /**

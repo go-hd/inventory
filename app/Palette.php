@@ -64,7 +64,7 @@ class Palette extends Model
      */
     protected $appends = [
         'location',
-        'locations',
+        'shared_locations',
     ];
 
     /**
@@ -74,17 +74,27 @@ class Palette extends Model
      */
     public function getLocationAttribute()
     {
-        return $this->location()->getResults()->makeHidden(['location', 'company', 'users', 'lots', 'pivot', 'own_palettes', 'palettes']);
+        return $this->location()
+                    ->getResults()
+                    ->makeHidden(['location', 'company', 'users', 'lots', 'pivot',
+                            'own_palettes', 'shared_palettes', 'location_type']);
     }
 
     /**
      * 拠点（保管されている場所）を取得する
      *
-     * @return string
+     * @return array
      */
-    public function getLocationsAttribute()
+    public function getSharedLocationsAttribute()
     {
-        return $this->locations()->getResults()->makeHidden(['location', 'company', 'users', 'lots', 'own_palettes', 'palettes']);
+        $sharedLocations = $this->locations()
+                                ->getResults()
+                                ->makeHidden(['location', 'company', 'users', 'lots',
+                                    'own_palettes', 'shared_palettes', 'pivot', 'location_type']);
+        foreach ($sharedLocations as $index => $location) {
+            $sharedLocations[$index]['quantity'] = $location->pivot->quantity;
+        }
+        return $sharedLocations;
     }
 
     /**
