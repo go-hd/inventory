@@ -31,7 +31,7 @@ class PaletteApiResponseTest extends TestCase
      */
     public function testIndex()
     {
-        $palettes = Palette::all()->makeHidden(['locations']);
+        $palettes = Palette::all()->makeHidden(['shared_locations']);
 
         $this->get('/palettes')
             ->assertSuccessful()
