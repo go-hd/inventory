@@ -32,7 +32,7 @@ class LocationApiResponseTest extends TestCase
      */
     public function testIndex()
     {
-        $locations = Location::all()->makeHidden(['users', 'lots', 'own_palettes', 'palettes']);
+        $locations = Location::all()->makeHidden(['users', 'lots', 'own_palettes', 'shared_palettes', 'location_type']);
 
         $this->get('/locations')
             ->assertSuccessful()
