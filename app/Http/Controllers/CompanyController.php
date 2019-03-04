@@ -56,7 +56,7 @@ class CompanyController extends Controller
      */
     public function store(CompanyRequest $request)
     {
-        $this->company->create($request->get('company'));
+        $this->company->create($request->all());
         $response = ['status' => 'OK'];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
@@ -72,7 +72,7 @@ class CompanyController extends Controller
     public function update($id, CompanyRequest $request)
     {
         $company = $this->company->findOrFail($id);
-        $company->update($request->get('company'));
+        $company->update($request->all());
         $response = ['status' => 'OK'];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);

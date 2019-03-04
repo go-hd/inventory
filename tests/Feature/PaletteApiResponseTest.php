@@ -61,10 +61,8 @@ class PaletteApiResponseTest extends TestCase
     public function testStore()
     {
         $data = [
-            'palette' => [
-                'location_id' => Location::query()->first()->id,
-                'type' => 'TestPalette',
-            ]
+            'location_id' => Location::query()->first()->id,
+            'type' => 'TestPalette',
         ];
         $response = $this->post('/palettes', $data);
         $response->assertSuccessful()->assertJson(['status' => 'OK']);
@@ -82,20 +80,18 @@ class PaletteApiResponseTest extends TestCase
         ]);
 
         $data = [
-            'palette' => [
-                'location_id' => Location::query()->first()->id,
-                'type' => 'UpdatedTestPalette',
-            ]
+            'location_id' => Location::query()->first()->id,
+            'type' => 'UpdatedTestPalette',
         ];
 
-        $this->put('/palettes/'. $palette->id, $data)
+        $this->put('/palettes/' . $palette->id, $data)
             ->assertSuccessful()
             ->assertJson(['status' => 'OK']);
 
         $updatedData = Palette::query()->find($palette->id)->toArray();
 
-        unset($data['palette']['location_id']);
-        foreach ($data['palette'] as $key => $value) {
+        unset($data['location_id']);
+        foreach ($data as $key => $value) {
             $this->assertSame($value, $updatedData[$key]);
         }
     }

@@ -56,7 +56,7 @@ class LocationController extends Controller
      */
     public function store(LocationRequest $request)
     {
-        $this->location->create($request->get('location'));
+        $this->location->create($request->all());
         $response = ['status' => 'OK'];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
@@ -72,7 +72,7 @@ class LocationController extends Controller
     public function update($id, LocationRequest $request)
     {
         $location = $this->location->findOrFail($id);
-        $location->update($request->get('location'));
+        $location->update($request->all());
         $response = ['status' => 'OK'];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);

@@ -61,12 +61,10 @@ class UserApiResponseTest extends TestCase
     public function testStore()
     {
         $data = [
-            'user' => [
-                'location_id' => Location::query()->first()->id,
-                'name' => 'testUser',
-                'email' => 'testUser@gmail.com',
-                'password' => '$2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm',
-            ]
+            'location_id' => Location::query()->first()->id,
+            'name' => 'testUser',
+            'email' => 'testUser@gmail.com',
+            'password' => '$2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm',
         ];
         $response = $this->post('/users', $data);
         $response->assertSuccessful()->assertJson(['status' => 'OK']);
@@ -84,11 +82,9 @@ class UserApiResponseTest extends TestCase
         ]);
 
         $data = [
-            'user' => [
-                'location_id' => Location::query()->first()->id,
-                'name' => 'testUpdateUser',
-                'email' => 'testUpdateUser@gmail.com',
-            ]
+            'location_id' => Location::query()->first()->id,
+            'name' => 'testUpdateUser',
+            'email' => 'testUpdateUser@gmail.com',
         ];
 
         $this->put('/users/'. $user->id, $data)
@@ -97,8 +93,8 @@ class UserApiResponseTest extends TestCase
 
         $updatedData = User::query()->find($user->id)->toArray();
 
-        unset($data['user']['location_id']);
-        foreach ($data['user'] as $key => $value) {
+        unset($data['location_id']);
+        foreach ($data as $key => $value) {
             $this->assertSame($value, $updatedData[$key]);
         }
     }

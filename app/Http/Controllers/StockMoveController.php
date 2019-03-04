@@ -57,7 +57,7 @@ class StockMoveController extends Controller
      */
     public function store(StockMoveRequest $request)
     {
-        $this->stockMove->create($request->get('stockMove'));
+        $this->stockMove->create($request->all());
         $response = ['status' => 'OK'];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
@@ -73,7 +73,7 @@ class StockMoveController extends Controller
     public function update($id, StockMoveRequest $request)
     {
         $stockMove = $this->stockMove->findOrFail($id);
-        $stockMove->update($request->get('stockMove'));
+        $stockMove->update($request->all());
         $response = ['status' => 'OK'];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);

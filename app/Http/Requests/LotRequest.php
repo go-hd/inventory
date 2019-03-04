@@ -24,11 +24,11 @@ class LotRequest extends FormRequest
     public function rules()
     {
         return [
-            'lot.location_id' => 'required',
-            'lot.brand_id' => 'required',
-            'lot.name' => 'required',
-            'lot.lot_number' => 'required',
-            'lot.jan_code' => 'required'
+            'location_id' => 'required',
+            'brand_id' => 'required',
+            'name' => 'required',
+            'lot_number' => 'required',
+            'jan_code' => 'required'
         ];
     }
 
@@ -52,11 +52,11 @@ class LotRequest extends FormRequest
     public function attributes()
     {
         return [
-            'lot.location_id' => '拠点',
-            'lot.brand_id' => 'ブランド',
-            'lot.name' => '名称',
-            'lot.lot_number' => 'ロットナンバー',
-            'lot.jan_code' => 'JANコード'
+            'location_id' => '拠点',
+            'brand_id' => 'ブランド',
+            'name' => '名称',
+            'lot_number' => 'ロットナンバー',
+            'jan_code' => 'JANコード'
         ];
     }
 }

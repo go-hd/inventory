@@ -24,10 +24,10 @@ class StockMoveRequest extends FormRequest
     public function rules()
     {
         return [
-            'stockMove.shipping_id' => 'required',
-            'stockMove.recieving_id' => 'required',
-            'stockMove.location_id' => 'required',
-            'stockMove.quantity' => 'required'
+            'shipping_id' => 'required',
+            'recieving_id' => 'required',
+            'location_id' => 'required',
+            'quantity' => 'required'
         ];
     }
 
@@ -51,10 +51,10 @@ class StockMoveRequest extends FormRequest
     public function attributes()
     {
         return [
-            'stockMove.shipping_id' => '出庫拠点',
-            'stockMove.recieving_id' => '入庫拠点',
-            'stockMove.location_id' => '相手拠点',
-            'stockMove.quantity' => '移動個数'
+            'shipping_id' => '出庫拠点',
+            'recieving_id' => '入庫拠点',
+            'location_id' => '相手拠点',
+            'quantity' => '移動個数'
         ];
     }
 }

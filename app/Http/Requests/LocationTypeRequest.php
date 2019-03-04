@@ -24,7 +24,7 @@ class LocationTypeRequest extends FormRequest
     public function rules()
     {
         return [
-            'locationType.name' => 'required'
+            'name' => 'required'
         ];
     }
 
@@ -48,7 +48,7 @@ class LocationTypeRequest extends FormRequest
     public function attributes()
     {
         return [
-            'locationType.name' => '名称'
+            'name' => '名称'
         ];
     }
 }

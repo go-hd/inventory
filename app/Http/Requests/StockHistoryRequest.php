@@ -24,10 +24,10 @@ class StockHistoryRequest extends FormRequest
     public function rules()
     {
         return [
-            'stockHistory.location_id' => 'required',
-            'stockHistory.lot_id' => 'required',
-            'stockHistory.stock_history_type_id' => 'required',
-            'stockHistory.quantity' => 'required'
+            'location_id' => 'required',
+            'lot_id' => 'required',
+            'stock_history_type_id' => 'required',
+            'quantity' => 'required'
         ];
     }
 
@@ -51,10 +51,10 @@ class StockHistoryRequest extends FormRequest
     public function attributes()
     {
         return [
-            'stockHistory.location_id' => '拠点',
-            'stockHistory.lot_id' => 'ロット',
-            'stockHistory.stock_history_type_id' => '在庫履歴種別',
-            'stockHistory.quantity' => '数量'
+            'location_id' => '拠点',
+            'lot_id' => 'ロット',
+            'stock_history_type_id' => '在庫履歴種別',
+            'quantity' => '数量'
         ];
     }
 }

@@ -24,7 +24,7 @@ class CompanyRequest extends FormRequest
     public function rules()
     {
         return [
-            'company.name' => 'required'
+            'name' => 'required'
         ];
     }
 
@@ -48,7 +48,7 @@ class CompanyRequest extends FormRequest
     public function attributes()
     {
         return [
-            'company.name' => '名称'
+            'name' => '名称'
         ];
     }
 }
