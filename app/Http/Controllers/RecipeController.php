@@ -57,7 +57,7 @@ class RecipeController extends Controller
      */
     public function store(RecipeRequest $request)
     {
-        $this->recipe->create($request->get('recipe'));
+        $this->recipe->create($request->all());
         $response = ['status' => 'OK'];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
@@ -73,7 +73,7 @@ class RecipeController extends Controller
     public function update($id, RecipeRequest $request)
     {
         $recipe = $this->recipe->findOrFail($id);
-        $recipe->update($request->get('recipe'));
+        $recipe->update($request->all());
         $response = ['status' => 'OK'];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);

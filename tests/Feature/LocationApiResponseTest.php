@@ -62,13 +62,11 @@ class LocationApiResponseTest extends TestCase
     public function testStore()
     {
         $data = [
-            'location' => [
-                'company_id' => Company::query()->first()->id,
-                'name' => 'testLocation',
-                'location_type_id' => LocationType::query()->first()->id,
-                'location_code' => 'AA',
-                'location_number' => '1234',
-            ]
+            'company_id' => Company::query()->first()->id,
+            'name' => 'testLocation',
+            'location_type_id' => LocationType::query()->first()->id,
+            'location_code' => 'AA',
+            'location_number' => '1234',
         ];
         $response = $this->post('/locations', $data);
         $response->assertSuccessful()->assertJson(['status' => 'OK']);
@@ -87,13 +85,11 @@ class LocationApiResponseTest extends TestCase
         ]);
 
         $data = [
-            'location' => [
-                'company_id' => Company::query()->first()->id,
-                'name' => 'testUpdateLocation',
-                'location_type_id' => LocationType::query()->get()->random()->id,
-                'location_code' => 'BB',
-                'location_number' => '5678',
-            ]
+            'company_id' => Company::query()->first()->id,
+            'name' => 'testUpdateLocation',
+            'location_type_id' => LocationType::query()->get()->random()->id,
+            'location_code' => 'BB',
+            'location_number' => '5678',
         ];
 
         $this->put('/locations/'. $location->id, $data)
@@ -102,9 +98,9 @@ class LocationApiResponseTest extends TestCase
 
         $updatedData = Location::query()->find($location->id)->toArray();
 
-        unset($data['location']['company_id']);
-        unset($data['location']['location_type_id']);
-        foreach ($data['location'] as $key => $value) {
+        unset($data['company_id']);
+        unset($data['location_type_id']);
+        foreach ($data as $key => $value) {
             $this->assertSame($value, $updatedData[$key]);
         }
     }

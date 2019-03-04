@@ -57,7 +57,7 @@ class PaletteController extends Controller
      */
     public function store(PaletteRequest $request)
     {
-        $this->palette->create($request->get('palette'));
+        $this->palette->create($request->all());
         $response = ['status' => 'OK'];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
@@ -73,7 +73,7 @@ class PaletteController extends Controller
     public function update($id, PaletteRequest $request)
     {
         $palette = $this->palette->findOrFail($id);
-        $palette->update($request->get('palette'));
+        $palette->update($request->all());
         $response = ['status' => 'OK'];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);

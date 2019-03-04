@@ -57,7 +57,7 @@ class UserController extends Controller
      */
     public function store(UserRequest $request)
     {
-        $this->user->create($request->get('user'));
+        $this->user->create($request->all());
         $response = ['status' => 'OK'];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
@@ -73,7 +73,7 @@ class UserController extends Controller
     public function update($id, UserRequest $request)
     {
         $user = $this->user->findOrFail($id);
-        $user->update($request->get('user'));
+        $user->update($request->all());
         $response = ['status' => 'OK'];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);

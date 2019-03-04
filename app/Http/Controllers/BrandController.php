@@ -57,7 +57,7 @@ class BrandController extends Controller
      */
     public function store(BrandRequest $request)
     {
-        $this->brand->create($request->get('brand'));
+        $this->brand->create($request->all());
         $response = ['status' => 'OK'];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
@@ -73,7 +73,7 @@ class BrandController extends Controller
     public function update($id, BrandRequest $request)
     {
         $brand = $this->brand->findOrFail($id);
-        $brand->update($request->get('brand'));
+        $brand->update($request->all());
         $response = ['status' => 'OK'];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);

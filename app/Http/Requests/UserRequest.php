@@ -25,14 +25,14 @@ class UserRequest extends FormRequest
     public function rules()
     {
         $rules = [
-            'user.location_id' => 'required',
-            'user.name' => 'required',
-            'user.email' => 'required|email|unique:users,email',
+            'location_id' => 'required',
+            'name' => 'required',
+            'email' => 'required|email|unique:users,email',
         ];
         if ($this->method() === 'PUT' || $this->method() === 'PATCH') {
-            $rules['user.email'] = ['required', 'email', Rule::unique('users','email')->ignore($this->id)];
+            $rules['email'] = ['required', 'email', Rule::unique('users','email')->ignore($this->id)];
         } else {
-            $rules['user.password'] = 'required';
+            $rules['password'] = 'required';
         }
         return $rules;
     }
@@ -59,10 +59,10 @@ class UserRequest extends FormRequest
     public function attributes()
     {
         return [
-            'user.location_id'=>'拠点',
-            'user.name'=>'ユーザー名',
-            'user.email'=>'メールアドレス',
-            'user.password'=>'パスワード'
+            'location_id'=>'拠点',
+            'name'=>'ユーザー名',
+            'email'=>'メールアドレス',
+            'password'=>'パスワード'
         ];
     }
 }

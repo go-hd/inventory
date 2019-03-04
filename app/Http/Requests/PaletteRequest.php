@@ -24,8 +24,8 @@ class PaletteRequest extends FormRequest
     public function rules()
     {
         return [
-            'palette.location_id' => 'required',
-            'palette.type' => 'required'
+            'location_id' => 'required',
+            'type' => 'required'
         ];
     }
 
@@ -49,8 +49,8 @@ class PaletteRequest extends FormRequest
     public function attributes()
     {
         return [
-            'palette.location_id'=>'拠点',
-            'palette.type'=>'種別'
+            'location_id'=>'拠点',
+            'type'=>'種別'
         ];
     }
 }

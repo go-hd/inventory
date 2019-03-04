@@ -24,8 +24,8 @@ class RecipeRequest extends FormRequest
     public function rules()
     {
         return [
-            'recipe.parent_lot_id' => 'required',
-            'recipe.child_lot_id' => 'required'
+            'parent_lot_id' => 'required',
+            'child_lot_id' => 'required'
         ];
     }
 
@@ -49,8 +49,8 @@ class RecipeRequest extends FormRequest
     public function attributes()
     {
         return [
-            'recipe.parent_lot_id' => '親ロット',
-            'recipe.child_lot_id' => '子ロット'
+            'parent_lot_id' => '親ロット',
+            'child_lot_id' => '子ロット'
         ];
     }
 }

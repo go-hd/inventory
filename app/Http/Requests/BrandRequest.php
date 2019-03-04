@@ -24,8 +24,8 @@ class BrandRequest extends FormRequest
     public function rules()
     {
         return [
-            'brand.name' => 'required',
-            'brand.code' => 'required'
+            'name' => 'required',
+            'code' => 'required'
         ];
     }
 
@@ -49,8 +49,8 @@ class BrandRequest extends FormRequest
     public function attributes()
     {
         return [
-            'brand.name'=>'名称',
-            'brand.code'=>'コード'
+            'name'=>'名称',
+            'code'=>'コード'
         ];
     }
 }

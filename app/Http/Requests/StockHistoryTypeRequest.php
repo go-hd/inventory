@@ -24,7 +24,7 @@ class StockHistoryTypeRequest extends FormRequest
     public function rules()
     {
         return [
-            'stockHistoryType.name' => 'required'
+            'name' => 'required'
         ];
     }
 
@@ -48,7 +48,7 @@ class StockHistoryTypeRequest extends FormRequest
     public function attributes()
     {
         return [
-            'stockHistoryType.name' => '名称'
+            'name' => '名称'
         ];
     }
 }

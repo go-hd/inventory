@@ -24,9 +24,9 @@ class LocationRequest extends FormRequest
     public function rules()
     {
         return [
-            'location.company_id' => 'required',
-            'location.name' => 'required',
-            'location.location_type_id' => 'required'
+            'company_id' => 'required',
+            'name' => 'required',
+            'location_type_id' => 'required'
         ];
     }
 
@@ -50,9 +50,9 @@ class LocationRequest extends FormRequest
     public function attributes()
     {
         return [
-            'location.company_id' => '会社',
-            'location.name' => '名称',
-            'location.location_type_id' => '拠点種別'
+            'company_id' => '会社',
+            'name' => '名称',
+            'location_type_id' => '拠点種別'
         ];
     }
 }

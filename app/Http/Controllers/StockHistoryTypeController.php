@@ -57,7 +57,7 @@ class StockHistoryTypeController extends Controller
      */
     public function store(StockHistoryTypeRequest $request)
     {
-        $this->stockHistoryType->create($request->get('stockHistoryType'));
+        $this->stockHistoryType->create($request->all());
         $response = ['status' => 'OK'];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
@@ -73,7 +73,7 @@ class StockHistoryTypeController extends Controller
     public function update($id, StockHistoryTypeRequest $request)
     {
         $stockHistoryType = $this->stockHistoryType->findOrFail($id);
-        $stockHistoryType->update($request->get('stockHistoryType'));
+        $stockHistoryType->update($request->all());
         $response = ['status' => 'OK'];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);

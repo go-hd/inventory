@@ -30,12 +30,12 @@ class LocationTypeTypeApiResponseTest extends TestCase
      */
     public function testIndex()
     {
-        $LocationTypeTypes = LocationType::all();
+        $locationTypeTypes = LocationType::all();
 
         $this->get('/location_types')
             ->assertSuccessful()
-            ->assertJsonCount($LocationTypeTypes->count())
-            ->assertJson($LocationTypeTypes->toArray());
+            ->assertJsonCount($locationTypeTypes->count())
+            ->assertJson($locationTypeTypes->toArray());
     }
 
     /**
@@ -45,11 +45,11 @@ class LocationTypeTypeApiResponseTest extends TestCase
      */
     public function testShow()
     {
-        $LocationType = LocationType::query()->first()->setAppends(['locations']);
+        $locationType = LocationType::query()->first()->setAppends(['locations']);
 
-        $this->get('/location_types/' . $LocationType->id)
+        $this->get('/location_types/' . $locationType->id)
             ->assertSuccessful()
-            ->assertJson($LocationType->toArray());
+            ->assertJson($locationType->toArray());
     }
 
     /**
@@ -59,7 +59,7 @@ class LocationTypeTypeApiResponseTest extends TestCase
      */
     public function testStore()
     {
-        $data = ['locationType' => ['name' => 'TestLocationType']];
+        $data = ['name' => 'TestLocationType'];
         $response = $this->post('/location_types', $data);
         $response->assertSuccessful()->assertJson(['status' => 'OK']);
     }
@@ -71,17 +71,17 @@ class LocationTypeTypeApiResponseTest extends TestCase
      */
     public function testUpdate()
     {
-        $LocationType = factory(LocationType::class)->create();
+        $locationType = factory(LocationType::class)->create();
 
-        $data = ['locationType' => ['name' => 'UpdatedTestLocationType']];
+        $data = ['name' => 'UpdatedTestLocationType'];
 
-        $this->put('/location_types/'. $LocationType->id, $data)
+        $this->put('/location_types/'. $locationType->id, $data)
             ->assertSuccessful()
             ->assertJson(['status' => 'OK']);
 
-        $updatedData = LocationType::query()->find($LocationType->id)->toArray();
+        $updatedData = LocationType::query()->find($locationType->id)->toArray();
 
-        foreach ($data['locationType'] as $key => $value) {
+        foreach ($data as $key => $value) {
             $this->assertSame($value, $updatedData[$key]);
         }
     }
@@ -93,10 +93,10 @@ class LocationTypeTypeApiResponseTest extends TestCase
      */
     public function testDestroy()
     {
-        $LocationType = factory(LocationType::class)->create();
+        $locationType = factory(LocationType::class)->create();
         $count = LocationType::query()->count();
 
-        $this->delete('/location_types/'. $LocationType->id)
+        $this->delete('/location_types/'. $locationType->id)
             ->assertSuccessful()
             ->assertJson(['status' => 'OK']);
 
