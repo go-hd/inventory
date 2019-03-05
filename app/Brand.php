@@ -43,7 +43,37 @@ class Brand extends Model
      * @var array
      */
     protected $dates = [
+        'expiration_date',
         'created_at',
         'updated_at',
     ];
+
+    /**
+     * モデルの配列形態に追加するアクセサ
+     *
+     * @var array
+     */
+    protected $appends = [
+        'lots',
+    ];
+
+    /**
+     * ロットを取得する
+     *
+     * @return string
+     */
+    public function getLotsAttribute()
+    {
+        return $this->lots()->getResults()->makeHidden(['location_name', 'location_type_name', 'location_id', 'brand_id', 'brand_name']);
+    }
+
+    /**
+     * ブランドに紐づくロットを取得
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function lots()
+    {
+        return $this->hasMany(Lot::class);
+    }
 }

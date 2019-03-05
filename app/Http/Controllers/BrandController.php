@@ -31,7 +31,7 @@ class BrandController extends Controller
      */
     public function index()
     {
-        $brands = $this->brand->all();
+        $brands = $this->brand->all()->makeHidden(['lots']);
 
         return response()->json($brands, 200, [], JSON_PRETTY_PRINT);
     }

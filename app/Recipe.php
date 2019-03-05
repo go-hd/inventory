@@ -57,9 +57,29 @@ class Recipe extends Model
      * @var array
      */
     protected $appends = [
-        'parent_lot_name',
-        'child_lot_name',
+        'parent_lot',
+        'child_lot',
     ];
+
+    /**
+     * 親ロットを取得する
+     *
+     * @return string
+     */
+    public function getParentLotAttribute()
+    {
+        return $this->parentLot()->getResults()->makeHidden(['brand', 'location', 'stock_histories']);
+    }
+
+    /**
+     * 子ロットを取得する
+     *
+     * @return string
+     */
+    public function getChildLotAttribute()
+    {
+        return $this->childLot()->getResults()->makeHidden(['brand', 'location', 'stock_histories']);
+    }
 
     /**
      * レシピに紐づく親ロットを取得

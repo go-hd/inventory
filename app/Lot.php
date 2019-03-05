@@ -57,6 +57,16 @@ class Lot extends Model
     ];
 
     /**
+     * 配列に含めない属性
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'location_id',
+        'brand_id',
+    ];
+
+    /**
      * 日付へキャストする属性
      *
      * @var array
@@ -74,10 +84,67 @@ class Lot extends Model
      * @var array
      */
     protected $appends = [
-        'location_name',
-        'location_type_name',
         'brand_name',
+        'location_name',
+        'brand',
+        'location',
+        'stock_histories',
     ];
+
+    /**
+     * ブランド名を取得する
+     *
+     * @return string
+     */
+    public function getBrandNameAttribute()
+    {
+        return $this->brand->name;
+    }
+
+    /**
+     * 拠点名を取得する
+     *
+     * @return string
+     */
+    public function getLocationNameAttribute()
+    {
+        return $this->location->name;
+    }
+
+    /**
+     * ブランドを取得する
+     *
+     * @return string
+     */
+    public function getBrandAttribute()
+    {
+        return $this->brand()->getResults()->makeHidden(['lots']);
+    }
+
+    /**
+     * 拠点を取得する
+     *
+     * @return string
+     */
+    public function getLocationAttribute()
+    {
+        return $this->location()
+            ->getResults()
+            ->makeHidden(['location', 'company', 'users', 'lots', 'pivot',
+                'own_palettes', 'shared_palettes', 'location_type']);
+    }
+
+    /**
+     * 在庫履歴を取得する
+     *
+     * @return string
+     */
+    public function getStockHistoriesAttribute()
+    {
+        // TODO: 在庫履歴API実装後のパラメータ調整
+        return $this->stockHistories()
+            ->getResults();
+    }
 
     /**
      * ロットに紐づく拠点を取得
@@ -119,33 +186,4 @@ class Lot extends Model
         return $this->hasMany(Recipe::class);
     }
 
-    /**
-     * 拠点名を取得する
-     *
-     * @return string
-     */
-    public function getLocationNameAttribute()
-    {
-        return $this->location->name;
-    }
-
-    /**
-     * 拠点種別名を取得する
-     *
-     * @return string
-     */
-    public function getLocationTypeNameAttribute()
-    {
-        return $this->location->type->name;
-    }
-
-    /**
-     * ブランド名を取得する
-     *
-     * @return string
-     */
-    public function getBrandNameAttribute()
-    {
-        return $this->brand->name;
-    }
 }
