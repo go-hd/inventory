@@ -5,7 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Recipe
+ * App\Material
  *
  * @property int $id
  * @property int $parent_lot_id 親ロットID
@@ -17,18 +17,18 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read string $child_lot_name
  * @property-read string $parent_lot_name
  * @property-read \App\Lot $parentLot
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Recipe newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Recipe newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Recipe query()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Recipe whereChildLotId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Recipe whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Recipe whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Recipe whereNote($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Recipe whereParentLotId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Recipe whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Material newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Material newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Material query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Material whereChildLotId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Material whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Material whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Material whereNote($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Material whereParentLotId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Material whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class Recipe extends Model
+class Material extends Model
 {
     /**
      * 複数代入する属性

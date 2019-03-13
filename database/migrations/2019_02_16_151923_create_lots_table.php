@@ -22,6 +22,7 @@ class CreateLotsTable extends Migration
             $table->string('jan_code')->comment('JANコード');
             $table->date('expiration_date')->comment('賞味期限');
             $table->timestamp('ordered_at')->comment('発注日');
+            $table->boolean('is_ten_days_notation')->comment('発注日時期表記フラグ')->nullable();
             $table->timestamps();
 
             $table->foreign('location_id')->references('id')->on('locations')->onUpdate('cascade')->onDelete('cascade');

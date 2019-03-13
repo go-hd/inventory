@@ -30,8 +30,9 @@ class StockHistoryType extends Model
      * @var array
      */
     protected $fillable = [
+        'company_id',
         'name',
-        'note'
+        'note',
     ];
 
     /**
@@ -41,7 +42,16 @@ class StockHistoryType extends Model
      */
     protected $dates = [
         'created_at',
-        'updated_at'
+        'updated_at',
     ];
 
+    /**
+     * 在庫履歴種別に紐づく会社を取得
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
+    }
 }

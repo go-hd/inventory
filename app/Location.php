@@ -48,8 +48,6 @@ class Location extends Model
         'company_id',
         'name',
         'location_type_id',
-        'location_code',
-        'location_number',
     ];
 
     /**

@@ -30,8 +30,18 @@ class LocationType extends Model
      * @var array
      */
     protected $fillable = [
+        'company_id',
         'name',
-        'note'
+        'note',
+    ];
+
+    /**
+     * 配列に含めない属性
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'company_id',
     ];
 
     /**
@@ -41,8 +51,9 @@ class LocationType extends Model
      */
     protected $dates = [
         'created_at',
-        'updated_at'
+        'updated_at',
     ];
+
 
     /**
      * 拠点を取得する
@@ -69,4 +80,13 @@ class LocationType extends Model
         return $this->hasMany(Location::class);
     }
 
+    /**
+     * 拠点種別に紐づく会社を取得
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
+    }
 }

@@ -22,7 +22,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read string $location_name
  * @property-read string $location_type_name
  * @property-read \App\Location $location
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Recipe[] $recipes
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Material[] $materials
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\StockHistory[] $stockHistories
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Lot newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Lot newQuery()
@@ -54,6 +54,7 @@ class Lot extends Model
         'jan_code',
         'expiration_date',
         'ordered_at',
+        'is_ten_days_notation',
     ];
 
     /**
@@ -64,6 +65,7 @@ class Lot extends Model
     protected $hidden = [
         'location_id',
         'brand_id',
+        'is_ten_days_notation',
     ];
 
     /**
@@ -177,13 +179,13 @@ class Lot extends Model
     }
 
     /**
-     * ロットに紐づくレシピを取得
+     * ロットに紐づく材料を取得
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function recipes()
+    public function materials()
     {
-        return $this->hasMany(Recipe::class);
+        return $this->hasMany(Material::class);
     }
 
 }

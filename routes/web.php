@@ -21,7 +21,7 @@ Route::resource('/locations', 'LocationController');
 Route::resource('/location_types', 'LocationTypeController');
 Route::resource('/lots', 'LotController');
 Route::resource('/palettes', 'PaletteController');
-Route::resource('/recipes', 'RecipeController');
+Route::resource('/materials', 'MaterialController');
 Route::resource('/stock_histories', 'StockHistoryController');
 Route::resource('/stock_history_types', 'StockHistoryTypeController');
 Route::resource('/stock_moves', 'StockMoveController');
