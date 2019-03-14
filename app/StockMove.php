@@ -44,6 +44,17 @@ class StockMove extends Model
     ];
 
     /**
+     * 配列に含めない属性
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'shipping_id',
+        'recieving_id',
+        'location_id',
+    ];
+
+    /**
      * 日付へキャストする属性
      *
      * @var array
@@ -59,15 +70,51 @@ class StockMove extends Model
      * @var array
      */
     protected $appends = [
-        'location_name',
+        'shipping_stock_history',
+        'recieving_stock_history',
+        'location',
     ];
+
+    /**
+     * 出庫在庫履歴を取得する
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function getShippingStockHistoryAttribute()
+    {
+        return $this->shipping_stock_history()->getResults();
+    }
+
+    /**
+ * 入庫在庫履歴を取得する
+ *
+ * @return \Illuminate\Database\Eloquent\Relations\HasMany
+ */
+    public function getRecievingStockHistoryAttribute()
+    {
+        return $this->recieving_stock_history()->getResults();
+    }
+
+    /**
+     * 拠点を取得する
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function getLocationAttribute()
+    {
+        return $this->location()->getResults()->makeHidden(
+            [
+                'company', 'location_type', 'users', 'lots', 'own_palettes', 'shared_palettes'
+            ]
+        );
+    }
 
     /**
      * 在庫移動に紐づく出庫在庫履歴を取得
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function shippingStockHistory()
+    public function shipping_stock_history()
     {
         return $this->belongsTo(StockHistory::class, 'shipping_id');
     }
@@ -77,7 +124,7 @@ class StockMove extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function recievingStockHistory()
+    public function recieving_stock_history()
     {
         return $this->belongsTo(StockHistory::class, 'recieving_id');
     }
