@@ -149,6 +149,31 @@ class Lot extends Model
     }
 
     /**
+     * 発注日を取得する
+     *
+     * @return string
+     */
+    public function getOrderedAtAttribute($value)
+    {
+        // 発注日時期表記フラグがtrueの場合、時期表記に変換する
+        if ($this->is_ten_days_notation) {
+            // TODO
+        } else {
+            return $value;
+        }
+    }
+
+    /**
+     * 発注日時期表記フラグを取得する
+     *
+     * @return boolean
+     */
+    public function getIsTenDaysNotationAttribute($value)
+    {
+        return $value;
+    }
+
+    /**
      * ロットに紐づく拠点を取得
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
