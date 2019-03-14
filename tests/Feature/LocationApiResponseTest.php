@@ -65,8 +65,6 @@ class LocationApiResponseTest extends TestCase
             'company_id' => Company::query()->first()->id,
             'name' => 'testLocation',
             'location_type_id' => LocationType::query()->first()->id,
-            'location_code' => 'AA',
-            'location_number' => '1234',
         ];
         $response = $this->post('/locations', $data);
         $response->assertSuccessful()->assertJson(['status' => 'OK']);
@@ -88,8 +86,6 @@ class LocationApiResponseTest extends TestCase
             'company_id' => Company::query()->first()->id,
             'name' => 'testUpdateLocation',
             'location_type_id' => LocationType::query()->get()->random()->id,
-            'location_code' => 'BB',
-            'location_number' => '5678',
         ];
 
         $this->put('/locations/'. $location->id, $data)

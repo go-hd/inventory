@@ -2,26 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\RecipeRequest;
-use App\Recipe;
+use App\Http\Requests\MaterialRequest;
+use App\Material;
 
-class RecipeController extends Controller
+class MaterialController extends Controller
 {
     /**
      * レシピのインスタンスを作成
      *
-     * @var \App\Recipe
+     * @var \App\Material
      */
-    private $recipe;
+    private $material;
 
     /**
      * レシピコントローラーのインスタンスを作成
      *
-     * @param  \App\Recipe $recipe
+     * @param  \App\Material $material
      * @return void
      */
-    public function __construct(Recipe $recipe) {
-        $this->recipe = $recipe;
+    public function __construct(Material $material) {
+        $this->material = $material;
     }
 
     /**
@@ -31,9 +31,9 @@ class RecipeController extends Controller
      */
     public function index()
     {
-        $recipes = $this->recipe->all();
+        $materials = $this->material->all();
 
-        return response()->json($recipes, 200, [], JSON_PRETTY_PRINT);
+        return response()->json($materials, 200, [], JSON_PRETTY_PRINT);
     }
 
     /**
@@ -44,20 +44,20 @@ class RecipeController extends Controller
      */
     public function show($id)
     {
-        $recipe = $this->recipe->findOrFail($id);
+        $material = $this->material->findOrFail($id);
 
-        return response()->json($recipe, 200, [], JSON_PRETTY_PRINT);
+        return response()->json($material, 200, [], JSON_PRETTY_PRINT);
     }
 
     /**
      * 新規作成
      *
-     * @param  \App\Http\Requests\RecipeRequest $request
+     * @param  \App\Http\Requests\MaterialRequest $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(RecipeRequest $request)
+    public function store(MaterialRequest $request)
     {
-        $this->recipe->create($request->all());
+        $this->material->create($request->all());
         $response = ['status' => 'OK'];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
@@ -67,13 +67,13 @@ class RecipeController extends Controller
      * 編集
      *
      * @param  int $id
-     * @param  \App\Http\Requests\RecipeRequest $request
+     * @param  \App\Http\Requests\MaterialRequest $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update($id, RecipeRequest $request)
+    public function update($id, MaterialRequest $request)
     {
-        $recipe = $this->recipe->findOrFail($id);
-        $recipe->update($request->all());
+        $material = $this->material->findOrFail($id);
+        $material->update($request->all());
         $response = ['status' => 'OK'];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
@@ -88,8 +88,8 @@ class RecipeController extends Controller
      */
     public function destroy($id)
     {
-        $recipe = $this->recipe->findOrFail($id);
-        $recipe->delete();
+        $material = $this->material->findOrFail($id);
+        $material->delete();
         $response = ['status' => 'OK'];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);

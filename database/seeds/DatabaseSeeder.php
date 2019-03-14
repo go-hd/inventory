@@ -11,10 +11,14 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        /** @var \App\LocationType[] $location_types */
-        $location_types = factory(\App\LocationType::class, 3)->create();
         /** @var \App\Company $company */
         $company = factory(\App\Company::class)->create();
+        /** @var \App\LocationType[] $location_types */
+        $location_types = factory(\App\LocationType::class, 3)->create([
+            'company_id' => $company->id
+        ]);
+        /** @var \App\Brand $brand */
+        $brand = factory(\App\Brand::class)->create();
 
         $locations = collect();
         $palettes = collect();
@@ -32,6 +36,20 @@ class DatabaseSeeder extends Seeder
                 $palettes[] = factory(\App\Palette::class, 1)->create([
                     'location_id' => $location->id
                 ]);
+
+                /** @var \App\Lot[] $lots */
+                $lots[] = factory(\App\Lot::class, 3)->create([
+                    'location_id' => $location->id,
+                    'brand_id' => $brand->id,
+                ]);
+                DB::table('materials')->insert(
+                    [
+                        'parent_lot_id' => $lots[$j]->random()->id,
+                        'child_lot_id' => $lots[$j]->random()->id,
+                        'created_at' => \Carbon\Carbon::now(),
+                        'updated_at' => \Carbon\Carbon::now(),
+                    ]
+                );
             }
             DB::table('location_palette')->insert(
                 [

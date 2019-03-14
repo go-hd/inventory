@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Company;
 use App\LocationType;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -59,7 +60,10 @@ class LocationTypeTypeApiResponseTest extends TestCase
      */
     public function testStore()
     {
-        $data = ['name' => 'TestLocationType'];
+        $data = [
+            'company_id' => Company::query()->first()->id,
+            'name' => 'TestLocationType',
+        ];
         $response = $this->post('/location_types', $data);
         $response->assertSuccessful()->assertJson(['status' => 'OK']);
     }
@@ -71,9 +75,14 @@ class LocationTypeTypeApiResponseTest extends TestCase
      */
     public function testUpdate()
     {
-        $locationType = factory(LocationType::class)->create();
+        $locationType = factory(LocationType::class)->create([
+            'company_id' => Company::query()->first()->id,
+        ]);
 
-        $data = ['name' => 'UpdatedTestLocationType'];
+        $data = [
+            'company_id' => Company::query()->first()->id,
+            'name' => 'UpdatedTestLocationType',
+        ];
 
         $this->put('/location_types/'. $locationType->id, $data)
             ->assertSuccessful()
@@ -81,6 +90,7 @@ class LocationTypeTypeApiResponseTest extends TestCase
 
         $updatedData = LocationType::query()->find($locationType->id)->toArray();
 
+        unset($data['company_id']);
         foreach ($data as $key => $value) {
             $this->assertSame($value, $updatedData[$key]);
         }
@@ -93,7 +103,9 @@ class LocationTypeTypeApiResponseTest extends TestCase
      */
     public function testDestroy()
     {
-        $locationType = factory(LocationType::class)->create();
+        $locationType = factory(LocationType::class)->create([
+            'company_id' => Company::query()->first()->id,
+        ]);
         $count = LocationType::query()->count();
 
         $this->delete('/location_types/'. $locationType->id)

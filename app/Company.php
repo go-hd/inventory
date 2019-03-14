@@ -78,4 +78,24 @@ class Company extends Model
     {
         return $this->hasMany(Location::class);
     }
+
+    /**
+     * 会社に紐づく拠点種別を取得
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function locationTypes()
+    {
+        return $this->hasMany(LocationType::class);
+    }
+
+    /**
+     * 会社に紐づく在庫履歴種別を取得
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function stockHistoryTypes()
+    {
+        return $this->hasMany(StockHistoryType::class);
+    }
 }
