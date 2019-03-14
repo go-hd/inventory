@@ -18,8 +18,6 @@ class CreateLocationsTable extends Migration
             $table->unsignedInteger('company_id')->comment('会社ID');
             $table->string('name')->comment('名称');
             $table->unsignedInteger('location_type_id')->comment('拠点種別ID');
-            $table->string('location_code')->comment('拠点コード')->nullable();
-            $table->string('location_number')->comment('拠点ナンバー')->nullable();
             $table->timestamps();
 
             $table->foreign('company_id')->references('id')->on('companies')->onUpdate('cascade')->onDelete('cascade');

@@ -27,6 +27,7 @@ class DatabaseSeeder extends Seeder
         $locations = collect();
         $palettes = collect();
         $lots = collect();
+        $stock_histories = collect();
 
         foreach ($location_types as $index => $location_type) {
             /** @var \App\Location[] $locations */
@@ -56,6 +57,12 @@ class DatabaseSeeder extends Seeder
                         'updated_at' => \Carbon\Carbon::now(),
                     ]
                 );
+                /** @var \App\StockHistory $stock_histories */
+                $stock_histories[] = factory(\App\StockHistory::class)->create([
+                    'location_id' => $location->id,
+                    'lot_id' => $lots[$j]->random()->id,
+                    'stock_history_type_id' => $stock_history_types->random()->id
+                ]);
             }
             DB::table('location_palette')->insert(
                 [
@@ -64,18 +71,16 @@ class DatabaseSeeder extends Seeder
                     'quantity' => 100,
                 ]
             );
-            factory(\App\StockHistory::class, 5)->create([
-                'location_id' => $locations[0]->random()->id,
-                'lot_id' => $lots[0]->random()->id,
-                'stock_history_type_id' => $stock_history_types->random()->id
-            ]);
-            factory(\App\StockMove::class, 5)->create([
-                'shipping_id' => $locations[0]->random()->id,
-                'recieving_id' => $locations[0]->random()->id,
-                'location_id' => $locations[0]->random()->id,
-            ]);
         }
-
-
+        factory(\App\StockMove::class)->create([
+            'shipping_id' => $stock_histories[0]->id,
+            'recieving_id' => $stock_histories[1]->id,
+            'location_id' => $stock_histories[1]->location_id,
+        ]);
+        factory(\App\StockMove::class)->create([
+            'shipping_id' => $stock_histories[1]->id,
+            'recieving_id' => $stock_histories[0]->id,
+            'location_id' => $stock_histories[0]->location_id,
+        ]);
     }
 }
