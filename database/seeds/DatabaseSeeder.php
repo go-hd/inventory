@@ -17,22 +17,29 @@ class DatabaseSeeder extends Seeder
         $location_types = factory(\App\LocationType::class, 3)->create([
             'company_id' => $company->id
         ]);
+        /** @var \App\StockHistoryType[] $stock_history_types */
+        $stock_history_types = factory(\App\StockHistoryType::class, 3)->create([
+            'company_id' => $company->id
+        ]);
         /** @var \App\Brand $brand */
         $brand = factory(\App\Brand::class)->create();
 
         $locations = collect();
         $palettes = collect();
+        $lots = collect();
+        $stock_histories = collect();
 
         foreach ($location_types as $index => $location_type) {
-            /** @var \App\LocationType $location_type */
+            /** @var \App\Location[] $locations */
             $locations[] = factory(\App\Location::class, 10)->create([
                 'location_type_id' => $location_type->id,
                 'company_id' => $company->id,
             ]);
-            foreach ($locations[$index] as $location) {
+            foreach ($locations[$index] as $j => $location) {
                 factory(\App\User::class, 1)->create([
                     'location_id' => $location->id
                 ]);
+                /** @var \App\Palette[] $palettes */
                 $palettes[] = factory(\App\Palette::class, 1)->create([
                     'location_id' => $location->id
                 ]);
@@ -50,6 +57,12 @@ class DatabaseSeeder extends Seeder
                         'updated_at' => \Carbon\Carbon::now(),
                     ]
                 );
+                /** @var \App\StockHistory $stock_histories */
+                $stock_histories[] = factory(\App\StockHistory::class)->create([
+                    'location_id' => $location->id,
+                    'lot_id' => $lots[$j]->random()->id,
+                    'stock_history_type_id' => $stock_history_types->random()->id
+                ]);
             }
             DB::table('location_palette')->insert(
                 [
@@ -59,5 +72,15 @@ class DatabaseSeeder extends Seeder
                 ]
             );
         }
+        factory(\App\StockMove::class)->create([
+            'shipping_id' => $stock_histories[0]->id,
+            'recieving_id' => $stock_histories[1]->id,
+            'location_id' => $stock_histories[1]->location_id,
+        ]);
+        factory(\App\StockMove::class)->create([
+            'shipping_id' => $stock_histories[1]->id,
+            'recieving_id' => $stock_histories[0]->id,
+            'location_id' => $stock_histories[0]->location_id,
+        ]);
     }
 }
