@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StockHistoryTypeRequest extends FormRequest
 {
@@ -24,7 +25,18 @@ class StockHistoryTypeRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required'
+            'company_id' => [
+                'required',
+                Rule::unique('stock_history_types')->ignore($this->input('id', null))->where(function($query) {
+                    $query->where('name', $this->input('name'));
+                }),
+            ],
+            'name' => [
+                'required',
+                Rule::unique('stock_history_types')->ignore($this->input('id', null))->where(function($query) {
+                    $query->where('company_id', $this->input('company_id'));
+                }),
+            ],
         ];
     }
 
@@ -36,7 +48,8 @@ class StockHistoryTypeRequest extends FormRequest
     public function messages()
     {
         return [
-            'required'=>':attributeは必須項目です。'
+            'required'=>':attributeを入力してください。',
+            'unique'=>'この:attributeはすでに存在しています。',
         ];
     }
 
@@ -48,7 +61,8 @@ class StockHistoryTypeRequest extends FormRequest
     public function attributes()
     {
         return [
-            'name' => '名称'
+            'company_id' => '会社',
+            'name' => '名称',
         ];
     }
 }

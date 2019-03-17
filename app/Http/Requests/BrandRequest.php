@@ -25,7 +25,7 @@ class BrandRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'code' => 'required'
+            'code' => 'required',
         ];
     }
 
@@ -37,7 +37,7 @@ class BrandRequest extends FormRequest
     public function messages()
     {
         return [
-            'required'=>':attributeは必須項目です。'
+            'required'=>':attributeを入力してください。',
         ];
     }
 
@@ -50,7 +50,7 @@ class BrandRequest extends FormRequest
     {
         return [
             'name'=>'名称',
-            'code'=>'コード'
+            'code'=>'コード',
         ];
     }
 }

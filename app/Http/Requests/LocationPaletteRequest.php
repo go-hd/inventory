@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class LocationTypeRequest extends FormRequest
+class LocationPaletteRequest extends FormRequest
 {
     /**
      * ユーザーがこのリクエストの権限を持っているかを判断する
@@ -25,16 +25,16 @@ class LocationTypeRequest extends FormRequest
     public function rules()
     {
         return [
-            'company_id' => [
+            'location_id' => [
                 'required',
-                Rule::unique('location_types')->ignore($this->input('id', null))->where(function($query) {
-                    $query->where('name', $this->input('name'));
+                Rule::unique('location_palette')->ignore($this->input('id', null))->where(function($query) {
+                    $query->where('palette_id', $this->input('palette_id'));
                 }),
             ],
-            'name' => [
+            'palette_id' => [
                 'required',
-                Rule::unique('location_types')->ignore($this->input('id', null))->where(function($query) {
-                    $query->where('required', $this->input('required'));
+                Rule::unique('location_palette')->ignore($this->input('id', null))->where(function($query) {
+                    $query->where('location_id', $this->input('location_id'));
                 }),
             ],
         ];
@@ -61,8 +61,8 @@ class LocationTypeRequest extends FormRequest
     public function attributes()
     {
         return [
-            'company_id' => '会社',
-            'name' => '名称',
+            'location_id' => '拠点',
+            'palette_id' => 'パレット',
         ];
     }
 }

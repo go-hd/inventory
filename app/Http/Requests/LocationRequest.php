@@ -26,7 +26,7 @@ class LocationRequest extends FormRequest
         return [
             'company_id' => 'required',
             'name' => 'required',
-            'location_type_id' => 'required'
+            'location_type_id' => 'required',
         ];
     }
 
@@ -38,7 +38,7 @@ class LocationRequest extends FormRequest
     public function messages()
     {
         return [
-            'required'=>':attributeは必須項目です。'
+            'required'=>':attributeを入力してください。',
         ];
     }
 
@@ -52,7 +52,7 @@ class LocationRequest extends FormRequest
         return [
             'company_id' => '会社',
             'name' => '名称',
-            'location_type_id' => '拠点種別'
+            'location_type_id' => '拠点種別',
         ];
     }
 }

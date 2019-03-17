@@ -27,11 +27,13 @@ class UserRequest extends FormRequest
         $rules = [
             'location_id' => 'required',
             'name' => 'required',
-            'email' => 'required|email|unique:users,email',
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('users')->ignore($this->input('id', null)),
+            ],
         ];
-        if ($this->method() === 'PUT' || $this->method() === 'PATCH') {
-            $rules['email'] = ['required', 'email', Rule::unique('users','email')->ignore($this->id)];
-        } else {
+        if ($this->method() !== 'PUT' && $this->method() !== 'PATCH') {
             $rules['password'] = 'required';
         }
         return $rules;
@@ -45,7 +47,7 @@ class UserRequest extends FormRequest
     public function messages()
     {
         return [
-            'required'=>':attributeは必須項目です。',
+            'required'=>':attributeを入力してください。',
             'unique'=>'この:attributeはすでに存在しています。',
             'email'=>':attributeの形式として正しくありません。',
         ];
@@ -60,9 +62,9 @@ class UserRequest extends FormRequest
     {
         return [
             'location_id'=>'拠点',
-            'name'=>'ユーザー名',
+            'name'=>'名称',
             'email'=>'メールアドレス',
-            'password'=>'パスワード'
+            'password'=>'パスワード',
         ];
     }
 }

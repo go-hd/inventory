@@ -27,7 +27,10 @@ class StockHistoryRequest extends FormRequest
             'location_id' => 'required',
             'lot_id' => 'required',
             'stock_history_type_id' => 'required',
-            'quantity' => 'required'
+            'quantity' => [
+                'required',
+                'numeric',
+            ]
         ];
     }
 
@@ -39,7 +42,8 @@ class StockHistoryRequest extends FormRequest
     public function messages()
     {
         return [
-            'required'=>':attributeは必須項目です。'
+            'required'=>':attributeを入力してください。',
+            'numeric'=>':attributeには数値を入力してください。',
         ];
     }
 

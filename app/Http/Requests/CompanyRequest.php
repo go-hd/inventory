@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class CompanyRequest extends FormRequest
 {
@@ -24,7 +25,10 @@ class CompanyRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required'
+            'name' => [
+                'required',
+                Rule::unique('companies')->ignore($this->input('id', null)),
+            ]
         ];
     }
 
@@ -36,7 +40,8 @@ class CompanyRequest extends FormRequest
     public function messages()
     {
         return [
-            'required'=>':attributeは必須項目です。'
+            'required'=>':attributeを入力してください。',
+            'unique'=>'この:attributeはすでに存在しています。',
         ];
     }
 
@@ -48,7 +53,7 @@ class CompanyRequest extends FormRequest
     public function attributes()
     {
         return [
-            'name' => '名称'
+            'name' => '名称',
         ];
     }
 }
