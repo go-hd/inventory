@@ -33,32 +33,4 @@ class StockHistoryRequest extends FormRequest
             ]
         ];
     }
-
-    /**
-     * 定義済みバリデーションルールのエラーメッセージ取得
-     *
-     * @return array
-     */
-    public function messages()
-    {
-        return [
-            'required'=>':attributeを入力してください。',
-            'numeric'=>':attributeには数値を入力してください。',
-        ];
-    }
-
-    /**
-     * カスタムアトリビュート名
-     *
-     * @return array
-     */
-    public function attributes()
-    {
-        return [
-            'location_id' => '拠点',
-            'lot_id' => 'ロット',
-            'stock_history_type_id' => '在庫履歴種別',
-            'quantity' => '数量'
-        ];
-    }
 }

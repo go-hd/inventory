@@ -29,30 +29,4 @@ class LocationRequest extends FormRequest
             'location_type_id' => 'required',
         ];
     }
-
-    /**
-     * 定義済みバリデーションルールのエラーメッセージ取得
-     *
-     * @return array
-     */
-    public function messages()
-    {
-        return [
-            'required'=>':attributeを入力してください。',
-        ];
-    }
-
-    /**
-     * カスタムアトリビュート名
-     *
-     * @return array
-     */
-    public function attributes()
-    {
-        return [
-            'company_id' => '会社',
-            'name' => '名称',
-            'location_type_id' => '拠点種別',
-        ];
-    }
 }

@@ -38,33 +38,4 @@ class UserRequest extends FormRequest
         }
         return $rules;
     }
-
-    /**
-     * 定義済みバリデーションルールのエラーメッセージ取得
-     *
-     * @return array
-     */
-    public function messages()
-    {
-        return [
-            'required'=>':attributeを入力してください。',
-            'unique'=>'この:attributeはすでに存在しています。',
-            'email'=>':attributeの形式として正しくありません。',
-        ];
-    }
-
-    /**
-     * カスタムアトリビュート名
-     *
-     * @return array
-     */
-    public function attributes()
-    {
-        return [
-            'location_id'=>'拠点',
-            'name'=>'名称',
-            'email'=>'メールアドレス',
-            'password'=>'パスワード',
-        ];
-    }
 }

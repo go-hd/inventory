@@ -39,30 +39,4 @@ class PaletteRequest extends FormRequest
             ],
         ];
     }
-
-    /**
-     * 定義済みバリデーションルールのエラーメッセージ取得
-     *
-     * @return array
-     */
-    public function messages()
-    {
-        return [
-            'required'=>':attributeを入力してください。',
-            'unique'=>'この:attributeはすでに存在しています。',
-        ];
-    }
-
-    /**
-     * カスタムアトリビュート名
-     *
-     * @return array
-     */
-    public function attributes()
-    {
-        return [
-            'location_id'=>'拠点',
-            'type'=>'種別'
-        ];
-    }
 }

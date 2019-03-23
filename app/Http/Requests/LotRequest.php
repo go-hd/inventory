@@ -29,13 +29,14 @@ class LotRequest extends FormRequest
             'brand_id' => 'required',
             'lot_number' => [
                 'required',
-                'regex:/^[a-z\d]{12}$/',
+                'alpha_num',
+                'size:12',
                 Rule::unique('lots')->ignore($this->input('id', null)),
             ],
             'name' => 'required',
             'jan_code' => [
                 'required',
-                'regex:/^[+-]?\d+{13}$/',
+                'digits:13',
                 Rule::unique('lots')->ignore($this->input('id', null))->where(function($query) {
                     $query->where('ordered_at', $this->input('ordered_at'));
                 }),
@@ -48,39 +49,6 @@ class LotRequest extends FormRequest
                     $query->where('jan_code', $this->input('jan_code'));
                 }),
             ],
-        ];
-    }
-
-    /**
-     * 定義済みバリデーションルールのエラーメッセージ取得
-     *
-     * @return array
-     */
-    public function messages()
-    {
-        return [
-            'required'=>':attributeを入力してください。',
-            'unique'=>'この:attributeはすでに存在しています。',
-            'date'=>':attributeには日付を入力してください。',
-            'regex'=>':attributeの形式として正しくありません。',
-        ];
-    }
-
-    /**
-     * カスタムアトリビュート名
-     *
-     * @return array
-     */
-    public function attributes()
-    {
-        return [
-            'location_id' => '拠点',
-            'brand_id' => 'ブランド',
-            'lot_number' => 'ロットナンバー',
-            'name' => '名称',
-            'jan_code' => 'JANコード',
-            'expiration_date' => '賞味期限',
-            'ordered_at' => '発注日',
         ];
     }
 }

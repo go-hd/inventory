@@ -39,30 +39,4 @@ class MaterialRequest extends FormRequest
             ],
         ];
     }
-
-    /**
-     * 定義済みバリデーションルールのエラーメッセージ取得
-     *
-     * @return array
-     */
-    public function messages()
-    {
-        return [
-            'required'=>':attributeを入力してください。',
-            'unique'=>'この:attributeはすでに存在しています。',
-        ];
-    }
-
-    /**
-     * カスタムアトリビュート名
-     *
-     * @return array
-     */
-    public function attributes()
-    {
-        return [
-            'parent_lot_id' => '親ロット',
-            'child_lot_id' => '子ロット'
-        ];
-    }
 }

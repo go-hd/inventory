@@ -27,33 +27,8 @@ class CompanyRequest extends FormRequest
         return [
             'name' => [
                 'required',
-                Rule::unique('companies')->ignore($this->input('id', null)),
+                Rule::unique('companies'),
             ]
-        ];
-    }
-
-    /**
-     * 定義済みバリデーションルールのエラーメッセージ取得
-     *
-     * @return array
-     */
-    public function messages()
-    {
-        return [
-            'required'=>':attributeを入力してください。',
-            'unique'=>'この:attributeはすでに存在しています。',
-        ];
-    }
-
-    /**
-     * カスタムアトリビュート名
-     *
-     * @return array
-     */
-    public function attributes()
-    {
-        return [
-            'name' => '名称',
         ];
     }
 }

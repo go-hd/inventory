@@ -34,35 +34,9 @@ class LocationTypeRequest extends FormRequest
             'name' => [
                 'required',
                 Rule::unique('location_types')->ignore($this->input('id', null))->where(function($query) {
-                    $query->where('required', $this->input('required'));
+                    $query->where('company_id', $this->input('company_id'));
                 }),
             ],
-        ];
-    }
-
-    /**
-     * 定義済みバリデーションルールのエラーメッセージ取得
-     *
-     * @return array
-     */
-    public function messages()
-    {
-        return [
-            'required'=>':attributeを入力してください。',
-            'unique'=>'この:attributeはすでに存在しています。',
-        ];
-    }
-
-    /**
-     * カスタムアトリビュート名
-     *
-     * @return array
-     */
-    public function attributes()
-    {
-        return [
-            'company_id' => '会社',
-            'name' => '名称',
         ];
     }
 }
