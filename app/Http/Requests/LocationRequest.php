@@ -26,33 +26,7 @@ class LocationRequest extends FormRequest
         return [
             'company_id' => 'required',
             'name' => 'required',
-            'location_type_id' => 'required'
-        ];
-    }
-
-    /**
-     * 定義済みバリデーションルールのエラーメッセージ取得
-     *
-     * @return array
-     */
-    public function messages()
-    {
-        return [
-            'required'=>':attributeは必須項目です。'
-        ];
-    }
-
-    /**
-     * カスタムアトリビュート名
-     *
-     * @return array
-     */
-    public function attributes()
-    {
-        return [
-            'company_id' => '会社',
-            'name' => '名称',
-            'location_type_id' => '拠点種別'
+            'location_type_id' => 'required',
         ];
     }
 }

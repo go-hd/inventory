@@ -27,34 +27,10 @@ class StockMoveRequest extends FormRequest
             'shipping_id' => 'required',
             'recieving_id' => 'required',
             'location_id' => 'required',
-            'quantity' => 'required'
-        ];
-    }
-
-    /**
-     * 定義済みバリデーションルールのエラーメッセージ取得
-     *
-     * @return array
-     */
-    public function messages()
-    {
-        return [
-            'required'=>':attributeは必須項目です。'
-        ];
-    }
-
-    /**
-     * カスタムアトリビュート名
-     *
-     * @return array
-     */
-    public function attributes()
-    {
-        return [
-            'shipping_id' => '出庫拠点',
-            'recieving_id' => '入庫拠点',
-            'location_id' => '相手拠点',
-            'quantity' => '移動個数'
+            'quantity' => [
+                'required',
+                'integer',
+            ]
         ];
     }
 }
