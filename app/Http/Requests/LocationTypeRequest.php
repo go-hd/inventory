@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class LocationTypeRequest extends FormRequest
 {
@@ -24,31 +25,18 @@ class LocationTypeRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required'
-        ];
-    }
-
-    /**
-     * 定義済みバリデーションルールのエラーメッセージ取得
-     *
-     * @return array
-     */
-    public function messages()
-    {
-        return [
-            'required'=>':attributeは必須項目です。'
-        ];
-    }
-
-    /**
-     * カスタムアトリビュート名
-     *
-     * @return array
-     */
-    public function attributes()
-    {
-        return [
-            'name' => '名称'
+            'company_id' => [
+                'required',
+                Rule::unique('location_types')->ignore($this->input('id', null))->where(function($query) {
+                    $query->where('name', $this->input('name'));
+                }),
+            ],
+            'name' => [
+                'required',
+                Rule::unique('location_types')->ignore($this->input('id', null))->where(function($query) {
+                    $query->where('company_id', $this->input('company_id'));
+                }),
+            ],
         ];
     }
 }

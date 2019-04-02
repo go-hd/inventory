@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class PaletteRequest extends FormRequest
 {
@@ -24,33 +25,18 @@ class PaletteRequest extends FormRequest
     public function rules()
     {
         return [
-            'location_id' => 'required',
-            'type' => 'required'
-        ];
-    }
-
-    /**
-     * 定義済みバリデーションルールのエラーメッセージ取得
-     *
-     * @return array
-     */
-    public function messages()
-    {
-        return [
-            'required'=>':attributeは必須項目です。'
-        ];
-    }
-
-    /**
-     * カスタムアトリビュート名
-     *
-     * @return array
-     */
-    public function attributes()
-    {
-        return [
-            'location_id'=>'拠点',
-            'type'=>'種別'
+            'location_id' => [
+                'required',
+                Rule::unique('palettes')->ignore($this->input('id', null))->where(function($query) {
+                    $query->where('type', $this->input('type'));
+                }),
+            ],
+            'type' => [
+                'required',
+                Rule::unique('palettes')->ignore($this->input('id', null))->where(function($query) {
+                    $query->where('location_id', $this->input('location_id'));
+                }),
+            ],
         ];
     }
 }

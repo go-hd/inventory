@@ -27,34 +27,10 @@ class StockHistoryRequest extends FormRequest
             'location_id' => 'required',
             'lot_id' => 'required',
             'stock_history_type_id' => 'required',
-            'quantity' => 'required'
-        ];
-    }
-
-    /**
-     * 定義済みバリデーションルールのエラーメッセージ取得
-     *
-     * @return array
-     */
-    public function messages()
-    {
-        return [
-            'required'=>':attributeは必須項目です。'
-        ];
-    }
-
-    /**
-     * カスタムアトリビュート名
-     *
-     * @return array
-     */
-    public function attributes()
-    {
-        return [
-            'location_id' => '拠点',
-            'lot_id' => 'ロット',
-            'stock_history_type_id' => '在庫履歴種別',
-            'quantity' => '数量'
+            'quantity' => [
+                'required',
+                'numeric',
+            ]
         ];
     }
 }

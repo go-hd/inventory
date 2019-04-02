@@ -27,42 +27,15 @@ class UserRequest extends FormRequest
         $rules = [
             'location_id' => 'required',
             'name' => 'required',
-            'email' => 'required|email|unique:users,email',
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('users')->ignore($this->input('id', null)),
+            ],
         ];
-        if ($this->method() === 'PUT' || $this->method() === 'PATCH') {
-            $rules['email'] = ['required', 'email', Rule::unique('users','email')->ignore($this->id)];
-        } else {
+        if ($this->method() !== 'PUT' && $this->method() !== 'PATCH') {
             $rules['password'] = 'required';
         }
         return $rules;
-    }
-
-    /**
-     * 定義済みバリデーションルールのエラーメッセージ取得
-     *
-     * @return array
-     */
-    public function messages()
-    {
-        return [
-            'required'=>':attributeは必須項目です。',
-            'unique'=>'この:attributeはすでに存在しています。',
-            'email'=>':attributeの形式として正しくありません。',
-        ];
-    }
-
-    /**
-     * カスタムアトリビュート名
-     *
-     * @return array
-     */
-    public function attributes()
-    {
-        return [
-            'location_id'=>'拠点',
-            'name'=>'ユーザー名',
-            'email'=>'メールアドレス',
-            'password'=>'パスワード'
-        ];
     }
 }

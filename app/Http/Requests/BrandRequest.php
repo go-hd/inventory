@@ -25,32 +25,7 @@ class BrandRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'code' => 'required'
-        ];
-    }
-
-    /**
-     * 定義済みバリデーションルールのエラーメッセージ取得
-     *
-     * @return array
-     */
-    public function messages()
-    {
-        return [
-            'required'=>':attributeは必須項目です。'
-        ];
-    }
-
-    /**
-     * カスタムアトリビュート名
-     *
-     * @return array
-     */
-    public function attributes()
-    {
-        return [
-            'name'=>'名称',
-            'code'=>'コード'
+            'code' => 'required',
         ];
     }
 }
