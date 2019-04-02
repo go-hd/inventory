@@ -36,7 +36,7 @@ class LotApiValidationTest extends TestCase
     {
         if ($isUnique) {
             // ユニークチェック用のデータを入れる
-            factory(Lot::class)->create([
+            $origin = factory(Lot::class)->create([
                 'location_id' => 1,
                 'brand_id' => 1,
                 'lot_number' => 'a21212121212',
@@ -51,6 +51,11 @@ class LotApiValidationTest extends TestCase
         $response
             ->assertStatus($status)
             ->assertJson($messages);
+
+        if ($isUnique) {
+            $response = $this->put('/lots/' . $origin->id, $dataList);
+            $response->assertStatus(200);
+        }
     }
 
     public function lotDataProvider()

@@ -34,13 +34,13 @@ class LotRequest extends FormRequest
                 'required',
                 'alpha_num',
                 'size:12',
-                Rule::unique('lots')->ignore($this->input('id', null)),
+                Rule::unique('lots')->ignore($this->route('lot')),
             ],
             'name' => 'required',
             'jan_code' => [
                 'required',
                 'digits:13',
-                Rule::unique('lots')->ignore($this->input('id', null))
+                Rule::unique('lots')->ignore($this->route('lot'))
                     ->where(function(Builder $query) {
                         $query->where('ordered_at', $this->input('ordered_at'));
                     }),
@@ -49,7 +49,7 @@ class LotRequest extends FormRequest
             'ordered_at' => [
                 'required',
                 'date',
-                Rule::unique('lots')->ignore($this->input('id', null))
+                Rule::unique('lots')->ignore($this->route('lot'))
                     ->where(function(Builder $query) {
                         $query->where('jan_code', $this->input('jan_code'));
                     }),
