@@ -2,8 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Http\Requests\LotRequest;
-use Illuminate\Support\Facades\Validator;
+use App\Lot;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -27,34 +26,34 @@ class LotApiValidationTest extends TestCase
     /**
      * バリデーションテスト
      *
-     * @param array $dataList
-     * @param boolean $expect
-     * @param array $messages
+     * @param array   $dataList
+     * @param integer $status
+     * @param array   $messages
      * @param boolean $isUnique
-     * @dataProvider brandDataProvider
+     * @dataProvider  lotDataProvider
      */
-    public function testValidation($dataList, $expect, $messages, $isUnique=false)
+    public function testValidation($dataList, $status, $messages, $isUnique = false)
     {
         if ($isUnique) {
             // ユニークチェック用のデータを入れる
-            $data = ['location_id' => 1, 'brand_id' => 1, 'lot_number' => 'a21212121212',
-                'name' => 'testName', 'jan_code' => '1313131313131', 'expiration_date' => '2019-10-10', 'ordered_at' => '2019-01-10'];
-            $this->post('/lots', $data);
+            factory(Lot::class)->create([
+                'location_id' => 1,
+                'brand_id' => 1,
+                'lot_number' => 'a21212121212',
+                'name' => 'testName',
+                'jan_code' => '1313131313131',
+                'expiration_date' => '2019-10-10',
+                'ordered_at' => '2019-01-10'
+            ]);
         }
-        $request = new LotRequest();
-        $rules = $request->rules();
-        $validator = Validator::make($dataList, $rules);
-        $result = $validator->passes();
-        // バリデーション結果が正しいか確認
-        $this->assertEquals($expect, $result);
-        $result_messages = $validator->errors()->toArray();
-        // エラーメッセージが正しいか確認
-        foreach ($messages as $key => $value) {
-            $this->assertEquals($value, $result_messages[$key]);
-        }
+
+        $response = $this->post('/lots', $dataList);
+        $response
+            ->assertStatus($status)
+            ->assertJson($messages);
     }
 
-    public function brandDataProvider()
+    public function lotDataProvider()
     {
         return [
             '成功' => [
@@ -67,7 +66,7 @@ class LotApiValidationTest extends TestCase
                     'expiration_date' => '2019-10-11',
                     'ordered_at' => '2019-01-11',
                 ],
-                true,
+                200,
                 [],
             ],
             '失敗(required)' => [
@@ -79,7 +78,7 @@ class LotApiValidationTest extends TestCase
                     'jan_code' => '',
                     'ordered_at' => '',
                 ],
-                false,
+                422,
                 [
                     'location_id' => ['拠点を入力してください。'],
                     'brand_id' => ['ブランドを入力してください。'],
@@ -89,24 +88,24 @@ class LotApiValidationTest extends TestCase
                     'ordered_at' => ['発注日を入力してください。'],
                 ],
             ],
-//            '失敗(unique)' => [
-//                [
-//                    'location_id' => 2,
-//                    'brand_id' => 1,
-//                    'lot_number' => 'a21212121212',
-//                    'name' => 'testName2',
-//                    'jan_code' => '1313131313131',
-//                    'expiration_date' => '2019-10-11',
-//                    'ordered_at' => '2019-01-10',
-//                ],
-//                false,
-//                [
-//                    'lot_number' => ['このロットナンバーは既に存在します。'],
-//                    'jan_code' => ['このJANコードは既に存在します。'],
-//                    'ordered_at' => ['この発注日は既に存在します。'],
-//                ],
-//                true,
-//            ],
+            '失敗(unique)' => [
+                [
+                    'location_id' => 2,
+                    'brand_id' => 1,
+                    'lot_number' => 'a21212121212',
+                    'name' => 'testName2',
+                    'jan_code' => '1313131313131',
+                    'expiration_date' => '2019-10-11',
+                    'ordered_at' => '2019-01-10',
+                ],
+                422,
+                [
+                    'lot_number' => ['このロットナンバーは既に存在します。'],
+                    'jan_code' => ['このJANコードは既に存在します。'],
+                    'ordered_at' => ['この発注日は既に存在します。'],
+                ],
+                true,
+            ],
             '失敗(date)' => [
                 [
                     'location_id' => 2,
@@ -117,7 +116,7 @@ class LotApiValidationTest extends TestCase
                     'expiration_date' => 'aaa',
                     'ordered_at' => 'bbb',
                 ],
-                false,
+                422,
                 [
                     'expiration_date' => ['賞味期限は正しい日付ではありません。'],
                     'ordered_at' => ['発注日は正しい日付ではありません。'],
