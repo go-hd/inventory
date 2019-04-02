@@ -2,8 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Http\Requests\StockHistoryTypeRequest;
-use Illuminate\Support\Facades\Validator;
+use App\StockHistoryType;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -27,36 +26,34 @@ class StockHistoryTypeApiValidationTest extends TestCase
     /**
      * バリデーションテスト
      *
-     * @param array $dataList
-     * @param boolean $expect
-     * @param array $messages
-     * @param boolean $isUnique
-     * @dataProvider brandDataProvider
+	 * @param array   $dataList
+	 * @param integer $status
+	 * @param array   $messages
+	 * @param boolean $isUnique
+     * @dataProvider  stockHistoryTypeDataProvider
      */
-    public function testValidation($dataList, $expect, $messages, $isUnique=false)
+    public function testValidation($dataList, $status, $messages, $isUnique = false)
     {
-        if ($isUnique) {
-            // ユニークチェック用のデータを入れる
-            $data = [
-                'company_id' => 1,
-                'name' => 'testName',
-            ];
-            $this->post('/palettes', $data);
-        }
-        $request = new StockHistoryTypeRequest();
-        $rules = $request->rules();
-        $validator = Validator::make($dataList, $rules);
-        $result = $validator->passes();
-        // バリデーション結果が正しいか確認
-        $this->assertEquals($expect, $result);
-        $result_messages = $validator->errors()->toArray();
-        // エラーメッセージが正しいか確認
-        foreach ($messages as $key => $value) {
-            $this->assertEquals($value, $result_messages[$key]);
-        }
+		if ($isUnique) {
+			// ユニークチェック用のデータを入れる
+			$origin = factory(StockHistoryType::class)->create([
+				'company_id' => 1,
+				'name' => 'testName',
+			]);
+		}
+
+		$response = $this->post('/stock_history_types', $dataList);
+		$response
+			->assertStatus($status)
+			->assertJson($messages);
+
+		if ($isUnique) {
+			$response = $this->put('/stock_history_types/' . $origin->id, $dataList);
+			$response->assertStatus(200);
+		}
     }
 
-    public function brandDataProvider()
+    public function stockHistoryTypeDataProvider()
     {
         return [
             '成功' => [
@@ -64,7 +61,7 @@ class StockHistoryTypeApiValidationTest extends TestCase
                     'company_id' => 1,
                     'name' => 'testName2',
                 ],
-                true,
+                200,
                 [],
             ],
             '失敗(required)' => [
@@ -72,24 +69,24 @@ class StockHistoryTypeApiValidationTest extends TestCase
                     'company_id' => '',
                     'name' => '',
                 ],
-                false,
+                422,
                 [
                     'company_id' => ['会社を入力してください。'],
                     'name' => ['名称を入力してください。'],
                 ],
             ],
-//            '失敗(unique)' => [
-//                [
-//                    'company_id' => 1,
-//                    'name' => 'testName',
-//                ],
-//                false,
-//                [
-//                    'company_id' => ['この会社は既に存在します。'],
-//                    'name' => ['この名称は既に存在します。'],
-//                ],
-//                true,
-//            ],
+            '失敗(unique)' => [
+                [
+                    'company_id' => 1,
+                    'name' => 'testName',
+                ],
+                422,
+                [
+                    'company_id' => ['この会社は既に存在します。'],
+                    'name' => ['この名称は既に存在します。'],
+                ],
+                true,
+            ],
         ];
     }
 }

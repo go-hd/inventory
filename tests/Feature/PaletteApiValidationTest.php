@@ -2,8 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Http\Requests\PaletteRequest;
-use Illuminate\Support\Facades\Validator;
+use App\Palette;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -24,39 +23,37 @@ class PaletteApiValidationTest extends TestCase
         $this->artisan('db:seed');
     }
 
-    /**
-     * バリデーションテスト
-     *
-     * @param array $dataList
-     * @param boolean $expect
-     * @param array $messages
-     * @param boolean $isUnique
-     * @dataProvider brandDataProvider
-     */
-    public function testValidation($dataList, $expect, $messages, $isUnique=false)
+	/**
+	 * バリデーションテスト
+	 *
+	 * @param array   $dataList
+	 * @param integer $status
+	 * @param array   $messages
+	 * @param boolean $isUnique
+	 * @dataProvider  paletteDataProvider
+	 */
+    public function testValidation($dataList, $status, $messages, $isUnique = false)
     {
-        if ($isUnique) {
-            // ユニークチェック用のデータを入れる
-            $data = [
-                'location_id' => 1,
-                'type' => 'testType',
-            ];
-            $this->post('/palettes', $data);
-        }
-        $request = new PaletteRequest();
-        $rules = $request->rules();
-        $validator = Validator::make($dataList, $rules);
-        $result = $validator->passes();
-        // バリデーション結果が正しいか確認
-        $this->assertEquals($expect, $result);
-        $result_messages = $validator->errors()->toArray();
-        // エラーメッセージが正しいか確認
-        foreach ($messages as $key => $value) {
-            $this->assertEquals($value, $result_messages[$key]);
-        }
+		if ($isUnique) {
+			// ユニークチェック用のデータを入れる
+			$origin = factory(Palette::class)->create([
+				'location_id' => 1,
+				'type' => 'testType',
+			]);
+		}
+
+		$response = $this->post('/palettes', $dataList);
+		$response
+			->assertStatus($status)
+			->assertJson($messages);
+
+		if ($isUnique) {
+			$response = $this->put('/palettes/' . $origin->id, $dataList);
+			$response->assertStatus(200);
+		}
     }
 
-    public function brandDataProvider()
+    public function paletteDataProvider()
     {
         return [
             '成功' => [
@@ -64,7 +61,7 @@ class PaletteApiValidationTest extends TestCase
                     'location_id' => 1,
                     'type' => 'testType2',
                 ],
-                true,
+                200,
                 [],
             ],
             '失敗(required)' => [
@@ -72,24 +69,24 @@ class PaletteApiValidationTest extends TestCase
                     'location_id' => '',
                     'type' => '',
                 ],
-                false,
+                422,
                 [
                     'location_id' => ['拠点を入力してください。'],
                     'type' => ['種別を入力してください。'],
                 ],
             ],
-//            '失敗(unique)' => [
-//                [
-//                    'location_id' => 1,
-//                    'type' => 'testType',
-//                ],
-//                false,
-//                [
-//                    'location_id' => ['この拠点は既に存在します。'],
-//                    'type' => ['この種別は既に存在します。'],
-//                ],
-//                true,
-//            ],
+            '失敗(unique)' => [
+                [
+                    'location_id' => 1,
+                    'type' => 'testType',
+                ],
+                422,
+                [
+                    'location_id' => ['この拠点は既に存在します。'],
+                    'type' => ['この種別は既に存在します。'],
+                ],
+                true,
+            ],
         ];
     }
 }

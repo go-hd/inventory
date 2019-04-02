@@ -2,8 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Http\Requests\StockMoveRequest;
-use Illuminate\Support\Facades\Validator;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -27,27 +25,20 @@ class StockMoveApiValidationTest extends TestCase
     /**
      * バリデーションテスト
      *
-     * @param array $dataList
-     * @param boolean $expect
-     * @param array $messages
-     * @dataProvider brandDataProvider
+	 * @param array   $dataList
+	 * @param integer $status
+	 * @param array   $messages
+	 * @dataProvider  stockMoveDataProvider
      */
-    public function testValidation($dataList, $expect, $messages)
+    public function testValidation($dataList, $status, $messages)
     {
-        $request = new StockMoveRequest();
-        $rules = $request->rules();
-        $validator = Validator::make($dataList, $rules);
-        $result = $validator->passes();
-        // バリデーション結果が正しいか確認
-        $this->assertEquals($expect, $result);
-        $result_messages = $validator->errors()->toArray();
-        // エラーメッセージが正しいか確認
-        foreach ($messages as $key => $value) {
-            $this->assertEquals($value, $result_messages[$key]);
-        }
+		$response = $this->post('/stock_moves', $dataList);
+		$response
+			->assertStatus($status)
+			->assertJson($messages);
     }
 
-    public function brandDataProvider()
+    public function stockMoveDataProvider()
     {
         return [
             '成功' => [
@@ -57,7 +48,7 @@ class StockMoveApiValidationTest extends TestCase
                     'location_id' => 1,
                     'quantity' => 100,
                 ],
-                true,
+                200,
                 [],
             ],
             '失敗(required)' => [
@@ -67,7 +58,7 @@ class StockMoveApiValidationTest extends TestCase
                     'location_id' => '',
                     'quantity' => '',
                 ],
-                false,
+                422,
                 [
                     'shipping_id' => ['出庫在庫履歴を入力してください。'],
                     'recieving_id' => ['入庫在庫履歴を入力してください。'],
@@ -82,7 +73,7 @@ class StockMoveApiValidationTest extends TestCase
                     'location_id' => 1,
                     'quantity' => 'test',
                 ],
-                false,
+				422,
                 [
                     'quantity' => ['数量は整数にしてください。'],
                 ],
