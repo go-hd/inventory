@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Validation\Rule;
 
 class LocationPaletteRequest extends FormRequest
@@ -27,42 +30,33 @@ class LocationPaletteRequest extends FormRequest
         return [
             'location_id' => [
                 'required',
-                Rule::unique('location_palette')->ignore($this->input('id', null))->where(function($query) {
-                    $query->where('palette_id', $this->input('palette_id'));
-                }),
+				Rule::unique('location_palette')->ignore($this->route('location_palette'))
+					->where(function(Builder $query) {
+						$query->where('palette_id', $this->input('palette_id'));
+					}),
             ],
             'palette_id' => [
                 'required',
-                Rule::unique('location_palette')->ignore($this->input('id', null))->where(function($query) {
-                    $query->where('location_id', $this->input('location_id'));
-                }),
+				Rule::unique('location_palette')->ignore($this->route('location_palette'))
+					->where(function(Builder $query) {
+						$query->where('location_id', $this->input('location_id'));
+					}),
             ],
         ];
     }
 
-    /**
-     * 定義済みバリデーションルールのエラーメッセージ取得
-     *
-     * @return array
-     */
-    public function messages()
-    {
-        return [
-            'required'=>':attributeを入力してください。',
-            'unique'=>'この:attributeはすでに存在しています。',
-        ];
-    }
-
-    /**
-     * カスタムアトリビュート名
-     *
-     * @return array
-     */
-    public function attributes()
-    {
-        return [
-            'location_id' => '拠点',
-            'palette_id' => 'パレット',
-        ];
-    }
+	/**
+	 * バリデーション失敗時
+	 *
+	 * @param \Illuminate\Contracts\Validation\Validator $validator
+	 *
+	 * @return void
+	 * @throw HttpResponseException
+	 */
+	protected function failedValidation(Validator $validator)
+	{
+		throw new HttpResponseException(
+			response()->json($validator->errors()->toArray(), 422)
+		);
+	}
 }

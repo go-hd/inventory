@@ -2,8 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Http\Requests\LocationRequest;
-use Illuminate\Support\Facades\Validator;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -27,31 +25,20 @@ class LocationApiValidationTest extends TestCase
     /**
      * バリデーションテスト
      *
-     * @param array $dataList
-     * @param boolean $expect
-     * @param array $messages
-     * @dataProvider brandDataProvider
+	 * @param array   $dataList
+	 * @param integer $status
+	 * @param array   $messages
+     * @dataProvider lotDataProvider
      */
-    public function testValidation($dataList, $expect, $messages)
+    public function testValidation($dataList, $status, $messages)
     {
-        // ユニークチェック用のデータを入れる
-        $data = ['name' => 'testName'];
-        $this->post('/locations', $data);
-
-        $request = new LocationRequest();
-        $rules = $request->rules();
-        $validator = Validator::make($dataList, $rules);
-        $result = $validator->passes();
-        // バリデーション結果が正しいか確認
-        $this->assertEquals($expect, $result);
-        $result_messages = $validator->errors()->toArray();
-        // エラーメッセージが正しいか確認
-        foreach ($messages as $key => $value) {
-            $this->assertEquals($value, $result_messages[$key]);
-        }
+		$response = $this->post('/locations', $dataList);
+		$response
+			->assertStatus($status)
+			->assertJson($messages);
     }
 
-    public function brandDataProvider()
+    public function lotDataProvider()
     {
         return [
             '成功' => [
@@ -60,7 +47,7 @@ class LocationApiValidationTest extends TestCase
                     'name' => 'testName',
                     'location_type_id' => 1,
                 ],
-                true,
+				200,
                 [],
             ],
             '失敗(required)' => [
@@ -69,7 +56,7 @@ class LocationApiValidationTest extends TestCase
                     'name' => '',
                     'location_type_id' => '',
                 ],
-                false,
+                422,
                 [
                     'company_id' => ['会社を入力してください。'],
                     'name' => ['名称を入力してください。'],

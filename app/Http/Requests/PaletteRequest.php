@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Validation\Rule;
 
 class PaletteRequest extends FormRequest
@@ -27,16 +30,33 @@ class PaletteRequest extends FormRequest
         return [
             'location_id' => [
                 'required',
-                Rule::unique('palettes')->ignore($this->input('id', null))->where(function($query) {
-                    $query->where('type', $this->input('type'));
-                }),
+				Rule::unique('palettes')->ignore($this->route('palette'))
+					->where(function(Builder $query) {
+						$query->where('type', $this->input('type'));
+					}),
             ],
             'type' => [
                 'required',
-                Rule::unique('palettes')->ignore($this->input('id', null))->where(function($query) {
-                    $query->where('location_id', $this->input('location_id'));
-                }),
+				Rule::unique('palettes')->ignore($this->route('palette'))
+					->where(function(Builder $query) {
+						$query->where('location_id', $this->input('location_id'));
+					}),
             ],
         ];
     }
+
+	/**
+	 * バリデーション失敗時
+	 *
+	 * @param \Illuminate\Contracts\Validation\Validator $validator
+	 *
+	 * @return void
+	 * @throw HttpResponseException
+	 */
+	protected function failedValidation(Validator $validator)
+	{
+		throw new HttpResponseException(
+			response()->json($validator->errors()->toArray(), 422)
+		);
+	}
 }

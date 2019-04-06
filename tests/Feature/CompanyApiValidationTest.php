@@ -2,8 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Http\Requests\CompanyRequest;
-use Illuminate\Support\Facades\Validator;
+use App\Company;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -24,50 +23,50 @@ class CompanyApiValidationTest extends TestCase
         $this->artisan('db:seed');
     }
 
-    /**
-     * バリデーションテスト
-     *
-     * @param array $dataList
-     * @param boolean $expect
-     * @param array $messages
-     * @param boolean $isUnique
-     * @dataProvider brandDataProvider
-     */
-    public function testValidation($dataList, $expect, $messages, $isUnique=false)
+	/**
+	 * バリデーションテスト
+	 *
+	 * @param array   $dataList
+	 * @param integer $status
+	 * @param array   $messages
+	 * @param boolean $isUnique
+	 * @dataProvider  companyDataProvider
+	 */
+    public function testValidation($dataList, $status, $messages, $isUnique = false)
     {
         if ($isUnique) {
-            // ユニークチェック用のデータを入れる
-            $data = ['name' => 'testName'];
-            $this->post('/companies', $data);
+			// ユニークチェック用のデータを入れる
+			$origin = factory(Company::class)->create([
+				'name' => 'testName',
+			]);
         }
-        $request = new CompanyRequest();
-        $rules = $request->rules();
-        $validator = Validator::make($dataList, $rules);
-        $result = $validator->passes();
-        // バリデーション結果が正しいか確認
-        $this->assertEquals($expect, $result);
-        $result_messages = $validator->errors()->toArray();
-        // エラーメッセージが正しいか確認
-        foreach ($messages as $key => $value) {
-            $this->assertEquals($value, $result_messages[$key]);
-        }
+
+		$response = $this->post('/companies', $dataList);
+		$response
+			->assertStatus($status)
+			->assertJson($messages);
+
+		if ($isUnique) {
+			$response = $this->put('/companies/' . $origin->id, $dataList);
+			$response->assertStatus(200);
+		}
     }
 
-    public function brandDataProvider()
+    public function companyDataProvider()
     {
         return [
             '成功' => [
                 [
                     'name' => 'testName2',
                 ],
-                true,
+				200,
                 [],
             ],
             '失敗(required)' => [
                 [
                     'name' => '',
                 ],
-                false,
+				422,
                 [
                     'name' => ['名称を入力してください。'],
                 ],
@@ -76,7 +75,7 @@ class CompanyApiValidationTest extends TestCase
                 [
                     'name' => 'testName',
                 ],
-                false,
+				422,
                 [
                     'name' => ['この名称は既に存在します。'],
                 ],

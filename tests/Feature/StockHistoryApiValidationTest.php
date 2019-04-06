@@ -2,8 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Http\Requests\StockHistoryRequest;
-use Illuminate\Support\Facades\Validator;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -24,30 +22,23 @@ class StockHistoryApiValidationTest extends TestCase
         $this->artisan('db:seed');
     }
 
-    /**
-     * バリデーションテスト
-     *
-     * @param array $dataList
-     * @param boolean $expect
-     * @param array $messages
-     * @dataProvider brandDataProvider
-     */
-    public function testValidation($dataList, $expect, $messages)
+	/**
+	 * バリデーションテスト
+	 *
+	 * @param array   $dataList
+	 * @param integer $status
+	 * @param array   $messages
+	 * @dataProvider  stockHistoryDataProvider
+	 */
+    public function testValidation($dataList, $status, $messages)
     {
-        $request = new StockHistoryRequest();
-        $rules = $request->rules();
-        $validator = Validator::make($dataList, $rules);
-        $result = $validator->passes();
-        // バリデーション結果が正しいか確認
-        $this->assertEquals($expect, $result);
-        $result_messages = $validator->errors()->toArray();
-        // エラーメッセージが正しいか確認
-        foreach ($messages as $key => $value) {
-            $this->assertEquals($value, $result_messages[$key]);
-        }
+		$response = $this->post('/stock_histories', $dataList);
+		$response
+			->assertStatus($status)
+			->assertJson($messages);
     }
 
-    public function brandDataProvider()
+    public function stockHistoryDataProvider()
     {
         return [
             '成功' => [
@@ -57,7 +48,7 @@ class StockHistoryApiValidationTest extends TestCase
                     'stock_history_type_id' => 1,
                     'quantity' => 100,
                 ],
-                true,
+                200,
                 [],
             ],
             '失敗(required)' => [
@@ -67,7 +58,7 @@ class StockHistoryApiValidationTest extends TestCase
                     'stock_history_type_id' => '',
                     'quantity' => '',
                 ],
-                false,
+                422,
                 [
                     'location_id' => ['拠点を入力してください。'],
                     'lot_id' => ['ロットを入力してください。'],
@@ -82,7 +73,7 @@ class StockHistoryApiValidationTest extends TestCase
                     'stock_history_type_id' => 1,
                     'quantity' => 'test',
                 ],
-                false,
+				422,
                 [
                     'quantity' => ['数量は数字にしてください。'],
                 ],

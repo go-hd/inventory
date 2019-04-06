@@ -2,12 +2,11 @@
 
 namespace Tests\Feature;
 
-use App\Http\Requests\UserRequest;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
+use App\User;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
 
 class UserApiValidationTest extends TestCase
 {
@@ -25,36 +24,39 @@ class UserApiValidationTest extends TestCase
         $this->artisan('db:seed');
     }
 
-    /**
-     * バリデーションテスト
-     *
-     * @param array $dataList
-     * @param boolean $expect
-     * @param array $messages
-     * @param boolean $isUnique
-     * @dataProvider brandDataProvider
-     */
-    public function testValidation($dataList, $expect, $messages, $isUnique=false)
+	/**
+	 * バリデーションテスト
+	 *
+	 * @param array   $dataList
+	 * @param integer $status
+	 * @param array   $messages
+	 * @param boolean $isUnique
+	 * @dataProvider  userDataProvider
+	 */
+    public function testValidation($dataList, $status, $messages, $isUnique = false)
     {
-        if ($isUnique) {
-            // ユニークチェック用のデータを入れる
-            $data = ['location_id' => 1, 'name' => 'test', 'email' => 'test2@test.com', 'password' => Hash::make('test')];
-            $this->post('/users', $data);
-        }
-        $request = new UserRequest();
-        $rules = $request->rules();
-        $validator = Validator::make($dataList, $rules);
-        $result = $validator->passes();
-        // バリデーション結果が正しいか確認
-        $this->assertEquals($expect, $result);
-        $result_messages = $validator->errors()->toArray();
-        // エラーメッセージが正しいか確認
-        foreach ($messages as $key => $value) {
-            $this->assertEquals($value, $result_messages[$key]);
-        }
+		if ($isUnique) {
+			// ユニークチェック用のデータを入れる
+			$origin = factory(User::class)->create([
+				'location_id' => 1,
+				'name' => 'test',
+				'email' => 'test2@test.com',
+				'password' => Hash::make('test'),
+			]);
+		}
+
+		$response = $this->post('/users', $dataList);
+		$response
+			->assertStatus($status)
+			->assertJson($messages);
+
+		if ($isUnique) {
+			$response = $this->put('/users/' . $origin->id, $dataList);
+			$response->assertStatus(200);
+		}
     }
 
-    public function brandDataProvider()
+    public function userDataProvider()
     {
         $this->refreshApplication();
         return [
@@ -65,7 +67,7 @@ class UserApiValidationTest extends TestCase
                     'email' => 'test@test.com',
                     'password' => Hash::make('test'),
                 ],
-                true,
+                200,
                 [],
             ],
             '失敗(required)' => [
@@ -75,7 +77,7 @@ class UserApiValidationTest extends TestCase
                     'email' => '',
                     'password' => '',
                 ],
-                false,
+                422,
                 [
                     'location_id' => ['拠点を入力してください。'],
                     'name' => ['名称を入力してください。'],
@@ -90,7 +92,7 @@ class UserApiValidationTest extends TestCase
                     'email' => 'test2@test.com',
                     'password' => Hash::make('test'),
                 ],
-                false,
+                422,
                 [
                     'email' => ['このメールアドレスは既に存在します。'],
                 ],
@@ -103,7 +105,7 @@ class UserApiValidationTest extends TestCase
                     'email' => 'test2',
                     'password' => '$2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm',
                 ],
-                false,
+                422,
                 [
                     'email' => ['メールアドレスを正しい形式で入力してください。'],
                 ],

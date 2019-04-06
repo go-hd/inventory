@@ -2,8 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Http\Requests\BrandRequest;
-use Illuminate\Support\Facades\Validator;
+use App\Brand;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -24,27 +23,20 @@ class BrandApiValidationTest extends TestCase
         $this->artisan('db:seed');
     }
 
-    /**
-     * バリデーションテスト
-     *
-     * @param array $dataList
-     * @param boolean $expect
-     * @param array $messages
-     * @dataProvider brandDataProvider
-     */
-    public function testValidation($dataList, $expect, $messages)
+	/**
+	 * バリデーションテスト
+	 *
+	 * @param array   $dataList
+	 * @param integer $status
+	 * @param array   $messages
+	 * @dataProvider  brandDataProvider
+	 */
+    public function testValidation($dataList, $status, $messages)
     {
-        $request = new BrandRequest();
-        $rules = $request->rules();
-        $validator = Validator::make($dataList, $rules);
-        $result = $validator->passes();
-        // バリデーション結果が正しいか確認
-        $this->assertEquals($expect, $result);
-        $result_messages = $validator->errors()->toArray();
-        // エラーメッセージが正しいか確認
-        foreach ($messages as $key => $value) {
-            $this->assertEquals($value, $result_messages[$key]);
-        }
+		$response = $this->post('/brands', $dataList);
+		$response
+			->assertStatus($status)
+			->assertJson($messages);
     }
 
     public function brandDataProvider()
@@ -55,7 +47,7 @@ class BrandApiValidationTest extends TestCase
                     'name' => 'testName',
                     'code' => 'testCode',
                 ],
-                true,
+				200,
                 [],
             ],
             '失敗(required)' => [
@@ -63,7 +55,7 @@ class BrandApiValidationTest extends TestCase
                     'name' => '',
                     'code' => '',
                 ],
-                false,
+				422,
                 [
                     'name' => ['名称を入力してください。'],
                     'code' => ['コードを入力してください。'],
