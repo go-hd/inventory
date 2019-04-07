@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Lot;
 use App\Material;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -36,9 +37,29 @@ class MaterialApiValidationTest extends TestCase
     {
 		if ($isUnique) {
 			// ユニークチェック用のデータを入れる
+			factory(Lot::class)->create([
+				'id' => 100,
+				'location_id' => 1,
+				'brand_id' => 1,
+				'lot_number' => 'a21212121213',
+				'name' => 'testName',
+				'jan_code' => '1313131313132',
+				'expiration_date' => '2019-10-10',
+				'ordered_at' => '2019-01-10'
+			]);
+			factory(Lot::class)->create([
+				'id' => 200,
+				'location_id' => 1,
+				'brand_id' => 1,
+				'lot_number' => 'a21212121214',
+				'name' => 'testName2',
+				'jan_code' => '1313131313133',
+				'expiration_date' => '2019-10-10',
+				'ordered_at' => '2019-01-10'
+			]);
 			$origin = factory(Material::class)->create([
-				'parent_lot_id' => 1,
-				'child_lot_id' => 2,
+				'parent_lot_id' => 100,
+				'child_lot_id' => 200,
 			]);
 		}
 
@@ -77,8 +98,8 @@ class MaterialApiValidationTest extends TestCase
             ],
             '失敗(unique)' => [
                 [
-                    'parent_lot_id' => 1,
-                    'child_lot_id' => 2,
+                    'parent_lot_id' => 100,
+                    'child_lot_id' => 200,
                 ],
 				422,
                 [
