@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class StockHistoryRequest extends FormRequest
 {
@@ -27,34 +29,25 @@ class StockHistoryRequest extends FormRequest
             'location_id' => 'required',
             'lot_id' => 'required',
             'stock_history_type_id' => 'required',
-            'quantity' => 'required'
+            'quantity' => [
+                'required',
+                'numeric',
+            ]
         ];
     }
 
-    /**
-     * 定義済みバリデーションルールのエラーメッセージ取得
-     *
-     * @return array
-     */
-    public function messages()
-    {
-        return [
-            'required'=>':attributeは必須項目です。'
-        ];
-    }
-
-    /**
-     * カスタムアトリビュート名
-     *
-     * @return array
-     */
-    public function attributes()
-    {
-        return [
-            'location_id' => '拠点',
-            'lot_id' => 'ロット',
-            'stock_history_type_id' => '在庫履歴種別',
-            'quantity' => '数量'
-        ];
-    }
+	/**
+	 * バリデーション失敗時
+	 *
+	 * @param \Illuminate\Contracts\Validation\Validator $validator
+	 *
+	 * @return void
+	 * @throw HttpResponseException
+	 */
+	protected function failedValidation(Validator $validator)
+	{
+		throw new HttpResponseException(
+			response()->json($validator->errors()->toArray(), 422)
+		);
+	}
 }

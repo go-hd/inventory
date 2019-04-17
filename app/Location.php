@@ -11,8 +11,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $company_id 会社ID
  * @property string $name 名称
  * @property int $location_type_id 拠点種別ID
- * @property string|null $location_code 拠点コード
- * @property string|null $location_number 拠点ナンバー
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Company $company

@@ -36,6 +36,15 @@ class StockHistoryType extends Model
     ];
 
     /**
+     * 配列に含めない属性
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'company_id',
+    ];
+
+    /**
      * 日付へキャストする属性
      *
      * @var array
@@ -46,12 +55,35 @@ class StockHistoryType extends Model
     ];
 
     /**
-     * 在庫履歴種別に紐づく会社を取得
+     * モデルの配列形態に追加するアクセサ
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @var array
      */
-    public function company()
+    protected $appends = [
+        'stock_histories'
+    ];
+
+    /**
+     * 在庫履歴を取得する
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function getStockHistoriesAttribute()
     {
-        return $this->belongsTo(Company::class);
+        return $this->stock_histories()
+            ->getResults()
+            ->makeHidden([
+                'stock_history_type'
+            ]);
+    }
+
+    /**
+     * 在庫履歴種別に紐づく在庫履歴を取得
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function stock_histories()
+    {
+        return $this->hasMany(StockHistory::class);
     }
 }

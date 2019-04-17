@@ -3,10 +3,12 @@
 namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Validation\Rule;
 
-class BrandRequest extends FormRequest
+class LocationPaletteRequest extends FormRequest
 {
     /**
      * ユーザーがこのリクエストの権限を持っているかを判断する
@@ -26,8 +28,20 @@ class BrandRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required',
-            'code' => 'required',
+            'location_id' => [
+                'required',
+				Rule::unique('location_palette')->ignore($this->route('location_palette'))
+					->where(function(Builder $query) {
+						$query->where('palette_id', $this->input('palette_id'));
+					}),
+            ],
+            'palette_id' => [
+                'required',
+				Rule::unique('location_palette')->ignore($this->route('location_palette'))
+					->where(function(Builder $query) {
+						$query->where('location_id', $this->input('location_id'));
+					}),
+            ],
         ];
     }
 
