@@ -68,7 +68,7 @@ class LotApiResponseTest extends TestCase
             'lot_number' => 'a0a0a0a0a0a0',
             'name' => 'testName',
             'jan_code' => '0000000000000',
-            'ordered_at' => Carbon::now()->format('Y-m-d H:i:s'),
+            'ordered_at' => Carbon::now()->format('Y-m-d'),
         ];
         $response = $this->post('/lots', $data);
         $response->assertSuccessful()->assertJson(['status' => 'OK']);
@@ -92,7 +92,7 @@ class LotApiResponseTest extends TestCase
             'lot_number' => 'b0b0b0b0b0b0',
             'name' => 'testUpdateName',
             'jan_code' => '1111111111111',
-            'ordered_at' => Carbon::now()->format('Y-m-d H:i:s'),
+            'ordered_at' => Carbon::now()->format('Y-m-d'),
         ];
 
         $this->put('/lots/'. $lot->id, $data)

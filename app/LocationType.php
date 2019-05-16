@@ -36,15 +36,6 @@ class LocationType extends Model
     ];
 
     /**
-     * 配列に含めない属性
-     *
-     * @var array
-     */
-    protected $hidden = [
-        'company_id',
-    ];
-
-    /**
      * 日付へキャストする属性
      *
      * @var array
@@ -54,6 +45,14 @@ class LocationType extends Model
         'updated_at',
     ];
 
+	/**
+	 * モデルの配列形態に追加するアクセサ
+	 *
+	 * @var array
+	 */
+	protected $appends = [
+		'company',
+	];
 
     /**
      * 拠点を取得する
@@ -69,6 +68,17 @@ class LocationType extends Model
                 'users', 'lots', 'own_palettes', 'shared_palettes'
             ]);
     }
+
+	/**
+	 * 会社を取得する
+	 *
+	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
+	 */
+	public function getCompanyAttribute()
+	{
+		return $this->company()
+			->getResults();
+	}
 
     /**
      * 拠点種別に紐づく拠点を取得

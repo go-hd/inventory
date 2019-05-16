@@ -64,7 +64,10 @@ class Brand extends Model
      */
     public function getLotsAttribute()
     {
-        return $this->lots()->getResults()->makeHidden(['location_name', 'location_type_name', 'location_id', 'brand_id', 'brand_name']);
+        return $this->lots()->getResults()->makeHidden([
+        	'location_name', 'location_type_name', 'location_id', 'brand_id', 'brand',
+			'location', 'stock_histories'
+		]);
     }
 
     /**

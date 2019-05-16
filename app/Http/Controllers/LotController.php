@@ -31,7 +31,7 @@ class LotController extends Controller
      */
     public function index()
     {
-        $lots = $this->lot->all()->makeHidden(['brand', 'location', 'stock_histories']);
+        $lots = $this->lot->all()->makeHidden(['stock_histories']);
 
         return response()->json($lots, 200, [], JSON_PRETTY_PRINT);
     }

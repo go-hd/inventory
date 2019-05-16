@@ -31,7 +31,7 @@ class LocationController extends Controller
      */
     public function index()
     {
-        $locations = $this->location->all()->makeHidden(['users', 'lots', 'own_palettes', 'shared_palettes', 'location_type']);
+        $locations = $this->location->all()->makeHidden(['users', 'lots', 'own_palettes', 'shared_palettes']);
         return response()->json($locations, 200, [], JSON_PRETTY_PRINT);
     }
 

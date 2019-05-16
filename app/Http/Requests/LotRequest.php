@@ -45,7 +45,7 @@ class LotRequest extends FormRequest
                         $query->where('ordered_at', $this->input('ordered_at'));
                     }),
             ],
-            'expiration_date' => 'date',
+            'expiration_date' => 'nullable|date',
             'ordered_at' => [
                 'required',
                 'date',

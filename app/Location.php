@@ -54,8 +54,6 @@ class Location extends Model
      * @var array
      */
     protected $hidden = [
-        'company_id',
-        'location_type_id',
     ];
 
     /**
@@ -110,7 +108,7 @@ class Location extends Model
      */
     public function getLocationTypeAttribute()
     {
-        return $this->location_type()->getResults();
+        return $this->location_type()->getResults()->makeHidden(['company']);
     }
 
     /**
@@ -130,7 +128,7 @@ class Location extends Model
      */
     public function getLotsAttribute()
     {
-        return $this->lots()->getResults()->makeHidden(['location_name', 'location_type_name']);
+        return $this->lots()->getResults()->makeHidden(['location_name', 'location_type_name', 'brand', 'location', 'stock_histories']);
     }
 
     /**

@@ -44,7 +44,7 @@ class LocationTypeController extends Controller
      */
     public function show($id)
     {
-        $locationType = $this->locationType->findOrFail($id)->setAppends(['locations']);
+        $locationType = $this->locationType->findOrFail($id)->setAppends(['locations', 'company']);
         return response()->json($locationType, 200, [], JSON_PRETTY_PRINT);
     }
 

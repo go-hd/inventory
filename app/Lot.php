@@ -63,9 +63,6 @@ class Lot extends Model
      * @var array
      */
     protected $hidden = [
-        'location_id',
-        'brand_id',
-        'is_ten_days_notation',
     ];
 
     /**
@@ -74,8 +71,6 @@ class Lot extends Model
      * @var array
      */
     protected $dates = [
-        'expiration_date',
-        'ordered_at',
         'created_at',
         'updated_at',
     ];
@@ -86,32 +81,10 @@ class Lot extends Model
      * @var array
      */
     protected $appends = [
-        'brand_name',
-        'location_name',
         'brand',
         'location',
         'stock_histories',
     ];
-
-    /**
-     * ブランド名を取得する
-     *
-     * @return string
-     */
-    public function getBrandNameAttribute()
-    {
-        return $this->brand->name;
-    }
-
-    /**
-     * 拠点名を取得する
-     *
-     * @return string
-     */
-    public function getLocationNameAttribute()
-    {
-        return $this->location->name;
-    }
 
     /**
      * ブランドを取得する
@@ -158,7 +131,8 @@ class Lot extends Model
         // 発注日時期表記フラグがtrueの場合、時期表記に変換する
         if ($this->is_ten_days_notation) {
             // TODO
-        } else {
+			return $value;
+		} else {
             return $value;
         }
     }

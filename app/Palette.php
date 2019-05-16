@@ -44,7 +44,6 @@ class Palette extends Model
      * @var array
      */
     protected $hidden = [
-        'location_id',
     ];
 
     /**
