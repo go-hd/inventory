@@ -44,6 +44,7 @@ class BrandApiValidationTest extends TestCase
         return [
             '成功' => [
                 [
+                    'company_id' => 1,
                     'name' => 'testName',
                     'code' => 'testCode',
                 ],
@@ -52,11 +53,13 @@ class BrandApiValidationTest extends TestCase
             ],
             '失敗(required)' => [
                 [
+                    'company_id' => '',
                     'name' => '',
                     'code' => '',
                 ],
 				422,
                 [
+                    'company_id' => ['会社を入力してください。'],
                     'name' => ['名称を入力してください。'],
                     'code' => ['コードを入力してください。'],
                 ],
