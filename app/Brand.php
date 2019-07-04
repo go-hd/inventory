@@ -56,18 +56,18 @@ class Brand extends Model
      * @var array
      */
     protected $appends = [
-        'lots',
+        'products',
         'company',
     ];
 
     /**
-     * ロットを取得する
+     * 商品を取得する
      *
      * @return string
      */
-    public function getLotsAttribute()
+    public function getProductsAttribute()
     {
-        return $this->lots()->getResults()->makeHidden(['location_name', 'location_type_name', 'location_id', 'brand_id', 'brand_name']);
+        return $this->products()->getResults()->makeHidden(['brand']);
     }
 
     /**
@@ -85,9 +85,9 @@ class Brand extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function lots()
+    public function products()
     {
-        return $this->hasMany(Lot::class);
+        return $this->hasMany(Product::class);
     }
 
     /**

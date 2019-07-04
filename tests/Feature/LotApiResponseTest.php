@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Brand;
 use App\Location;
 use App\Lot;
+use App\Product;
 use Carbon\Carbon;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -33,7 +34,7 @@ class LotApiResponseTest extends TestCase
      */
     public function testIndex()
     {
-        $lots = Lot::all()->makeHidden(['brand', 'location', 'stock_histories']);
+        $lots = Lot::all()->makeHidden(['stock_histories']);
 
         $this->get('/lots')
             ->assertSuccessful()
@@ -48,7 +49,7 @@ class LotApiResponseTest extends TestCase
      */
     public function testShow()
     {
-        $lot = Lot::query()->first()->makeHidden(['brand_name', 'location_name']);
+        $lot = Lot::query()->first();
 
         $this->get('/lots/' . $lot->id)
             ->assertSuccessful()
@@ -63,11 +64,9 @@ class LotApiResponseTest extends TestCase
     public function testStore()
     {
         $data = [
-            'location_id' => Location::query()->get()->random()->id,
-            'brand_id' => Brand::query()->get()->random()->id,
+            'product_id' => Product::query()->get()->random()->id,
             'lot_number' => 'a0a0a0a0a0a0',
             'name' => 'testName',
-            'jan_code' => '0000000000000',
             'ordered_at' => Carbon::now()->format('Y-m-d H:i:s'),
         ];
         $response = $this->post('/lots', $data);
@@ -82,16 +81,13 @@ class LotApiResponseTest extends TestCase
     public function testUpdate()
     {
         $lot = factory(Lot::class)->create([
-            'location_id' => Location::query()->get()->random()->id,
-            'brand_id' => Brand::query()->get()->random()->id,
+            'product_id' => Product::query()->get()->random()->id,
         ]);
 
         $data = [
-            'location_id' => Location::query()->get()->random()->id,
-            'brand_id' => Brand::query()->get()->random()->id,
+            'product_id' => Product::query()->get()->random()->id,
             'lot_number' => 'b0b0b0b0b0b0',
             'name' => 'testUpdateName',
-            'jan_code' => '1111111111111',
             'ordered_at' => Carbon::now()->format('Y-m-d H:i:s'),
         ];
 
@@ -101,8 +97,7 @@ class LotApiResponseTest extends TestCase
 
         $updatedData = Lot::query()->find($lot->id)->toArray();
 
-        unset($data['location_id']);
-        unset($data['brand_id']);
+        unset ($data['product_id']);
         foreach ($data as $key => $value) {
             $this->assertSame($value, $updatedData[$key]);
         }
@@ -116,8 +111,7 @@ class LotApiResponseTest extends TestCase
     public function testDestroy()
     {
         $lot = factory(Lot::class)->create([
-            'location_id' => Location::query()->get()->random()->id,
-            'brand_id' => Brand::query()->get()->random()->id,
+            'product_id' => Product::query()->get()->random()->id,
         ]);
         $count = Lot::query()->count();
 

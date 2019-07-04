@@ -34,8 +34,6 @@ class AddColumnProductIdToLotsTable extends Migration
         Schema::table('lots', function (Blueprint $table) {
             $table->unsignedInteger('brand_id')->comment('ブランドID')->after('id');
             $table->unsignedInteger('location_id')->comment('拠点ID')->after('id');
-            $table->foreign('location_id')->references('id')->on('locations')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreign('brand_id')->references('id')->on('brands')->onUpdate('cascade')->onDelete('cascade');
             $table->dropForeign('lots_product_id_foreign');
             $table->dropColumn('product_id');
             $table->string('jan_code')->comment('JANコード')->after('name');

@@ -37,11 +37,9 @@ class LotApiValidationTest extends TestCase
         if ($isUnique) {
             // ユニークチェック用のデータを入れる
             $origin = factory(Lot::class)->create([
-                'location_id' => 1,
-                'brand_id' => 1,
+                'product_id' => 1,
                 'lot_number' => 'a21212121212',
                 'name' => 'testName',
-                'jan_code' => '1313131313131',
                 'expiration_date' => '2019-10-10',
                 'ordered_at' => '2019-01-10'
             ]);
@@ -63,11 +61,9 @@ class LotApiValidationTest extends TestCase
         return [
             '成功' => [
                 [
-                    'location_id' => 2,
-                    'brand_id' => 1,
+                    'product_id' => 1,
                     'lot_number' => 'b21212121212',
                     'name' => 'testName2',
-                    'jan_code' => '1111111111111',
                     'expiration_date' => '2019-10-11',
                     'ordered_at' => '2019-01-11',
                 ],
@@ -76,48 +72,40 @@ class LotApiValidationTest extends TestCase
             ],
             '失敗(required)' => [
                 [
-                    'location_id' => '',
-                    'brand_id' => '',
+                    'product_id' => '',
                     'lot_number' => '',
                     'name' => '',
-                    'jan_code' => '',
                     'ordered_at' => '',
                 ],
                 422,
                 [
-                    'location_id' => ['拠点を入力してください。'],
-                    'brand_id' => ['ブランドを入力してください。'],
+                    'product_id' => ['商品を入力してください。'],
                     'lot_number' => ['ロットナンバーを入力してください。'],
                     'name' => ['名称を入力してください。'],
-                    'jan_code' => ['JANコードを入力してください。'],
                     'ordered_at' => ['発注日を入力してください。'],
                 ],
             ],
             '失敗(unique)' => [
                 [
-                    'location_id' => 2,
-                    'brand_id' => 1,
+                    'product_id' => 1,
                     'lot_number' => 'a21212121212',
                     'name' => 'testName2',
-                    'jan_code' => '1313131313131',
                     'expiration_date' => '2019-10-11',
                     'ordered_at' => '2019-01-10',
                 ],
                 422,
                 [
+                    'product_id' => ['この商品は既に存在します。'],
                     'lot_number' => ['このロットナンバーは既に存在します。'],
-                    'jan_code' => ['このJANコードは既に存在します。'],
                     'ordered_at' => ['この発注日は既に存在します。'],
                 ],
                 true,
             ],
             '失敗(date)' => [
                 [
-                    'location_id' => 2,
-                    'brand_id' => 1,
+                    'product_id' => 2,
                     'lot_number' => 'b21212121212',
                     'name' => 'testName2',
-                    'jan_code' => '1111111111111',
                     'expiration_date' => 'aaa',
                     'ordered_at' => 'bbb',
                 ],
