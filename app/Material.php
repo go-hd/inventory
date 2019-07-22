@@ -38,6 +38,7 @@ class Material extends Model
     protected $fillable = [
         'parent_lot_id',
         'child_lot_id',
+        'amount',
         'note',
     ];
 

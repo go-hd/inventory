@@ -16,7 +16,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \App\Company $company
  * @property-read string $company_name
  * @property-read string $location_type_name
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Lot[] $lots
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Palette[] $palettes
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\StockHistory[] $stockHistories
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\StockMove[] $stockMoves
@@ -76,7 +75,6 @@ class Location extends Model
         'company',
         'location_type',
         'users',
-        'lots',
         'own_palettes',
         'shared_palettes',
     ];
@@ -205,16 +203,6 @@ class Location extends Model
     public function palettes()
     {
         return $this->belongsToMany(Palette::class)->withPivot('quantity');
-    }
-
-    /**
-     * 拠点に紐づくロットを取得
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function lots()
-    {
-        return $this->hasMany(Lot::class);
     }
 
     /**

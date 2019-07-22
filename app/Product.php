@@ -8,10 +8,8 @@ use Illuminate\Database\Eloquent\Model;
  * App\Brand
  *
  * @property int $id
- * @property int $company_id 会社ID
- * @property string $name 名称
- * @property string $code コード
- * @property string|null $note 備考
+ * @property int $brand_id ブランドID
+ * @property string $jan_code JANコード
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Brand newModelQuery()
@@ -25,7 +23,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Brand whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class Brand extends Model
+class Product extends Model
 {
     /**
      * 複数代入する属性
@@ -33,10 +31,8 @@ class Brand extends Model
      * @var array
      */
     protected $fillable = [
-        'company_id',
-        'name',
-        'code',
-        'note',
+        'brand_id',
+        'jan_code',
     ];
 
     /**
@@ -45,7 +41,6 @@ class Brand extends Model
      * @var array
      */
     protected $dates = [
-        'expiration_date',
         'created_at',
         'updated_at',
     ];
@@ -56,47 +51,26 @@ class Brand extends Model
      * @var array
      */
     protected $appends = [
-        'products',
-        'company',
+        'brand',
     ];
 
     /**
-     * 商品を取得する
+     * ブランドを取得する
      *
      * @return string
      */
-    public function getProductsAttribute()
+    public function getBrandAttribute()
     {
-        return $this->products()->getResults()->makeHidden(['brand']);
+        return $this->brand()->getResults();
     }
 
     /**
-     * 会社を取得する
-     *
-     * @return string
-     */
-    public function getCompanyAttribute()
-    {
-        return $this->company()->getResults();
-    }
-
-    /**
-     * ブランドに紐づくロットを取得
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function products()
-    {
-        return $this->hasMany(Product::class);
-    }
-
-    /**
-     * ブランドに紐づく会社を取得
+     * 商品に紐づくブランドを取得
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function company()
+    public function brand()
     {
-        return $this->belongsTo(Company::class);
+        return $this->belongsTo(Brand::class);
     }
 }

@@ -22,7 +22,13 @@ class DatabaseSeeder extends Seeder
             'company_id' => $company->id
         ]);
         /** @var \App\Brand $brand */
-        $brand = factory(\App\Brand::class)->create();
+        $brand = factory(\App\Brand::class)->create([
+            'company_id' => $company->id
+        ]);
+        /** @var \App\Product $product */
+        $product = factory(\App\Product::class)->create([
+            'brand_id' => $brand->id
+        ]);
 
         $locations = collect();
         $palettes = collect();
@@ -46,13 +52,13 @@ class DatabaseSeeder extends Seeder
 
                 /** @var \App\Lot[] $lots */
                 $lots[] = factory(\App\Lot::class, 3)->create([
-                    'location_id' => $location->id,
-                    'brand_id' => $brand->id,
+                    'product_id' => $product->id,
                 ]);
                 DB::table('materials')->insert(
                     [
                         'parent_lot_id' => $lots[$j]->random()->id,
                         'child_lot_id' => $lots[$j]->random()->id,
+                        'amount' => 100,
                         'created_at' => \Carbon\Carbon::now(),
                         'updated_at' => \Carbon\Carbon::now(),
                     ]

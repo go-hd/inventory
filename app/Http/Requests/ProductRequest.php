@@ -8,7 +8,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Validation\Rule;
 
-class LotRequest extends FormRequest
+class ProductRequest extends FormRequest
 {
     /**
      * ユーザーがこのリクエストの権限を持っているかを判断する
@@ -28,28 +28,10 @@ class LotRequest extends FormRequest
     public function rules()
     {
         return [
-            'product_id' => [
+            'brand_id' => 'required',
+            'jan_code' => [
                 'required',
-                Rule::unique('lots')->ignore($this->route('lot'))
-                    ->where(function(Builder $query) {
-                        $query->where('ordered_at', $this->input('ordered_at'));
-                    }),
-            ],
-            'lot_number' => [
-                'required',
-                'alpha_num',
-                'size:12',
-                Rule::unique('lots')->ignore($this->route('lot')),
-            ],
-            'name' => 'required',
-            'expiration_date' => 'date',
-            'ordered_at' => [
-                'required',
-                'date',
-                Rule::unique('lots')->ignore($this->route('lot'))
-                    ->where(function(Builder $query) {
-                        $query->where('product_id', $this->input('product_id'));
-                    }),
+                'digits:13'
             ],
         ];
     }

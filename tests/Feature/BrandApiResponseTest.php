@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Brand;
+use App\Company;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -60,6 +61,7 @@ class BrandApiResponseTest extends TestCase
     public function testStore()
     {
         $data = [
+            'company_id' => Company::query()->get()->random()->id,
             'name' => 'testBrand',
             'code' => 'testCode',
         ];
@@ -74,9 +76,12 @@ class BrandApiResponseTest extends TestCase
      */
     public function testUpdate()
     {
-        $brand = factory(Brand::class)->create();
+        $brand = factory(Brand::class)->create([
+            'company_id' => Company::query()->get()->random()->id,
+        ]);
 
         $data = [
+            'company_id' => Company::query()->get()->random()->id,
             'name' => 'testUpdateBrand',
             'code' => 'testUpdateCode',
         ];
@@ -99,7 +104,9 @@ class BrandApiResponseTest extends TestCase
      */
     public function testDestroy()
     {
-        $brand = factory(Brand::class)->create();
+        $brand = factory(Brand::class)->create([
+            'company_id' => Company::query()->get()->random()->id,
+        ]);
         $count = Brand::query()->count();
 
         $this->delete('/brands/'. $brand->id)

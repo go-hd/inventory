@@ -8,31 +8,24 @@ use Illuminate\Database\Eloquent\Model;
  * App\Lot
  *
  * @property int $id
- * @property int $location_id 拠点ID
- * @property int $brand_id ブランドID
+ * @property int $product_id 商品ID
  * @property string $lot_number ロットナンバー
  * @property string $name 名称
- * @property string $jan_code JANコード
  * @property \Illuminate\Support\Carbon $expiration_date 賞味期限
  * @property \Illuminate\Support\Carbon $ordered_at 発注日
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Brand $brand
- * @property-read string $brand_name
- * @property-read string $location_name
- * @property-read string $location_type_name
- * @property-read \App\Location $location
+ * @property-read \App\Product $product
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Material[] $materials
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\StockHistory[] $stockHistories
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Lot newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Lot newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Lot query()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Lot whereBrandId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Lot whereProducrId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Lot whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Lot whereExpirationDate($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Lot whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Lot whereJanCode($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Lot whereLocationId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Lot whereLotNumber($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Lot whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Lot whereOrderedAt($value)
@@ -47,11 +40,9 @@ class Lot extends Model
      * @var array
      */
     protected $fillable = [
-        'location_id',
-        'brand_id',
+        'product_id',
         'lot_number',
         'name',
-        'jan_code',
         'expiration_date',
         'ordered_at',
         'is_ten_days_notation',
@@ -63,6 +54,8 @@ class Lot extends Model
      * @var array
      */
     protected $hidden = [
+        'product_id',
+        'is_ten_days_notation',
     ];
 
     /**
@@ -81,32 +74,18 @@ class Lot extends Model
      * @var array
      */
     protected $appends = [
-        'brand',
-        'location',
+        'product',
         'stock_histories',
     ];
 
-    /**
-     * ブランドを取得する
+     /**
+     * 商品を取得する
      *
      * @return string
      */
-    public function getBrandAttribute()
+    public function getProductAttribute()
     {
-        return $this->brand()->getResults()->makeHidden(['lots']);
-    }
-
-    /**
-     * 拠点を取得する
-     *
-     * @return string
-     */
-    public function getLocationAttribute()
-    {
-        return $this->location()
-            ->getResults()
-            ->makeHidden(['location', 'company', 'users', 'lots', 'pivot',
-                'own_palettes', 'shared_palettes', 'location_type']);
+        return $this->product()->getResults();
     }
 
     /**
@@ -148,23 +127,13 @@ class Lot extends Model
     }
 
     /**
-     * ロットに紐づく拠点を取得
+     * ロットに紐づく商品を取得
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function location()
+    public function product()
     {
-        return $this->belongsTo(Location::class);
-    }
-
-    /**
-     * ロットに紐づくブランドを取得
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function brand()
-    {
-        return $this->belongsTo(Brand::class);
+        return $this->belongsTo(Product::class);
     }
 
     /**

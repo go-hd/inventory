@@ -2,26 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\LotRequest;
-use App\Lot;
+use App\Http\Requests\ProductRequest;
+use App\Product;
 
-class LotController extends Controller
+class ProductController extends Controller
 {
     /**
-     * ロットのインスタンス
+     * 商品のインスタンス
      *
-     * @var \App\Lot
+     * @var \App\product
      */
-    private $lot;
+    private $product;
 
     /**
-     * ロットコントローラーのインスタンスを作成
+     * 商品コントローラーのインスタンスを作成
      *
-     * @param  \App\Lot $lot
+     * @param  \App\product $product
      * @return void
      */
-    public function __construct(Lot $lot) {
-        $this->lot = $lot;
+    public function __construct(Product $product) {
+        $this->product = $product;
     }
 
     /**
@@ -31,9 +31,9 @@ class LotController extends Controller
      */
     public function index()
     {
-        $lots = $this->lot->all()->makeHidden(['stock_histories']);
+        $products = $this->product->all();
 
-        return response()->json($lots, 200, [], JSON_PRETTY_PRINT);
+        return response()->json($products, 200, [], JSON_PRETTY_PRINT);
     }
 
     /**
@@ -44,20 +44,20 @@ class LotController extends Controller
      */
     public function show($id)
     {
-        $lot = $this->lot->findOrFail($id);
+        $product = $this->product->findOrFail($id);
 
-        return response()->json($lot, 200, [], JSON_PRETTY_PRINT);
+        return response()->json($product, 200, [], JSON_PRETTY_PRINT);
     }
 
     /**
      * 新規作成
      *
-     * @param  \App\Http\Requests\LotRequest $request
+     * @param  \App\Http\Requests\productRequest $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(LotRequest $request)
+    public function store(productRequest $request)
     {
-        $this->lot->create($request->all());
+        $this->product->create($request->all());
         $response = ['status' => 'OK'];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
@@ -67,13 +67,13 @@ class LotController extends Controller
      * 編集
      *
      * @param  int $id
-     * @param  \App\Http\Requests\LotRequest $request
+     * @param  \App\Http\Requests\productRequest $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update($id, LotRequest $request)
+    public function update($id, productRequest $request)
     {
-        $lot = $this->lot->findOrFail($id);
-        $lot->update($request->all());
+        $product = $this->product->findOrFail($id);
+        $product->update($request->all());
         $response = ['status' => 'OK'];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
@@ -88,8 +88,8 @@ class LotController extends Controller
      */
     public function destroy($id)
     {
-        $lot = $this->lot->findOrFail($id);
-        $lot->delete();
+        $product = $this->product->findOrFail($id);
+        $product->delete();
         $response = ['status' => 'OK'];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);

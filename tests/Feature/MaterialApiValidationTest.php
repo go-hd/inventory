@@ -39,27 +39,24 @@ class MaterialApiValidationTest extends TestCase
 			// ユニークチェック用のデータを入れる
 			factory(Lot::class)->create([
 				'id' => 100,
-				'location_id' => 1,
-				'brand_id' => 1,
+				'product_id' => 1,
 				'lot_number' => 'a21212121213',
 				'name' => 'testName',
-				'jan_code' => '1313131313132',
 				'expiration_date' => '2019-10-10',
 				'ordered_at' => '2019-01-10'
 			]);
 			factory(Lot::class)->create([
 				'id' => 200,
-				'location_id' => 1,
-				'brand_id' => 1,
+				'product_id' => 1,
 				'lot_number' => 'a21212121214',
 				'name' => 'testName2',
-				'jan_code' => '1313131313133',
 				'expiration_date' => '2019-10-10',
-				'ordered_at' => '2019-01-10'
+				'ordered_at' => '2019-02-10'
 			]);
 			$origin = factory(Material::class)->create([
 				'parent_lot_id' => 100,
 				'child_lot_id' => 200,
+				'amount' => 100,
 			]);
 		}
 
@@ -81,6 +78,7 @@ class MaterialApiValidationTest extends TestCase
                 [
                     'parent_lot_id' => 3,
                     'child_lot_id' => 4,
+                    'amount' => 100,
                 ],
                 200,
                 [],
@@ -89,17 +87,20 @@ class MaterialApiValidationTest extends TestCase
                 [
                     'parent_lot_id' => '',
                     'child_lot_id' => '',
+                    'amount' => '',
                 ],
 				422,
                 [
                     'parent_lot_id' => ['親ロットを入力してください。'],
                     'child_lot_id' => ['子ロットを入力してください。'],
+                    'amount' => ['個数を入力してください。'],
                 ],
             ],
             '失敗(unique)' => [
                 [
                     'parent_lot_id' => 100,
                     'child_lot_id' => 200,
+                    'amount' => 100,
                 ],
 				422,
                 [

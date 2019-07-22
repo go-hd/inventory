@@ -42,6 +42,10 @@ class MaterialRequest extends FormRequest
 						$query->where('parent_lot_id', $this->input('parent_lot_id'));
 					}),
             ],
+            'amount' => [
+                'required',
+                'numeric',
+            ]
         ];
     }
 

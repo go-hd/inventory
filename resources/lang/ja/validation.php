@@ -118,12 +118,14 @@ return [
         'child_lot_id' => '子ロット',
         'type'=>'種別',
         'lot_id' => 'ロット',
+        'product_id' => '商品',
         'stock_history_type_id' => '在庫履歴種別',
         'quantity' => '数量',
         'shipping_id' => '出庫在庫履歴',
         'recieving_id' => '入庫在庫履歴',
         'email'=>'メールアドレス',
         'password'=>'パスワード',
+        'amount'=>'個数',
     ],
 
 ];

@@ -26,4 +26,5 @@ Route::resource('/stock_histories', 'StockHistoryController');
 Route::resource('/stock_history_types', 'StockHistoryTypeController');
 Route::resource('/stock_moves', 'StockMoveController');
 Route::resource('/users', 'UserController');
+Route::resource('/products', 'ProductController');
 

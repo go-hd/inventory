@@ -63,6 +63,7 @@ class MaterialApiResponseTest extends TestCase
         $data = [
             'parent_lot_id' => Lot::query()->get()->random()->id,
             'child_lot_id' => Lot::query()->get()->random()->id,
+            'amount' => 100,
         ];
         $response = $this->post('/materials', $data);
         $response->assertSuccessful()->assertJson(['status' => 'OK']);
@@ -78,11 +79,13 @@ class MaterialApiResponseTest extends TestCase
         $lot = factory(Material::class)->create([
             'parent_lot_id' => Lot::query()->get()->random()->id,
             'child_lot_id' => Lot::query()->get()->random()->id,
+            'amount' => 100,
         ]);
 
         $data = [
             'parent_lot_id' => Lot::query()->get()->random()->id,
             'child_lot_id' => Lot::query()->get()->random()->id,
+            'amount' => 200,
         ];
 
         $this->put('/materials/'. $lot->id, $data)
@@ -106,6 +109,7 @@ class MaterialApiResponseTest extends TestCase
         $lot = factory(Material::class)->create([
             'parent_lot_id' => Lot::query()->get()->random()->id,
             'child_lot_id' => Lot::query()->get()->random()->id,
+            'amount' => 100,
         ]);
         $count = Material::query()->count();
 
