@@ -88,7 +88,7 @@ class LotApiResponseTest extends TestCase
             'product_id' => Product::query()->get()->random()->id,
             'lot_number' => 'b0b0b0b0b0b0',
             'name' => 'testUpdateName',
-            'ordered_at' => Carbon::now()->format('Y-m-d H:i:s'),
+            'ordered_at' => Carbon::now()->format('Y-m-d'),
         ];
 
         $this->put('/lots/'. $lot->id, $data)

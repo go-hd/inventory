@@ -3,6 +3,8 @@
 namespace App;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Laravel\Passport\HasApiTokens;
+use Illuminate\Notifications\Notifiable;
 
 /**
  * App\User
@@ -33,6 +35,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  */
 class User extends Authenticatable
 {
+    use HasApiTokens, Notifiable;
+
     /**
      * 複数代入する属性
      *
@@ -77,16 +81,6 @@ class User extends Authenticatable
     ];
 
     /**
-     * パスワードをハッシュ化する
-     *
-     * @param string $password
-     */
-    public function setPasswordAttribute($password)
-    {
-        $this->attributes['password'] = bcrypt($password);
-    }
-
-    /**
      * 拠点を取得する
      *
      * @return string
@@ -120,4 +114,14 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Location::class);
     }
+
+    /**
+     * passport認証用
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function OauthAccessToken(){
+        return $this->hasMany('\App\OauthAccessToken');
+    }
+
 }
