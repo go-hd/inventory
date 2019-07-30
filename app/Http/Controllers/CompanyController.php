@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CompanyRequest;
 use App\Company;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class CompanyController extends Controller
 {
@@ -27,11 +29,19 @@ class CompanyController extends Controller
     /**
      * 一覧
      *
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index(Request $request)
     {
-        $companies = $this->company->all();
+        $condition = $request->get('search', null);
+        // TODO: 検索部分をServiceに切り分ける
+        if (!is_null($condition)) {
+            $name = $condition['name'];
+            $companies = $this->company->where('name', 'LIKE', "%$name%")->get();
+        } else {
+            $companies = $this->company->all();
+        }
 
         return response()->json($companies, 200, [], JSON_PRETTY_PRINT);
     }
