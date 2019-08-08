@@ -7,7 +7,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Validation\Rule;
 
-class CompanyRequest extends FormRequest
+class UserVerificationRequest extends FormRequest
 {
     /**
      * ユーザーがこのリクエストの権限を持っているかを判断する
@@ -27,14 +27,12 @@ class CompanyRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => [
+            'company_id' => 'required',
+            'email' => [
                 'required',
-                Rule::unique('companies')->ignore($this->route('company')),
+                'email',
             ],
-            'company_code' => [
-                'required',
-                Rule::unique('companies')->ignore($this->route('company')),
-            ]
+            'token' => 'required',
         ];
     }
 

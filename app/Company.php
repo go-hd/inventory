@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property int $id
  * @property string $name 名称
- * @property int|null $main_location_id メイン拠点ID
+ * @property string $company_code 会社コード
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read string $main_location_name
@@ -33,7 +33,7 @@ class Company extends Model
      * @var array
      */
     protected $fillable = [
-        'name',
+        'name', 'company_code'
     ];
 
     /**

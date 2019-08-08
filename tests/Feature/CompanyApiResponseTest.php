@@ -59,7 +59,7 @@ class CompanyApiResponseTest extends TestCase
      */
     public function testStore()
     {
-        $data = ['name' => 'TestCompany'];
+        $data = ['name' => 'TestCompany', 'company_code' => 'TestCompanyCode'];
         $response = $this->post('/companies', $data);
         $response->assertSuccessful()->assertJson(['status' => 'OK']);
     }
@@ -73,7 +73,7 @@ class CompanyApiResponseTest extends TestCase
     {
         $company = factory(Company::class)->create();
 
-        $data = ['name' => 'UpdatedTestCompany'];
+        $data = ['name' => 'UpdatedTestCompany', 'company_code' => 'UpdatedTestCompanyCode'];
 
         $this->put('/companies/' . $company->id, $data)
             ->assertSuccessful()

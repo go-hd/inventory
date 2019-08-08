@@ -26,5 +26,8 @@ Route::resource('/stock_histories', 'StockHistoryController');
 Route::resource('/stock_history_types', 'StockHistoryTypeController');
 Route::resource('/stock_moves', 'StockMoveController');
 Route::resource('/users', 'UserController');
+Route::get('/users/register', 'UserController@register');
 Route::resource('/products', 'ProductController');
 
+Route::resource('/user_verifications', 'UserVerificationController')->only('store');
+Route::get('/user_verifications/verify', 'UserVerificationController@verify');

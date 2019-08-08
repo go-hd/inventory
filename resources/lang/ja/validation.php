@@ -107,6 +107,7 @@ return [
         'name'=>'名称',
         'code'=>'コード',
         'company_id' => '会社',
+        'company_code' => '会社コード',
         'location_type_id' => '拠点種別',
         'location_id' => '拠点',
         'brand_id' => 'ブランド',
