@@ -93,4 +93,15 @@ class LocationController extends Controller
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }
+
+    /**
+     * フロントからのバリデーション用
+     *
+     * @param LocationRequest $request
+     * @return array|\Illuminate\Http\JsonResponse
+     */
+    public function validation(LocationRequest $request) {
+        $response = ['status' => 'OK'];
+        return response()->json($response, 200, [], JSON_PRETTY_PRINT);
+    }
 }

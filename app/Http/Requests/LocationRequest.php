@@ -26,9 +26,9 @@ class LocationRequest extends FormRequest
     public function rules()
     {
         return [
-            'company_id' => 'required',
+            // 'company_id' => 'required',
             'name' => 'required',
-            'location_type_id' => 'required',
+            // 'location_type_id' => 'required',
         ];
     }
 

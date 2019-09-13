@@ -124,4 +124,14 @@ class User extends Authenticatable
         return $this->hasMany('\App\OauthAccessToken');
     }
 
+    /**
+     * パスワードをハッシュ化する
+     *
+     * @param $password
+     */
+    public function setPasswordAttribute($password)
+    {
+        $this->attributes['password'] = bcrypt($password);
+    }
+
 }

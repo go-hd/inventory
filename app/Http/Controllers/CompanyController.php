@@ -103,4 +103,15 @@ class CompanyController extends Controller
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }
+
+    /**
+     * フロントからのバリデーション用
+     *
+     * @param CompanyRequest $request
+     * @return array|\Illuminate\Http\JsonResponse
+     */
+    public function validation(CompanyRequest $request) {
+        $response = ['status' => 'OK'];
+        return response()->json($response, 200, [], JSON_PRETTY_PRINT);
+    }
 }

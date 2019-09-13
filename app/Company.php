@@ -70,6 +70,17 @@ class Company extends Model
     }
 
     /**
+     * 最初の拠点を取得する
+     *
+     * @return array
+     */
+    public function getFirstLocationAttribute()
+    {
+        return $this->locations()
+            ->getResults()[0] ?? [];
+    }
+
+    /**
      * 会社に紐づく拠点を取得
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

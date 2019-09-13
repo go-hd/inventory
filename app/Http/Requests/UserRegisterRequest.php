@@ -7,7 +7,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Validation\Rule;
 
-class UserRequest extends FormRequest
+class UserRegisterRequest extends FormRequest
 {
     /**
      * ユーザーがこのリクエストの権限を持っているかを判断する
@@ -27,17 +27,9 @@ class UserRequest extends FormRequest
     public function rules()
     {
         $rules = [
-            // 'location_id' => 'required',
             'name' => 'required',
-            'email' => [
-                'required',
-                'email',
-                Rule::unique('users')->ignore($this->route('user')),
-            ],
+            'password' => 'required',
         ];
-        if ($this->method() !== 'PUT' && $this->method() !== 'PATCH') {
-            $rules['password'] = 'required';
-        }
         return $rules;
     }
 
