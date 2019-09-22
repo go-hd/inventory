@@ -6,5 +6,6 @@ use Faker\Generator as Faker;
 $factory->define(\App\Company::class, function (Faker $faker) {
     return [
         'name' => $faker->company,
+        'company_code' => $faker->countryCode,
     ];
 });
