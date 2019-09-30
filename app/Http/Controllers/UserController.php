@@ -108,7 +108,11 @@ class UserController extends Controller
     public function update($id, UserRequest $request)
     {
         $user = $this->user->findOrFail($id);
-        $user->update($request->all());
+        $data = $request->all();
+        if (empty($data['password'])) {
+            unset($data['password']);
+        }
+        $user->update($data);
         $response = ['status' => 'OK'];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
