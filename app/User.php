@@ -90,7 +90,7 @@ class User extends Authenticatable
         return $this->location()
                     ->getResults()
                     ->makeHidden([
-                        'company_id', 'location_type_id', 'company_name', 'location_type',
+                        'company_id', 'location_type_id', 'company_name',
                         'company', 'users', 'lots', 'own_palettes', 'shared_palettes'
                     ]);
     }
