@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\BrandRequest;
 use App\Brand;
+use Illuminate\Http\Request;
 
 class BrandController extends Controller
 {
@@ -29,9 +30,15 @@ class BrandController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index(Request $request)
     {
-        $brands = $this->brand->all();
+        $company_id = $request->get('company_id', null);
+        if (!is_null($company_id)) {
+            $brands = $this->brand->where('company_id', $company_id)->get();
+
+        } else {
+            $brands = $this->brand->all();
+        }
 
         return response()->json($brands, 200, [], JSON_PRETTY_PRINT);
     }

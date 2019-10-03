@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ProductRequest;
 use App\Product;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
 {
@@ -29,9 +31,16 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index(Request $request)
     {
-        $products = $this->product->all();
+        $company_id = $request->get('company_id', null);
+        if (!is_null($company_id)) {
+            $products = $this->product->whereHas('brand', function ($query) use ($company_id) {
+                $query->where('company_id', $company_id);
+            })->get();
+        } else {
+            $products = $this->product->all();
+        }
 
         return response()->json($products, 200, [], JSON_PRETTY_PRINT);
     }
