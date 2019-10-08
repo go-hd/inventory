@@ -58,9 +58,7 @@ class LocationApiValidationTest extends TestCase
                 ],
                 422,
                 [
-                    'company_id' => ['会社を入力してください。'],
                     'name' => ['名称を入力してください。'],
-                    'location_type_id' => ['拠点種別を入力してください。'],
                 ],
             ],
         ];

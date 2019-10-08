@@ -79,7 +79,6 @@ class UserApiValidationTest extends TestCase
                 ],
                 422,
                 [
-                    'location_id' => ['拠点を入力してください。'],
                     'name' => ['名称を入力してください。'],
                     'email' => ['メールアドレスを入力してください。'],
                     'password' => ['パスワードを入力してください。'],

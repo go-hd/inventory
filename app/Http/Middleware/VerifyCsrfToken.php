@@ -39,5 +39,11 @@ class VerifyCsrfToken extends Middleware
 		'products/*',
 		'register',
 		'register/*',
+		'stock_histories',
+		'stock_histories/*',
+		'stock_history_types',
+		'stock_history_types/*',
+		'stock_moves',
+		'stock_moves/*',
     ];
 }
