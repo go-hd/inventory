@@ -34,7 +34,7 @@ class BrandController extends Controller
     {
         $company_id = $request->get('company_id', null);
         if (!is_null($company_id)) {
-            $brands = $this->brand->where('company_id', $company_id)->get();
+            $brands = $this->brand->where('company_id', $company_id)->orderBy('created_at', 'desc')->get();
 
         } else {
             $brands = $this->brand->all();

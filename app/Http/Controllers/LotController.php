@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LotRequest;
 use App\Lot;
+use Illuminate\Http\Request;
 
 class LotController extends Controller
 {
@@ -29,9 +30,18 @@ class LotController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index(Request $request)
     {
-        $lots = $this->lot->all()->makeHidden(['stock_histories']);
+        $company_id = $request->get('company_id', null);
+        if (!is_null($company_id)) {
+            $lots = $this->lot->whereHas('product', function ($query) use ($company_id) {
+                $query->whereHas('brand', function ($query) use ($company_id) {
+                    $query->where('company_id', $company_id);
+                });
+            })->get()->makeHidden(['stock_histories']);
+        } else {
+            $lots = $this->lot->all()->makeHidden(['stock_histories']);
+        }
 
         return response()->json($lots, 200, [], JSON_PRETTY_PRINT);
     }
