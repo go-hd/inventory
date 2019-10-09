@@ -52,6 +52,7 @@ class Product extends Model
      */
     protected $appends = [
         'brand',
+        'current_lot',
     ];
 
     /**
@@ -65,6 +66,17 @@ class Product extends Model
     }
 
     /**
+     * 最新のロットを取得する
+     *
+     * @return string
+     */
+    public function getCurrentLotAttribute()
+    {
+        $lot = $this->lots()->orderBy('created_at', 'desc')->first();
+        return !empty($lot) ? $lot->makeHidden(['product']) : null;
+    }
+
+    /**
      * 商品に紐づくブランドを取得
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -72,5 +84,15 @@ class Product extends Model
     public function brand()
     {
         return $this->belongsTo(Brand::class);
+    }
+
+    /**
+     * 商品に紐づくロットを取得
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function lots()
+    {
+        return $this->hasMany(Lot::class);
     }
 }

@@ -66,8 +66,8 @@ class ProductController extends Controller
      */
     public function store(productRequest $request)
     {
-        $this->product->create($request->all());
-        $response = ['status' => 'OK'];
+        $product = $this->product->create($request->all());
+        $response = ['status' => 'OK', 'product' => $product];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }
