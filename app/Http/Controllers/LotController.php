@@ -33,12 +33,15 @@ class LotController extends Controller
     public function index(Request $request)
     {
         $company_id = $request->get('company_id', null);
+        $product_id = $request->get('product_id', null);
         if (!is_null($company_id)) {
             $lots = $this->lot->whereHas('product', function ($query) use ($company_id) {
                 $query->whereHas('brand', function ($query) use ($company_id) {
                     $query->where('company_id', $company_id);
                 });
             })->get()->makeHidden(['stock_histories']);
+        } elseif (!is_null($product_id)) {
+            $lots = $this->lot->orderBy('created_at', 'desc')->where('product_id', $product_id)->get()->makeHidden(['stock_histories']);
         } else {
             $lots = $this->lot->all()->makeHidden(['stock_histories']);
         }
