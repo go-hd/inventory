@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LocationRequest;
 use App\Location;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class LocationController extends Controller
 {
@@ -29,9 +31,15 @@ class LocationController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index(Request $request)
     {
-        $locations = $this->location->all()->makeHidden(['users', 'lots', 'own_palettes', 'shared_palettes']);
+        $company_id = $request->get('company_id', null);
+        if (!is_null($company_id)) {
+            $locations = $this->location->where('company_id', $company_id)->get()->makeHidden(['users', 'lots', 'own_palettes', 'shared_palettes']);
+        } else {
+            $locations = $this->location->all()->makeHidden(['users', 'lots', 'own_palettes', 'shared_palettes']);
+        }
+
         return response()->json($locations, 200, [], JSON_PRETTY_PRINT);
     }
 
@@ -56,8 +64,8 @@ class LocationController extends Controller
      */
     public function store(LocationRequest $request)
     {
-        $this->location->create($request->all());
-        $response = ['status' => 'OK'];
+        $location = $this->location->create($request->all());
+        $response = ['status' => 'OK', 'location' => $location];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }

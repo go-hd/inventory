@@ -70,8 +70,8 @@ class LotController extends Controller
      */
     public function store(LotRequest $request)
     {
-        $this->lot->create($request->all());
-        $response = ['status' => 'OK'];
+        $lot = $this->lot->create($request->all());
+        $response = ['status' => 'OK', 'lot' => $lot];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }

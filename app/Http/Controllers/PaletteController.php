@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\PaletteRequest;
 use App\Palette;
+use Illuminate\Http\Request;
 
 class PaletteController extends Controller
 {
@@ -29,9 +30,16 @@ class PaletteController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index(Request $request)
     {
-        $palettes = $this->palette->all()->makeHidden(['shared_locations']);
+        $company_id = $request->get('company_id', null);
+        if (!is_null($company_id)) {
+            $palettes = $this->palette->whereHas('location', function ($query) use ($company_id) {
+                $query->where('company_id', $company_id);
+            })->get()->makeHidden(['shared_locations']);
+        } else {
+            $palettes = $this->palette->all()->makeHidden(['shared_locations']);
+        }
 
         return response()->json($palettes, 200, [], JSON_PRETTY_PRINT);
     }
@@ -57,8 +65,8 @@ class PaletteController extends Controller
      */
     public function store(PaletteRequest $request)
     {
-        $this->palette->create($request->all());
-        $response = ['status' => 'OK'];
+        $palette = $this->palette->create($request->all());
+        $response = ['status' => 'OK', 'palette' => $palette];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }

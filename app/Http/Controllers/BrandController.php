@@ -64,8 +64,8 @@ class BrandController extends Controller
      */
     public function store(BrandRequest $request)
     {
-        $this->brand->create($request->all());
-        $response = ['status' => 'OK'];
+        $brand = $this->brand->create($request->all());
+        $response = ['status' => 'OK', 'brand' => $brand];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }
