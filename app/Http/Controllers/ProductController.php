@@ -83,7 +83,7 @@ class ProductController extends Controller
     {
         $product = $this->product->findOrFail($id);
         $product->update($request->all());
-        $response = ['status' => 'OK'];
+        $response = ['status' => 'OK', 'product' => $product];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }
