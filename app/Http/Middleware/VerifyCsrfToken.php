@@ -45,5 +45,6 @@ class VerifyCsrfToken extends Middleware
 		'stock_history_types/*',
 		'stock_moves',
 		'stock_moves/*',
+		'location_palettes/*',
     ];
 }

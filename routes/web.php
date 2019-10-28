@@ -23,6 +23,7 @@ Route::post('/locations/validate', 'LocationController@validation');
 Route::resource('/location_types', 'LocationTypeController');
 Route::resource('/lots', 'LotController');
 Route::resource('/palettes', 'PaletteController');
+Route::post('/location_palettes/move', 'LocationPaletteController@move');
 Route::resource('/materials', 'MaterialController');
 Route::resource('/stock_histories', 'StockHistoryController');
 Route::resource('/stock_history_types', 'StockHistoryTypeController');

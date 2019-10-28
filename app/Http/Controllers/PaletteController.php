@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PaletteMoveRequest;
 use App\Http\Requests\PaletteRequest;
 use App\Palette;
 use Illuminate\Http\Request;
@@ -36,7 +37,7 @@ class PaletteController extends Controller
         if (!is_null($company_id)) {
             $palettes = $this->palette->whereHas('location', function ($query) use ($company_id) {
                 $query->where('company_id', $company_id);
-            })->get()->makeHidden(['shared_locations']);
+            })->orderBy('created_at', 'desc')->get();
         } else {
             $palettes = $this->palette->all()->makeHidden(['shared_locations']);
         }

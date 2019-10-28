@@ -127,6 +127,9 @@ return [
         'email'=>'メールアドレス',
         'password'=>'パスワード',
         'amount'=>'個数',
+        'palette_id'=>'パレット',
+        'from_location_id'=>'移動元拠点',
+        'to_location_id'=>'移動先拠点',
     ],
 
 ];
