@@ -83,7 +83,7 @@ class PaletteController extends Controller
     {
         $palette = $this->palette->findOrFail($id);
         $palette->update($request->all());
-        $response = ['status' => 'OK'];
+        $response = ['status' => 'OK', 'palette' => $palette];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }

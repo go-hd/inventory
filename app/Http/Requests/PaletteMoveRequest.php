@@ -28,8 +28,7 @@ class PaletteMoveRequest extends FormRequest
     public function rules()
     {
         return [
-            'from_location_id' => 'required',
-            'to_location_id' => 'required',
+            'location_id' => 'required',
             'palette_id' => 'required',
         ];
     }

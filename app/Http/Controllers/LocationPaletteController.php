@@ -36,20 +36,12 @@ class LocationPaletteController extends Controller
     {
         $data = $request->all();
         $palette = $this->palette->findOrFail($data['palette_id']);
-        $locations = $palette->locations;
-        $update = [];
-        foreach ($locations as $location) {
-            $location_id = $location->id;
-            if ($location_id === $data['from_location_id']) {
-                $update[$location_id] = ['quantity' => $location->quantity - $data['quantity']];
-            } else if ($location_id === $data['to_location_id']) {
-                $update[$location_id] = ['quantity' => $location->quantity + $data['quantity']];
-            } else {
-                $update[$location_id] = ['quantity' => $location->quantity];
-            }
+        if ($palette->locations()->where('locations.id', $data['location_id'])->exists()) {
+            $palette->locations()->updateExistingPivot($data['location_id'], ['quantity' => $data['quantity']], false);
+        } else {
+            $palette->locations()->attach($data['location_id'], ['quantity' => $data['quantity']]);
         }
-        $palette->locations()->sync($update);
-        $response = ['status' => 'OK'];
+        $response = ['status' => 'OK', 'palette' => $palette];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }
