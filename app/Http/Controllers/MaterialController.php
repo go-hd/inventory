@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\MaterialMultiRequest;
 use App\Http\Requests\MaterialRequest;
 use App\Material;
+use Illuminate\Support\Facades\DB;
 
 class MaterialController extends Controller
 {
@@ -37,19 +39,6 @@ class MaterialController extends Controller
     }
 
     /**
-     * 詳細
-     *
-     * @param  int $id
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function show($id)
-    {
-        $material = $this->material->findOrFail($id);
-
-        return response()->json($material, 200, [], JSON_PRETTY_PRINT);
-    }
-
-    /**
      * 新規作成
      *
      * @param  \App\Http\Requests\MaterialRequest $request
@@ -60,6 +49,30 @@ class MaterialController extends Controller
         $this->material->create($request->all());
         $response = ['status' => 'OK'];
 
+        return response()->json($response, 200, [], JSON_PRETTY_PRINT);
+    }
+
+    /**
+     * 新規作成 (一括登録)
+     * @param MaterialMultiRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function storeMulti(MaterialMultiRequest $request)
+    {
+        DB::beginTransaction();
+        try {
+            $materials = $request->get('materials');
+            foreach ($materials as $material) {
+                $this->material->create($material);
+            }
+            $response = ['status' => 'OK'];
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+            $response['status'] = 'NG';
+            $response['message'] = $e->getMessage();
+            return response()->json($response, 422, [], JSON_PRETTY_PRINT);
+        }
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }
 
