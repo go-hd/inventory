@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\MaterialMultiRequest;
 use App\Http\Requests\MaterialRequest;
 use App\Material;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class MaterialController extends Controller
 {
@@ -29,11 +31,14 @@ class MaterialController extends Controller
     /**
      * 一覧
      *
+     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index(Request $request)
     {
-        $materials = $this->material->all();
+
+        $materials = $request->has('parent_lot_id') ?
+            $this->material->where('parent_lot_id', $request->get('parent_lot_id'))->get() : $this->material->all();
 
         return response()->json($materials, 200, [], JSON_PRETTY_PRINT);
     }
@@ -57,13 +62,20 @@ class MaterialController extends Controller
      * @param MaterialMultiRequest $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function storeMulti(MaterialMultiRequest $request)
+    public function updateMulti(MaterialMultiRequest $request)
     {
         DB::beginTransaction();
         try {
             $materials = $request->get('materials');
             foreach ($materials as $material) {
-                $this->material->create($material);
+                Log::info($material);
+                $targetMaterial = $this->material->where('parent_lot_id', $material['parent_lot_id'])
+                    ->where('child_lot_id', $material['child_lot_id'])->first();
+                if (empty($targetMaterial)) {
+                    $this->material->create($material);
+                } else {
+                    $targetMaterial->update($material);
+                }
             }
             $response = ['status' => 'OK'];
             DB::commit();

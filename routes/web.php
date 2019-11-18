@@ -25,7 +25,7 @@ Route::resource('/lots', 'LotController');
 Route::resource('/palettes', 'PaletteController');
 Route::post('/location_palettes/move', 'LocationPaletteController@move');
 Route::resource('/materials', 'MaterialController', ['except' => ['show']]);
-Route::post('/materials/store_multi', 'MaterialController@storeMulti');
+Route::post('/materials/update_multi', 'MaterialController@updateMulti');
 Route::resource('/stock_histories', 'StockHistoryController');
 Route::resource('/stock_history_types', 'StockHistoryTypeController');
 Route::resource('/stock_moves', 'StockMoveController');

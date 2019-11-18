@@ -45,8 +45,27 @@ class MaterialMultiRequest extends FormRequest
             'materials.*.amount' => [
                 'required',
                 'numeric',
+                'min:1'
             ]
         ];
+    }
+
+    public function attributes()
+    {
+
+        $attributes = [];
+        foreach ($this->request->get('materials') as $key => $value){
+            $number = $key + 1;
+            $attributes = array_merge(
+                $attributes,
+                [
+                    "materials.$key.parent_lot_id" => "{$number}列目 親ロット",
+                    "materials.$key.child_lot_id" => "{$number}列目 子ロット",
+                    "materials.$key.amount" => "{$number}列目 個数",
+                ]
+            );
+        }
+        return $attributes;
     }
 
 	/**
