@@ -44,19 +44,6 @@ class BrandController extends Controller
     }
 
     /**
-     * 詳細
-     *
-     * @param  int $id
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function show($id)
-    {
-        $brand = $this->brand->findOrFail($id);
-
-        return response()->json($brand, 200, [], JSON_PRETTY_PRINT);
-    }
-
-    /**
      * 新規作成
      *
      * @param  \App\Http\Requests\ $request
@@ -100,5 +87,23 @@ class BrandController extends Controller
         $response = ['status' => 'OK'];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
+    }
+
+    /**
+     * ロットが登録されているブランドのみを取得する
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getHasLots(Request $request) {
+        $company_id = $request->get('company_id', null);
+        $query = $this->brand->query();
+        $query->where('company_id', $company_id)
+            ->whereHas('products', function($query) {
+                $query->whereHas('lots');
+            });
+        $brands = $query->orderBy('created_at', 'desc')->get();
+
+        return response()->json($brands, 200, [], JSON_PRETTY_PRINT);
     }
 }

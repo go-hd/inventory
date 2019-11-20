@@ -15,7 +15,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::resource('/brands', 'BrandController');
+Route::resource('/brands', 'BrandController', ['except' => ['show']]);
+Route::get('/brands/get_has_lots', 'BrandController@getHasLots');
 Route::resource('/companies', 'CompanyController');
 Route::post('/companies/validate', 'CompanyController@validation');
 Route::resource('/locations', 'LocationController');
