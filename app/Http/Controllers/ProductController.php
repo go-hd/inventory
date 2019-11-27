@@ -34,11 +34,14 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         $company_id = $request->get('company_id', null);
+        $brand_id = $request->get('brand_id', null);
         if (!is_null($company_id)) {
             $products = $this->product->whereHas('brand', function ($query) use ($company_id) {
                 $query->where('company_id', $company_id);
             })->get();
-        } else {
+        } elseif (!is_null($brand_id)) {
+            $products = $this->product->where('brand_id', $brand_id)->get();
+        }else {
             $products = $this->product->all();
         }
 

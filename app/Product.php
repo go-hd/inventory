@@ -53,6 +53,7 @@ class Product extends Model
     protected $appends = [
         'brand',
         'current_lot',
+        'lots',
     ];
 
     /**
@@ -74,6 +75,16 @@ class Product extends Model
     {
         $lot = $this->lots()->orderBy('created_at', 'desc')->first();
         return !empty($lot) ? $lot->makeHidden(['product']) : null;
+    }
+
+    /**
+     * 紐付くロットを取得する
+     *
+     * @return string
+     */
+    public function getLotsAttribute()
+    {
+        return $this->lots()->orderBy('created_at', 'desc')->get()->makeHidden(['product']);
     }
 
     /**
