@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StockHistoryTypeRequest;
 use App\StockHistoryType;
+use Illuminate\Http\Request;
 
 class StockHistoryTypeController extends Controller
 {
@@ -27,12 +28,17 @@ class StockHistoryTypeController extends Controller
     /**
      * 一覧
      *
+     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index(Request $request)
     {
-        $stockHistoryTypes = $this->stockHistoryType->all()->makeHidden(['stock_histories']);
-
+        $company_id = $request->get('company_id', null);
+        if (!is_null($company_id)) {
+            $stockHistoryTypes = $this->stockHistoryType->where('company_id', $company_id)->get()->makeHidden(['stock_histories']);
+        }else {
+            $stockHistoryTypes = $this->stockHistoryType->all()->makeHidden(['stock_histories']);
+        }
         return response()->json($stockHistoryTypes, 200, [], JSON_PRETTY_PRINT);
     }
 

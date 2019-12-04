@@ -18,9 +18,14 @@ class DatabaseSeeder extends Seeder
             'company_id' => $company->id
         ]);
         /** @var \App\StockHistoryType[] $stock_history_types */
-        $stock_history_types = factory(\App\StockHistoryType::class, 3)->create([
-            'company_id' => $company->id
-        ]);
+        $stock_history_types = [];
+        $stock_history_type_values = ['出荷', '入荷', '棚卸し'];
+        foreach ($stock_history_type_values as $stock_history_type_value) {
+            $stock_history_types[] = \App\StockHistoryType::create([
+                'name' => $stock_history_type_value,
+                'company_id' => $company->id
+            ]);
+        }
         /** @var \App\Brand $brand */
         $brand = factory(\App\Brand::class)->create([
             'company_id' => $company->id

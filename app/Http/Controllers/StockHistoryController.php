@@ -94,4 +94,21 @@ class StockHistoryController extends Controller
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }
+
+    /**
+     * 拠点が保有しているロットの在庫数を取得する
+     *
+     * @param $location_id
+     * @param $lot_id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getQuantity($location_id, $lot_id)
+    {
+        $res = 0;
+        $stockHistories = $this->stockHistory->where('location_id', $location_id)->where('lot_id', $lot_id)->get();
+        foreach ($stockHistories as $stockHistory) {
+            $res += $stockHistory->quantity;
+        }
+        return response()->json(['totalQuantity' => $res], 200, [], JSON_PRETTY_PRINT);
+    }
 }
