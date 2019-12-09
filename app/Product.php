@@ -63,7 +63,7 @@ class Product extends Model
      */
     public function getBrandAttribute()
     {
-        return $this->brand()->getResults();
+        return $this->brand()->getResults()->makeHidden(['products']);
     }
 
     /**
@@ -74,7 +74,7 @@ class Product extends Model
     public function getCurrentLotAttribute()
     {
         $lot = $this->lots()->orderBy('created_at', 'desc')->first();
-        return !empty($lot) ? $lot->makeHidden(['product']) : null;
+        return !empty($lot) ? $lot->makeHidden(['product', 'stock_histories']) : null;
     }
 
     /**
@@ -84,7 +84,7 @@ class Product extends Model
      */
     public function getLotsAttribute()
     {
-        return $this->lots()->orderBy('created_at', 'desc')->get()->makeHidden(['product']);
+        return $this->lots()->orderBy('created_at', 'desc')->get()->makeHidden(['product', 'stock_histories']);
     }
 
     /**

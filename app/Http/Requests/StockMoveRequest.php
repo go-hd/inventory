@@ -26,8 +26,9 @@ class StockMoveRequest extends FormRequest
     public function rules()
     {
         return [
-            'shipping_id' => 'required',
-            'recieving_id' => 'required',
+            // 確定するまでは在庫移動IDはないので一旦コメントアウトする
+//            'shipping_id' => 'required',
+//            'recieving_id' => 'required',
             'location_id' => 'required',
             'quantity' => [
                 'required',

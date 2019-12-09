@@ -60,7 +60,6 @@ class StockHistoryType extends Model
      * @var array
      */
     protected $appends = [
-        'stock_histories'
     ];
 
     /**

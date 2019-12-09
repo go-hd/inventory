@@ -31,7 +31,7 @@ class StockHistoryController extends Controller
      */
     public function index()
     {
-        $stockHistories = $this->stockHistory->all();
+        $stockHistories = $this->stockHistory->all()->makeHidden('lot');
 
         return response()->json($stockHistories, 200, [], JSON_PRETTY_PRINT);
     }

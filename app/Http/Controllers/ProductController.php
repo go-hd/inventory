@@ -45,6 +45,8 @@ class ProductController extends Controller
             $products = $this->product->all();
         }
 
+        $products->makeHidden(['brand']);
+
         return response()->json($products, 200, [], JSON_PRETTY_PRINT);
     }
 

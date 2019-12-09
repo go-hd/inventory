@@ -39,7 +39,7 @@ class MaterialController extends Controller
 
         $materials = $request->has('parent_lot_id') ?
             $this->material->where('parent_lot_id', $request->get('parent_lot_id'))->get() : $this->material->all();
-
+        $materials->makeHidden(['parent_lot', 'child_lot']);
         return response()->json($materials, 200, [], JSON_PRETTY_PRINT);
     }
 

@@ -34,10 +34,10 @@ class BrandController extends Controller
     {
         $company_id = $request->get('company_id', null);
         if (!is_null($company_id)) {
-            $brands = $this->brand->where('company_id', $company_id)->orderBy('created_at', 'desc')->get();
+            $brands = $this->brand->where('company_id', $company_id)->orderBy('created_at', 'desc')->get()->makeHidden('products');
 
         } else {
-            $brands = $this->brand->all();
+            $brands = $this->brand->all()->makeHidden('products');
         }
 
         return response()->json($brands, 200, [], JSON_PRETTY_PRINT);
