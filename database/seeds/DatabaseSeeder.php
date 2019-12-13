@@ -84,9 +84,9 @@ class DatabaseSeeder extends Seeder
             );
         }
         factory(\App\StockMove::class)->create([
-            'shipping_id' => $stock_histories[0]->id,
-            'recieving_id' => $stock_histories[1]->id,
-            'location_id' => $stock_histories[1]->location_id,
+            'recieving_location_id' => $locations[0]->random()->id,
+            'shipping_location_id' => $locations[1]->random()->id,
+            'lot_id' => $lots[0]->random()->id,
         ]);
         factory(\App\StockMove::class)->create([
             'shipping_id' => $stock_histories[1]->id,

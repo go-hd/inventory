@@ -37,9 +37,11 @@ class StockMove extends Model
      * @var array
      */
     protected $fillable = [
-        'shipping_id',
-        'recieving_id',
-        'location_id',
+        'recieving_location_id',
+        'shipping_location_id',
+        'lot_id',
+        'recieving_status',
+        'shipping_status',
         'quantity',
     ];
 
@@ -49,9 +51,9 @@ class StockMove extends Model
      * @var array
      */
     protected $hidden = [
-        'shipping_id',
-        'recieving_id',
-        'location_id',
+        'recieving_location_id',
+        'shipping_location_id',
+        'lot_id',
     ];
 
     /**
@@ -70,73 +72,101 @@ class StockMove extends Model
      * @var array
      */
     protected $appends = [
-        'shipping_stock_history',
-        'recieving_stock_history',
-        'location',
+        'shipping_location',
+        'recieving_location',
+        'lot',
     ];
 
     /**
-     * 出庫在庫履歴を取得する
+     * 出庫拠点を取得する
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function getShippingStockHistoryAttribute()
+    public function getShippingLocationAttribute()
     {
-        return $this->shipping_stock_history()->getResults();
+        return $this->shipping_location()->getResults();
     }
 
     /**
- * 入庫在庫履歴を取得する
- *
- * @return \Illuminate\Database\Eloquent\Relations\HasMany
- */
-    public function getRecievingStockHistoryAttribute()
-    {
-        return $this->recieving_stock_history()->getResults();
-    }
-
-    /**
-     * 拠点を取得する
+     * 入庫拠点を取得する
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function getLocationAttribute()
+    public function getRecievingLocationAttribute()
     {
-        return $this->location()->getResults()->makeHidden(
-            [
-                'company', 'location_type', 'users', 'lots', 'own_palettes', 'shared_palettes'
-            ]
-        );
+        return $this->recieving_location()->getResults();
     }
 
     /**
-     * 在庫移動に紐づく出庫在庫履歴を取得
+     * ロットを取得する
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function shipping_stock_history()
+    public function getLotAttribute()
     {
-        return $this->belongsTo(StockHistory::class, 'shipping_id');
+        return $this->lot()->getResults();
     }
 
     /**
-     * 在庫移動に紐づく入庫在庫履歴を取得
+     * 在庫移動に紐づく出庫拠点を取得
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function recieving_stock_history()
+    public function shipping_location()
     {
-        return $this->belongsTo(StockHistory::class, 'recieving_id');
+        return $this->belongsTo(Location::class, 'shipping_location_id');
     }
 
     /**
-     * 在庫移動に紐づく拠点を取得
+     * 在庫移動に紐づく入庫拠点を取得
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function location()
+    public function recieving_location()
     {
-        return $this->belongsTo(Location::class);
+        return $this->belongsTo(Location::class, 'recieving_location_id');
     }
 
+    /**
+     * 在庫移動に紐づくロットを取得
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function lot()
+    {
+        return $this->belongsTo(Lot::class);
+    }
+
+    /**
+     * 出庫タスクを取得する
+     *
+     * @param $location_id
+     * @param $lot_id
+     * @return \Illuminate\Database\Eloquent\Builder|Model|object|null
+     */
+    public function getShippingTask($location_id, $lot_id)
+    {
+        return self::query()
+            ->where('shipping_location_id', $location_id)
+            ->where('lot_id', $lot_id)
+            ->whereNull('shipping_status')
+            ->get();
+    }
+
+    /**
+     * 入庫確認待ちタスクを取得する
+     *
+     * @param $location_id
+     * @param $lot_id
+     * @return \Illuminate\Database\Eloquent\Builder|Model|object|null
+     */
+    public function getRecievingTask($location_id, $lot_id)
+    {
+        return self::query()
+            ->where('recieving_location_id', $location_id)
+            ->whereNotNull('shipping_status')
+            ->where('lot_id', $lot_id)
+            ->whereNull('recieving_status')
+            ->get();
+    }
 }

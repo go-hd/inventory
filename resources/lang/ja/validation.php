@@ -130,6 +130,8 @@ return [
         'palette_id'=>'パレット',
         'from_location_id'=>'移動元拠点',
         'to_location_id'=>'移動先拠点',
+        'recieving_location_id'=>'入庫拠点',
+        'shipping_location_id'=>'依頼拠点',
     ],
 
 ];

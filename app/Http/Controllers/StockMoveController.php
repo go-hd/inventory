@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StockMoveRequest;
+use App\StockHistory;
+use App\StockHistoryType;
 use App\StockMove;
+use Illuminate\Support\Facades\DB;
 
 class StockMoveController extends Controller
 {
@@ -13,6 +16,12 @@ class StockMoveController extends Controller
      * @var \App\StockMove
      */
     private $stockMove;
+    /**
+     * 在庫履歴のインスタンス
+     *
+     * @var StockHistory
+     */
+    private $stockHistory;
 
     /**
      * 在庫履歴コントローラーのインスタンスを作成
@@ -20,8 +29,9 @@ class StockMoveController extends Controller
      * @param  \App\StockMove $stockMove
      * @return void
      */
-    public function __construct(StockMove $stockMove) {
+    public function __construct(StockMove $stockMove, StockHistory $stockHistory) {
         $this->stockMove = $stockMove;
+        $this->stockHistory = $stockHistory;
     }
 
     /**
@@ -91,6 +101,72 @@ class StockMoveController extends Controller
         $stockMove = $this->stockMove->findOrFail($id);
         $stockMove->delete();
         $response = ['status' => 'OK'];
+
+        return response()->json($response, 200, [], JSON_PRETTY_PRINT);
+    }
+
+    /**
+     * 出庫を完了する
+     *
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function shipped($id)
+    {
+        DB::beginTransaction();
+        try {
+            $stockMove = $this->stockMove->findOrFail($id);
+            // 出庫済みステータスにする
+            $stockMove->shipping_status = true;
+            $stockMove->save();
+            // 在庫数を更新する
+            $this->stockHistory->create([
+                'location_id' => $stockMove->shipping_location_id,
+                'lot_id' => $stockMove->lot_id,
+                'quantity' => -$stockMove->quantity,
+                'stock_history_type_id' => StockHistoryType::SHIPPING,
+            ]);
+            $response = ['status' => 'OK'];
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+            $response['status'] = 'NG';
+            $response['message'] = "システムエラーが発生しました。:{$e->getMessage()}";
+            return response()->json($response, 422, [], JSON_PRETTY_PRINT);
+        }
+
+        return response()->json($response, 200, [], JSON_PRETTY_PRINT);
+    }
+
+    /**
+     * 入庫確認を完了する
+     *
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function recieved($id)
+    {
+        DB::beginTransaction();
+        try {
+            $stockMove = $this->stockMove->findOrFail($id);
+            // 入庫確認済みステータスにする
+            $stockMove->recieving_status = true;
+            $stockMove->save();
+            // 在庫数を更新する
+            $this->stockHistory->create([
+                'location_id' => $stockMove->recieving_location_id,
+                'lot_id' => $stockMove->lot_id,
+                'quantity' => $stockMove->quantity,
+                'stock_history_type_id' => StockHistoryType::RECIEVING,
+            ]);
+            $response = ['status' => 'OK'];
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+            $response['status'] = 'NG';
+            $response['message'] = "システムエラーが発生しました。:{$e->getMessage()}";
+            return response()->json($response, 422, [], JSON_PRETTY_PRINT);
+        }
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
     }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ProductRequest;
 use App\Product;
+use App\StockMove;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -12,18 +13,26 @@ class ProductController extends Controller
     /**
      * 商品のインスタンス
      *
-     * @var \App\product
+     * @var \App\Product
      */
     private $product;
+    /**
+     * 在庫移動のインスタンス
+     *
+     * @var \App\StockMove
+     */
+    private $stockMove;
 
     /**
      * 商品コントローラーのインスタンスを作成
      *
-     * @param  \App\product $product
+     * @param  \App\Product $product
+     * @param  \App\StockMove $stockMove
      * @return void
      */
-    public function __construct(Product $product) {
+    public function __construct(Product $product, StockMove $stockMove) {
         $this->product = $product;
+        $this->stockMove = $stockMove;
     }
 
     /**
@@ -44,8 +53,25 @@ class ProductController extends Controller
         }else {
             $products = $this->product->all();
         }
-
         $products->makeHidden(['brand']);
+
+        // 在庫情報を付与する場合
+        if ($request->has('with_stock')) {
+            $location_id = $request->get('location_id');
+            $products = $products->toArray();
+            foreach ($products as $index => $product) {
+                foreach ($product['lots'] as $lot_index => $lot) {
+                    // 出庫待ち
+                    $products[$index]['lots'][$lot_index]['shipping_tasks'] =
+                        $this->stockMove->getShippingTask($location_id, $lot['id']);
+                    // 入庫確認待ち
+                    $products[$index]['lots'][$lot_index]['recieving_tasks'] =
+                        $this->stockMove->getRecievingTask($location_id, $lot['id']);
+                    // TODO: 在庫数
+                }
+            }
+        }
+
 
         return response()->json($products, 200, [], JSON_PRETTY_PRINT);
     }
