@@ -69,10 +69,11 @@ class DatabaseSeeder extends Seeder
                     ]
                 );
                 /** @var \App\StockHistory $stock_histories */
+                $stock_history_type_key = array_rand($stock_history_types, 1 );
                 $stock_histories[] = factory(\App\StockHistory::class)->create([
                     'location_id' => $location->id,
                     'lot_id' => $lots[$j]->random()->id,
-                    'stock_history_type_id' => $stock_history_types->random()->id
+                    'stock_history_type_id' => $stock_history_types[$stock_history_type_key]->id
                 ]);
             }
             DB::table('location_palette')->insert(
@@ -89,9 +90,9 @@ class DatabaseSeeder extends Seeder
             'lot_id' => $lots[0]->random()->id,
         ]);
         factory(\App\StockMove::class)->create([
-            'shipping_id' => $stock_histories[1]->id,
-            'recieving_id' => $stock_histories[0]->id,
-            'location_id' => $stock_histories[0]->location_id,
+            'recieving_location_id' => $locations[1]->random()->id,
+            'shipping_location_id' => $locations[0]->random()->id,
+            'lot_id' => $lots[0]->random()->id,
         ]);
     }
 }

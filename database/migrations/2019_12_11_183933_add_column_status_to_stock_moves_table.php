@@ -40,6 +40,7 @@ class AddColumnStatusToStockMovesTable extends Migration
      */
     public function down()
     {
+        DB::table('stock_moves')->truncate();
         Schema::table('stock_moves', function (Blueprint $table) {
             $table->dropForeign('stock_moves_shipping_location_id_foreign');
             $table->dropForeign('stock_moves_recieving_location_id_foreign');
