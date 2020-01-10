@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\LotRequest;
 use App\Lot;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class LotController extends Controller
 {
@@ -34,19 +35,20 @@ class LotController extends Controller
     {
         $company_id = $request->get('company_id', null);
         $product_id = $request->get('product_id', null);
+        $query = $this->lot->query()->orderBy('created_at', 'desc');
         // 会社にひもづくロットを取得
         if (!is_null($company_id)) {
-            $lots = $this->lot->whereHas('product', function ($query) use ($company_id) {
+            $lots = $query->whereHas('product', function ($query) use ($company_id) {
                 $query->whereHas('brand', function ($query) use ($company_id) {
                     $query->where('company_id', $company_id);
                 });
             })->get();
         // 商品にひもづくロットを取得
         } elseif (!is_null($product_id)) {
-            $lots = $this->lot->orderBy('created_at', 'desc')->where('product_id', $product_id)->get();
-        // 全ロット取得
+            $lots = $query->where('product_id', $product_id)->get();
+            // 全ロット取得
         } else {
-            $lots = $this->lot->all();
+            $lots = $query->all();
         }
 
         $lots->makeHidden(['stock_histories', 'product']);
