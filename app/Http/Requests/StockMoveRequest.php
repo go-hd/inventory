@@ -26,7 +26,7 @@ class StockMoveRequest extends FormRequest
     public function rules()
     {
         return [
-            'recieving_location_id' => 'required',
+            'receiving_location_id' => 'required',
             'shipping_location_id' => 'required',
             'lot_id' => 'required',
             'quantity' => [

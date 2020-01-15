@@ -9,13 +9,13 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property int $id
  * @property int $shipping_id 出庫ID（在庫履歴）
- * @property int $recieving_id 入庫ID（在庫履歴）
+ * @property int $receiving_id 入庫ID（在庫履歴）
  * @property int $location_id 相手拠点ID
  * @property int $quantity 移動個数
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Location $location
- * @property-read \App\StockHistory $recievingStockHistory
+ * @property-read \App\StockHistory $receivingStockHistory
  * @property-read \App\StockHistory $shippingStockHistory
  * @method static \Illuminate\Database\Eloquent\Builder|\App\StockMove newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\StockMove newQuery()
@@ -24,7 +24,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\StockMove whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\StockMove whereLocationId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\StockMove whereQuantity($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\StockMove whereRecievingId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\StockMove wherereceivingId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\StockMove whereShippingId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\StockMove whereUpdatedAt($value)
  * @mixin \Eloquent
@@ -37,10 +37,10 @@ class StockMove extends Model
      * @var array
      */
     protected $fillable = [
-        'recieving_location_id',
+        'receiving_location_id',
         'shipping_location_id',
         'lot_id',
-        'recieving_status',
+        'receiving_status',
         'shipping_status',
         'quantity',
     ];
@@ -51,7 +51,7 @@ class StockMove extends Model
      * @var array
      */
     protected $hidden = [
-        'recieving_location_id',
+        'receiving_location_id',
         'shipping_location_id',
         'lot_id',
     ];
@@ -73,7 +73,7 @@ class StockMove extends Model
      */
     protected $appends = [
         'shipping_location',
-        'recieving_location',
+        'receiving_location',
         'lot',
     ];
 
@@ -92,9 +92,9 @@ class StockMove extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function getRecievingLocationAttribute()
+    public function getreceivingLocationAttribute()
     {
-        return $this->recieving_location()->getResults();
+        return $this->receiving_location()->getResults();
     }
 
     /**
@@ -122,9 +122,9 @@ class StockMove extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function recieving_location()
+    public function receiving_location()
     {
-        return $this->belongsTo(Location::class, 'recieving_location_id');
+        return $this->belongsTo(Location::class, 'receiving_location_id');
     }
 
     /**
@@ -160,13 +160,13 @@ class StockMove extends Model
      * @param $lot_id
      * @return \Illuminate\Database\Eloquent\Builder|Model|object|null
      */
-    public function getRecievingTask($location_id, $lot_id)
+    public function getreceivingTask($location_id, $lot_id)
     {
         return self::query()
-            ->where('recieving_location_id', $location_id)
+            ->where('receiving_location_id', $location_id)
             ->whereNotNull('shipping_status')
             ->where('lot_id', $lot_id)
-            ->whereNull('recieving_status')
+            ->whereNull('receiving_status')
             ->get();
     }
 }

@@ -44,7 +44,7 @@ class StockMoveApiValidationTest extends TestCase
             '成功' => [
                 [
                     'shipping_id' => 1,
-                    'recieving_id' => 2,
+                    'receiving_id' => 2,
                     'location_id' => 1,
                     'quantity' => 100,
                 ],
@@ -54,14 +54,14 @@ class StockMoveApiValidationTest extends TestCase
             '失敗(required)' => [
                 [
                     'shipping_id' => '',
-                    'recieving_id' => '',
+                    'receiving_id' => '',
                     'location_id' => '',
                     'quantity' => '',
                 ],
                 422,
                 [
                     'shipping_id' => ['出庫在庫履歴を入力してください。'],
-                    'recieving_id' => ['入庫在庫履歴を入力してください。'],
+                    'receiving_id' => ['入庫在庫履歴を入力してください。'],
                     'location_id' => ['拠点を入力してください。'],
                     'quantity' => ['数量を入力してください。'],
                 ],
@@ -69,7 +69,7 @@ class StockMoveApiValidationTest extends TestCase
             '失敗(integer)' => [
                 [
                     'shipping_id' => 1,
-                    'recieving_id' => 2,
+                    'receiving_id' => 2,
                     'location_id' => 1,
                     'quantity' => 'test',
                 ],

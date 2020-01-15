@@ -32,7 +32,7 @@ Route::get('/stock_histories/get_quantity/{location_id}/{lot_id}', 'StockHistory
 Route::resource('/stock_history_types', 'StockHistoryTypeController');
 Route::resource('/stock_moves', 'StockMoveController', ['except' => ['show']]);
 Route::post('/stock_moves/shipped/{id}', 'StockMoveController@shipped');
-Route::post('/stock_moves/recieved/{id}', 'StockMoveController@recieved');
+Route::post('/stock_moves/received/{id}', 'StockMoveController@received');
 Route::resource('/users', 'UserController');
 Route::post('/users/validate', 'UserController@validation');
 Route::post('/users/register', 'UserController@register');

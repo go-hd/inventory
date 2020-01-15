@@ -144,20 +144,20 @@ class StockMoveController extends Controller
      * @param $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function recieved($id)
+    public function received($id)
     {
         DB::beginTransaction();
         try {
             $stockMove = $this->stockMove->findOrFail($id);
             // 入庫確認済みステータスにする
-            $stockMove->recieving_status = true;
+            $stockMove->receiving_status = true;
             $stockMove->save();
             // 在庫数を更新する
             $this->stockHistory->create([
-                'location_id' => $stockMove->recieving_location_id,
+                'location_id' => $stockMove->receiving_location_id,
                 'lot_id' => $stockMove->lot_id,
                 'quantity' => $stockMove->quantity,
-                'stock_history_type_id' => StockHistoryType::RECIEVING,
+                'stock_history_type_id' => StockHistoryType::receivING,
             ]);
             $response = ['status' => 'OK'];
             DB::commit();

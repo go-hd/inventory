@@ -65,7 +65,7 @@ class StockMoveApiResponseTest extends TestCase
     {
         $data = [
             'shipping_id' => StockHistory::query()->first()->id,
-            'recieving_id' => StockHistory::query()->first()->id,
+            'receiving_id' => StockHistory::query()->first()->id,
             'location_id' => Location::query()->first()->id,
             'quantity' => 100,
         ];
@@ -82,13 +82,13 @@ class StockMoveApiResponseTest extends TestCase
     {
         $stockMove = factory(StockMove::class)->create([
             'shipping_id' => StockHistory::query()->first()->id,
-            'recieving_id' => StockHistory::query()->first()->id,
+            'receiving_id' => StockHistory::query()->first()->id,
             'location_id' => Location::query()->first()->id,
         ]);
 
         $data = [
             'shipping_id' => StockHistory::query()->first()->id,
-            'recieving_id' => StockHistory::query()->first()->id,
+            'receiving_id' => StockHistory::query()->first()->id,
             'location_id' => Location::query()->first()->id,
             'quantity' => 100,
         ];
@@ -100,7 +100,7 @@ class StockMoveApiResponseTest extends TestCase
         $updatedData = StockMove::query()->find($stockMove->id)->toArray();
 
         unset($data['shipping_id']);
-        unset($data['recieving_id']);
+        unset($data['receiving_id']);
         unset($data['location_id']);
         foreach ($data as $key => $value) {
             $this->assertSame($value, $updatedData[$key]);
@@ -116,7 +116,7 @@ class StockMoveApiResponseTest extends TestCase
     {
         $stockMove = factory(StockMove::class)->create([
             'shipping_id' => StockHistory::query()->first()->id,
-            'recieving_id' => StockHistory::query()->first()->id,
+            'receiving_id' => StockHistory::query()->first()->id,
             'location_id' => Location::query()->first()->id,
         ]);
         $count = StockMove::query()->count();

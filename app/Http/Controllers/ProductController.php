@@ -65,7 +65,7 @@ class ProductController extends Controller
                     $products[$index]['lots'][$lot_index]['shipping_tasks'] =
                         $this->stockMove->getShippingTask($location_id, $lot['id']);
                     // 入庫確認待ち
-                    $products[$index]['lots'][$lot_index]['recieving_tasks'] =
+                    $products[$index]['lots'][$lot_index]['receiving_tasks'] =
                         $this->stockMove->getRecievingTask($location_id, $lot['id']);
                     // TODO: 在庫数
                 }
