@@ -75,7 +75,7 @@ class ProductController extends Controller
                         $this->stockMove->getShippingTask($location_id, $lot['id']);
                     // 入庫確認待ち
                     $products[$index]['lots'][$lot_index]['receiving_tasks'] =
-                        $this->stockMove->getRecievingTask($location_id, $lot['id']);
+                        $this->stockMove->getReceivingTask($location_id, $lot['id']);
                     // 在庫数
                     $stockQuantity = 0;
                     $stockHistories = $this->stockHistory->where('location_id', $location_id)->where('lot_id', $lot['id'])->get();
