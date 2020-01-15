@@ -75,9 +75,9 @@ class DatabaseSeeder extends Seeder
      * @param  string  $productName
      * @return \Illuminate\Support\Collection|\App\Product[]
      */
-    protected function createLots(Product $product, string $productName): Collection
+    protected function createLots(Product $product, string $productName): array
     {
-        $lots = collect();
+        $lots = [];
         $ordered_at = $this->faker->dateTimeBetween(new Carbon('-2 years'), new Carbon('-4 months'));
 
         for ($i=0; $i<=rand(1, 5); $i++) {
@@ -86,8 +86,12 @@ class DatabaseSeeder extends Seeder
                 'lot_number' => uniqid(),
                 'name' => $productName . ' ' . $this->faker->word,
                 'ordered_at' => $ordered_at,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ];
         }
+
+        Lot::query()->insert($lots);
 
         return $lots;
     }
