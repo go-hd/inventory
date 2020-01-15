@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ProductRequest;
 use App\Product;
+use App\StockHistory;
 use App\StockMove;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -22,17 +23,25 @@ class ProductController extends Controller
      * @var \App\StockMove
      */
     private $stockMove;
+    /**
+     * 在庫履歴のインスタンス
+     *
+     * @var \App\StockHistory
+     */
+    private $stockHistory;
 
     /**
      * 商品コントローラーのインスタンスを作成
      *
      * @param  \App\Product $product
      * @param  \App\StockMove $stockMove
+     * @param  \App\StockHistory $stockHistory
      * @return void
      */
-    public function __construct(Product $product, StockMove $stockMove) {
+    public function __construct(Product $product, StockMove $stockMove, StockHistory $stockHistory) {
         $this->product = $product;
         $this->stockMove = $stockMove;
+        $this->stockHistory = $stockHistory;
     }
 
     /**
@@ -67,7 +76,13 @@ class ProductController extends Controller
                     // 入庫確認待ち
                     $products[$index]['lots'][$lot_index]['receiving_tasks'] =
                         $this->stockMove->getRecievingTask($location_id, $lot['id']);
-                    // TODO: 在庫数
+                    // 在庫数
+                    $stockQuantity = 0;
+                    $stockHistories = $this->stockHistory->where('location_id', $location_id)->where('lot_id', $lot['id'])->get();
+                    foreach ($stockHistories as $stockHistory) {
+                        $stockQuantity += $stockHistory->quantity;
+                    }
+                    $products[$index]['lots'][$lot_index]['stock_quantity'] = $stockQuantity;
                 }
             }
         }

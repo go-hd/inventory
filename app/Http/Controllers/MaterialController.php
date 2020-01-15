@@ -36,9 +36,9 @@ class MaterialController extends Controller
      */
     public function index(Request $request)
     {
-
+        $query = $this->material->query()->orderBy('created_at', 'desc');
         $materials = $request->has('parent_lot_id') ?
-            $this->material->where('parent_lot_id', $request->get('parent_lot_id'))->get() : $this->material->all();
+            $query->where('parent_lot_id', $request->get('parent_lot_id'))->get() : $query->get();
         $materials->makeHidden(['parent_lot', 'child_lot']);
         return response()->json($materials, 200, [], JSON_PRETTY_PRINT);
     }
