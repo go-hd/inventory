@@ -6,6 +6,7 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 
 class MaterialMultiRequest extends FormRequest
@@ -27,6 +28,9 @@ class MaterialMultiRequest extends FormRequest
      */
     public function rules()
     {
+        if (count($this->request->get('materials')) === 0) {
+            return [];
+        }
         return [
             'materials.*.parent_lot_id' => [
                 'required',
@@ -52,7 +56,9 @@ class MaterialMultiRequest extends FormRequest
 
     public function attributes()
     {
-
+        if (count($this->request->get('materials')) === 0) {
+            return [];
+        }
         $attributes = [];
         foreach ($this->request->get('materials') as $key => $value){
             $number = $key + 1;

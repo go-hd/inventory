@@ -67,8 +67,8 @@ class MaterialController extends Controller
         DB::beginTransaction();
         try {
             $materials = $request->get('materials');
+            $deleted_ids = $request->get('deleted_ids', []);
             foreach ($materials as $material) {
-                Log::info($material);
                 $targetMaterial = $this->material->where('parent_lot_id', $material['parent_lot_id'])
                     ->where('child_lot_id', $material['child_lot_id'])->first();
                 if (empty($targetMaterial)) {
@@ -76,6 +76,9 @@ class MaterialController extends Controller
                 } else {
                     $targetMaterial->update($material);
                 }
+            }
+            foreach ($deleted_ids as $deleted_id) {
+                $this->material->findOrFail($deleted_id)->delete();
             }
             $response = ['status' => 'OK'];
             DB::commit();
