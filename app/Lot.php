@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -58,7 +59,6 @@ class Lot extends Model
      */
     protected $hidden = [
         'product_id',
-        'is_ten_days_notation',
     ];
 
     /**
@@ -79,6 +79,8 @@ class Lot extends Model
     protected $appends = [
         'product',
         'stock_histories',
+        'ordered_at_month',
+        'ordered_at_ten_days_notation',
     ];
 
      /**
@@ -104,18 +106,40 @@ class Lot extends Model
     }
 
     /**
-     * 発注日を取得する
+     * 発注月を取得する
      *
      * @return string
      */
-    public function getOrderedAtAttribute($value)
+    public function getOrderedAtMonthAttribute()
     {
         // 発注日時期表記フラグがtrueの場合、時期表記に変換する
         if ($this->is_ten_days_notation) {
-            // TODO
-			return $value;
+			return Carbon::parse($this->ordered_at)->format('n');
 		} else {
-            return $value;
+            return null;
+        }
+    }
+
+    public function getOrderedAtTenDaysNotationAttribute()
+    {
+        // 発注日時期表記フラグがtrueの場合、時期表記に変換する
+        if ($this->is_ten_days_notation) {
+            $day = Carbon::parse($this->ordered_at)->format('d');
+            switch ($day) {
+                case 1:
+                    return '上旬';
+                    break;
+                case 11:
+                    return '中旬';
+                    break;
+                case 21:
+                    return '下旬';
+                    break;
+                default:
+                    return null;
+            }
+        } else {
+            return null;
         }
     }
 
