@@ -13,6 +13,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $name 名称
  * @property \Illuminate\Support\Carbon $expiration_date 賞味期限
  * @property \Illuminate\Support\Carbon $ordered_at 発注日
+ * @property boolean $ordered_quantity 発注数
+ * @property int $is_ten_days_notation 発注日時期表記フラグ
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Product $product
@@ -46,6 +48,7 @@ class Lot extends Model
         'expiration_date',
         'ordered_at',
         'is_ten_days_notation',
+        'ordered_quantity',
     ];
 
     /**

@@ -41,7 +41,8 @@ class LotApiValidationTest extends TestCase
                 'lot_number' => 'a21212121212',
                 'name' => 'testName',
                 'expiration_date' => '2019-10-10',
-                'ordered_at' => '2019-01-10'
+                'ordered_at' => '2019-01-10',
+                'ordered_quantity' => 100,
             ]);
         }
 
@@ -66,6 +67,7 @@ class LotApiValidationTest extends TestCase
                     'name' => 'testName2',
                     'expiration_date' => '2019-10-11',
                     'ordered_at' => '2019-01-11',
+                    'ordered_quantity' => 100,
                 ],
                 200,
                 [],
@@ -76,6 +78,7 @@ class LotApiValidationTest extends TestCase
                     'lot_number' => '',
                     'name' => '',
                     'ordered_at' => '',
+                    'ordered_quantity' => '',
                 ],
                 422,
                 [
@@ -92,6 +95,7 @@ class LotApiValidationTest extends TestCase
                     'name' => 'testName2',
                     'expiration_date' => '2019-10-11',
                     'ordered_at' => '2019-01-10',
+                    'ordered_quantity' => 100,
                 ],
                 422,
                 [
@@ -108,11 +112,26 @@ class LotApiValidationTest extends TestCase
                     'name' => 'testName2',
                     'expiration_date' => 'aaa',
                     'ordered_at' => 'bbb',
+                    'ordered_quantity' => 100,
                 ],
                 422,
                 [
                     'expiration_date' => ['賞味期限は正しい日付ではありません。'],
                     'ordered_at' => ['発注日は正しい日付ではありません。'],
+                ],
+            ],
+            '失敗(int)' => [
+                [
+                    'product_id' => 2,
+                    'lot_number' => 'b21212121212',
+                    'name' => 'testName2',
+                    'expiration_date' => '2019-10-11',
+                    'ordered_at' => '2019-01-10',
+                    'ordered_quantity' => 'test',
+                ],
+                422,
+                [
+                   'ordered_quantity' => ['発注数は整数にしてください。'],
                 ],
             ],
         ];

@@ -51,6 +51,7 @@ class LotRequest extends FormRequest
                         $query->where('product_id', $this->input('product_id'));
                     }),
             ],
+            'ordered_quantity' => 'integer',
         ];
     }
 

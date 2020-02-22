@@ -132,6 +132,7 @@ return [
         'to_location_id'=>'移動先拠点',
         'receiving_location_id'=>'入庫拠点',
         'shipping_location_id'=>'依頼拠点',
+        'ordered_quantity'=>'発注数',
     ],
 
 ];

@@ -34,7 +34,7 @@ class LotApiResponseTest extends TestCase
      */
     public function testIndex()
     {
-        $lots = Lot::all()->makeHidden(['stock_histories']);
+        $lots = Lot::query()->orderBy('created_at', 'desc')->get()->makeHidden(['stock_histories', 'product']);
 
         $this->get('/lots')
             ->assertSuccessful()
@@ -68,6 +68,7 @@ class LotApiResponseTest extends TestCase
             'lot_number' => 'a0a0a0a0a0a0',
             'name' => 'testName',
             'ordered_at' => Carbon::now()->format('Y-m-d H:i:s'),
+            'ordered_quantity' => 100,
         ];
         $response = $this->post('/lots', $data);
         $response->assertSuccessful()->assertJson(['status' => 'OK']);
@@ -89,6 +90,7 @@ class LotApiResponseTest extends TestCase
             'lot_number' => 'b0b0b0b0b0b0',
             'name' => 'testUpdateName',
             'ordered_at' => Carbon::now()->format('Y-m-d'),
+            'ordered_quantity' => 100,
         ];
 
         $this->put('/lots/'. $lot->id, $data)

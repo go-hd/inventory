@@ -48,7 +48,7 @@ class LotController extends Controller
             $lots = $query->where('product_id', $product_id)->get();
             // 全ロット取得
         } else {
-            $lots = $query->all();
+            $lots = $query->get();
         }
 
         $lots->makeHidden(['stock_histories', 'product']);
