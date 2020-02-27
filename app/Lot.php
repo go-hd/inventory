@@ -44,12 +44,14 @@ class Lot extends Model
      */
     protected $fillable = [
         'product_id',
+        'user_id',
         'lot_number',
         'name',
         'expiration_date',
         'ordered_at',
         'is_ten_days_notation',
         'ordered_quantity',
+        'is_reflected_in_stock',
     ];
 
     /**
@@ -164,6 +166,16 @@ class Lot extends Model
     }
 
     /**
+     * ロットに紐づくユーザー (=ロットの登録者）を取得
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    /**
      * ロットに紐づく在庫履歴を取得
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -183,4 +195,25 @@ class Lot extends Model
         return $this->hasMany(Material::class);
     }
 
+    /**
+     * 発注日が本日までのものを取得するscope
+     *
+     * @param $query
+     * @return mixed
+     */
+    public function scopeOrderedAtBeforeToday($query)
+    {
+        return $query->whereDate('ordered_at', '<=', Carbon::today());
+    }
+
+    /**
+     * 在庫に未反映のものを取得するscope
+     *
+     * @param $query
+     * @return mixed
+     */
+    public function scopeNotReflectedInStock($query)
+    {
+        return $query->where('is_reflected_in_stock', false);
+    }
 }

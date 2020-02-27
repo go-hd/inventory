@@ -157,7 +157,7 @@ class StockMoveController extends Controller
                 'location_id' => $stockMove->receiving_location_id,
                 'lot_id' => $stockMove->lot_id,
                 'quantity' => $stockMove->quantity,
-                'stock_history_type_id' => StockHistoryType::receivING,
+                'stock_history_type_id' => StockHistoryType::RECEIVING,
             ]);
             $response = ['status' => 'OK'];
             DB::commit();

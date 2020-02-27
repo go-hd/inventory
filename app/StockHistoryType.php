@@ -25,7 +25,7 @@ use Illuminate\Database\Eloquent\Model;
 class StockHistoryType extends Model
 {
     const SHIPPING = 1;
-    const receivING = 2;
+    const RECEIVING = 2;
 
     /**
      * 複数代入する属性
