@@ -82,7 +82,16 @@ class ProductController extends Controller
                     foreach ($stockHistories as $stockHistory) {
                         $stockQuantity += $stockHistory->quantity;
                     }
-                    $products[$index]['lots'][$lot_index]['stock_quantity'] = $stockQuantity;
+                    // 在庫が0個のロットは取り除く
+                    if ($stockQuantity === 0) {
+                        unset($products[$index]['lots'][$lot_index]);
+                    } else {
+                        $products[$index]['lots'][$lot_index]['stock_quantity'] = $stockQuantity;
+                    }
+                }
+                // ひもづく在庫ロットが0の場合、その商品は取り除く
+                if (count($products[$index]['lots']) === 0) {
+                    unset($products[$index]);
                 }
             }
         }
