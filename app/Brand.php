@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 /**
  * App\Brand
@@ -58,6 +59,7 @@ class Brand extends Model
     protected $appends = [
         'products',
         'company',
+        'has_stock_location_ids',
     ];
 
     /**
@@ -78,6 +80,36 @@ class Brand extends Model
     public function getCompanyAttribute()
     {
         return $this->company()->getResults();
+    }
+
+    /**
+     * ブランドにひもづく在庫がある拠点のIDを配列で取得する
+     * 在庫サイドバーの表示出しわけに使用
+     *
+     * @return array $hasStockHistoryLocationIds
+     */
+    public function getHasStockLocationIdsAttribute()
+    {
+        $hasStockHistoryLocationIds = [];
+        $locations = $this->company->locations;
+        $products = $this->products;
+
+        // TODO ここで在庫があるものだけ取得したいがうまくいかない・・・
+        foreach ($locations as $location) {
+            foreach ($products as $product) {
+                $stock = $product->whereHas('lots', function($query) use($location) {
+                    $query->whereHas('stockHistories', function($query) use ($location) {
+                       $query->where('location_id', $location->id);
+                    });
+                })->first();
+            }
+
+            if (!empty($stock)) {
+                $hasStockHistoryLocationIds[] = $location->id;
+            }
+        }
+
+        return $hasStockHistoryLocationIds;
     }
 
     /**

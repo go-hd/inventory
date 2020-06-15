@@ -44,7 +44,6 @@ class ActualDataSeeder extends Seeder
         DB::table('materials')->truncate();
         DB::table('palettes')->truncate();
         DB::table('stock_moves')->truncate();
-        DB::table('users')->truncate();
 
         // 会社
         $companyDataList = CompanyData::getDataList();

@@ -51,6 +51,7 @@ class CheckLotOrderedAt extends Command
         $lots = $this->lot
             ->orderedAtBeforeToday()
             ->notReflectedInStock()
+            ->where('ordered_quantity', '<>', 0)
             ->get();
 
         $lots->each(function ($lot) {
