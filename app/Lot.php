@@ -52,6 +52,7 @@ class Lot extends Model
         'is_ten_days_notation',
         'ordered_quantity',
         'is_reflected_in_stock',
+        'location_id',
     ];
 
     /**

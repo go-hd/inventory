@@ -57,7 +57,7 @@ class CheckLotOrderedAt extends Command
         $lots->each(function ($lot) {
             // 在庫反映
             $this->stockHistory->create([
-                'location_id' => $lot->user->location->id,
+                'location_id' => $lot->location_id,
                 'lot_id' => $lot->id,
                 'stock_history_type_id' => StockHistoryType::RECEIVING,
                 'quantity' => $lot->ordered_quantity,

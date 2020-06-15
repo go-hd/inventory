@@ -37,12 +37,10 @@ class LotRequest extends FormRequest
             ],
             'lot_number' => [
                 'required',
-                'alpha_num',
-                'size:12',
                 Rule::unique('lots')->ignore($this->route('lot')),
             ],
             'name' => 'required',
-            'expiration_date' => 'date',
+            'expiration_date' => 'nullable|date',
             'ordered_at' => [
                 'required',
                 'date',
@@ -52,6 +50,7 @@ class LotRequest extends FormRequest
                     }),
             ],
             'ordered_quantity' => 'integer',
+            'location_id' => 'required',
         ];
     }
 
