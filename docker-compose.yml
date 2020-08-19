@@ -11,6 +11,7 @@ services:
     - ./public:/var/www/html/public:cached
   app:
     build: ./docker/app
+    container_name: inventry_api_app
     depends_on:
     - mysql
     volumes:
@@ -26,9 +27,9 @@ services:
     - "3306:3306"
     volumes:
     - mysql-data:/var/lib/mysql
-  composer:
-    build: ./docker/composer
-    volumes:
-      - './:/data'
+#  composer:
+#    build: ./docker/composer
+#    volumes:
+#      - './:/data'
 volumes:
   mysql-data:
