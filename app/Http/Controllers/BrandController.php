@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\BrandRequest;
 use App\Brand;
+use App\Location;
 use Illuminate\Http\Request;
 
 class BrandController extends Controller
@@ -95,14 +96,31 @@ class BrandController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getHasLots(Request $request) {
+    public function getHasLots(Request $request, Location $location) {
+        $brands = [];
         $company_id = $request->get('company_id', null);
-        $query = $this->brand->query();
-        $query->where('company_id', $company_id)
-            ->whereHas('products', function($query) {
-                $query->whereHas('lots');
-            });
-        $brands = $query->orderBy('created_at', 'desc')->get();
+        $query = $this->brand->query()->where('company_id', $company_id);
+
+        if ($request->get('group_by_location')) {
+            // 拠点ごとに取得する
+            $locations = $location->query()->where('company_id', $company_id)->get();
+            foreach ($locations as $location) {
+                $query = $this->brand->query()->where('company_id', $company_id);
+                $brand = $query->whereHas('products', function($query) use ($location) {
+                    $query->whereHas('lots', function($query) use ($location) {
+                        $query->where('location_id', $location->id);
+                    });
+                })->get();
+                if (count($brand) !== 0) {
+                    $brands[$location->id] = $brand;
+                }
+            }
+        } else {
+            $query->whereHas('products', function($query) {
+                    $query->whereHas('lots');
+                });
+            $brands = $query->orderBy('created_at', 'desc')->get();
+        }
 
         return response()->json($brands, 200, [], JSON_PRETTY_PRINT);
     }
