@@ -13,11 +13,11 @@ return [
     */
 
     'supportsCredentials' => false,
-    'allowedOrigins' => [env('CORS_URL', '*')],
+    // 'allowedOrigins' => [env('CORS_URL', '*')],
+    'allowedOrigins' => ['*'],
     'allowedOriginsPatterns' => [],
     'allowedHeaders' => ['*'],
     'allowedMethods' => ['*'],
     'exposedHeaders' => [],
     'maxAge' => 0,
-
 ];

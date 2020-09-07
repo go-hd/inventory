@@ -50,3 +50,11 @@ Laravel Passportを使用
 ### CORS対策
 barryvdh/laravel-corsを使用 
 
+***
+### 登録したロットの発注の在庫を即時反映したい場合
+```
+// appコンテナに入る
+$ docker exec -it inventry_api_app bash
+$ php artisan command:check-lot-ordered-at
+```
+
