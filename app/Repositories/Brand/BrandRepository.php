@@ -58,7 +58,13 @@ class BrandRepository implements BrandRepositoryInterface
                 $query = $this->brand->query()->where('company_id', $params['company_id']);
                 $brand = $query->whereHas('products', function($query) use ($location) {
                     $query->whereHas('lots', function($query) use ($location) {
-                        $query->where('location_id', $location->id);
+                        $query->where(function($query)  use ($location) {
+                            $query->where('location_id', $location->id);
+                            $query->orWhereHas('stockMoves', function($query) use($location) {
+                                $query->where('shipping_status', 1);
+                                $query->where('receiving_location_id', $location->id);
+                            });
+                        });
                     });
                 })->get();
                 if (count($brand) !== 0) {

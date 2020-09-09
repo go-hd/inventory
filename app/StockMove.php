@@ -43,6 +43,7 @@ class StockMove extends Model
         'receiving_status',
         'shipping_status',
         'quantity',
+        'is_from_material',
     ];
 
     /**

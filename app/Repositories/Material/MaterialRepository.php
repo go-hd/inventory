@@ -93,8 +93,12 @@ class MaterialRepository implements MaterialRepositoryInterface
                 $targetMaterial->update($material);
             }
         }
+
         foreach ($deleted_ids as $deleted_id) {
-            $this->material->findOrFail($deleted_id)->delete();
+            $material = $this->material->find($deleted_id);
+            if (!empty($material)) {
+                $this->material->findOrFail($deleted_id)->delete();
+            }
         }
     }
 

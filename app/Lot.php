@@ -197,6 +197,16 @@ class Lot extends Model
     }
 
     /**
+     * ロットに紐づく在庫移動を取得
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function stockMoves()
+    {
+        return $this->hasMany(StockMove::class);
+    }
+
+    /**
      * 発注日が本日までのものを取得するscope
      *
      * @param $query

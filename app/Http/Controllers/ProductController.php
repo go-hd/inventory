@@ -71,8 +71,8 @@ class ProductController extends Controller
                     foreach ($stockHistories as $stockHistory) {
                         $stockQuantity += $stockHistory->quantity;
                     }
-                    // 在庫が0個のロットは取り除く
-                    if ($stockQuantity === 0) {
+                    // 入庫待ちがなく、在庫が0個のロットは取り除く
+                    if ($stockQuantity === 0 && count($products[$index]['lots'][$lot_index]['receiving_tasks']) === 0) {
                         unset($products[$index]['lots'][$lot_index]);
                     } else {
                         $products[$index]['lots'][$lot_index]['stock_quantity'] = $stockQuantity;
