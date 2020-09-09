@@ -3,25 +3,23 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StockHistoryRequest;
-use App\StockHistory;
+use App\Repositories\StockHistory\StockHistoryRepositoryInterface as StockHistoryRepository;
 
 class StockHistoryController extends Controller
 {
     /**
-     * 在庫履歴のインスタンス
-     *
-     * @var \App\StockHistory
+     * StockHistoryRepository
      */
-    private $stockHistory;
+    private $stockHistoryRepository;
 
     /**
      * 在庫履歴コントローラーのインスタンスを作成
      *
-     * @param  \App\StockHistory $stockHistory
+     * @param  StockHistoryRepository $stockHistoryRepository
      * @return void
      */
-    public function __construct(StockHistory $stockHistory) {
-        $this->stockHistory = $stockHistory;
+    public function __construct(StockHistoryRepository $stockHistoryRepository) {
+        $this->stockHistoryRepository = $stockHistoryRepository;
     }
 
     /**
@@ -31,7 +29,7 @@ class StockHistoryController extends Controller
      */
     public function index()
     {
-        $stockHistories = $this->stockHistory->all()->makeHidden('lot');
+        $stockHistories = $this->stockHistoryRepository->getAll();
 
         return response()->json($stockHistories, 200, [], JSON_PRETTY_PRINT);
     }
@@ -44,7 +42,7 @@ class StockHistoryController extends Controller
      */
     public function show($id)
     {
-        $stockHistory = $this->stockHistory->findOrFail($id);
+        $stockHistory = $this->stockHistoryRepository->getOne($id);
 
         return response()->json($stockHistory, 200, [], JSON_PRETTY_PRINT);
     }
@@ -57,7 +55,7 @@ class StockHistoryController extends Controller
      */
     public function store(StockHistoryRequest $request)
     {
-        $this->stockHistory->create($request->all());
+        $this->stockHistoryRepository->store($request->all());
         $response = ['status' => 'OK'];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
@@ -72,8 +70,7 @@ class StockHistoryController extends Controller
      */
     public function update($id, StockHistoryRequest $request)
     {
-        $stockHistory = $this->stockHistory->findOrFail($id);
-        $stockHistory->update($request->all());
+        $this->stockHistoryRepository->update($id, $request->all());
         $response = ['status' => 'OK'];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
@@ -88,8 +85,7 @@ class StockHistoryController extends Controller
      */
     public function destroy($id)
     {
-        $stockHistory = $this->stockHistory->findOrFail($id);
-        $stockHistory->delete();
+        $this->stockHistoryRepository->destroy($id);
         $response = ['status' => 'OK'];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
@@ -105,7 +101,7 @@ class StockHistoryController extends Controller
     public function getQuantity($location_id, $lot_id)
     {
         $res = 0;
-        $stockHistories = $this->stockHistory->where('location_id', $location_id)->where('lot_id', $lot_id)->get();
+        $stockHistories = $this->stockHistoryRepository->getList($location_id, $lot_id);
         foreach ($stockHistories as $stockHistory) {
             $res += $stockHistory->quantity;
         }

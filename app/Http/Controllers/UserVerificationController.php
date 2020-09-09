@@ -2,27 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use App\UserVerification;
+use App\Http\Requests\UserVerificationRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
+use App\Repositories\UserVerification\UserVerificationRepositoryInterface as UserVerificationRepository;
 
 class UserVerificationController extends Controller
 {
     /**
      * ユーザー認証情報のインスタンス
      *
-     * @var \App\User
+     * @var UserVerificationRepository
      */
-    private $userVerification;
+    private $userVerificationRepository;
 
     /**
      * ユーザーコントローラーのインスタンスを作成
      *
-     * @param  \App\UserVerification $userVerification
+     * @param  UserVerificationRepository $userVerificationRepository
      * @return void
      */
-    public function __construct(UserVerification $userVerification) {
-        $this->userVerification = $userVerification;
+    public function __construct(UserVerificationRepository $userVerificationRepository) {
+        $this->userVerificationRepository = $userVerificationRepository;
     }
 
     /**
@@ -31,9 +32,9 @@ class UserVerificationController extends Controller
      * @param  \App\Http\Requests\UserVerificationRequest $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(UserVerification $request)
+    public function store(UserVerificationRequest $request)
     {
-        $this->userVerification->create($request->all());
+        $this->userVerificationRepository->store($request->all());
         $response = ['status' => 'OK'];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
@@ -41,12 +42,8 @@ class UserVerificationController extends Controller
 
     public function verify(Request $request) {
 
-        $email = $request->get('email');
         // 対象のユーザーを取得
-        $userVerification = $this->userVerification->query()
-            ->where('token', $request->get('token'))
-            ->whereNull('is_verified')
-            ->where('email', $email)->first();
+        $userVerification = $this->userVerificationRepository->getByToken($request->get('token'), $request->get('email'));
 
         // 対象のユーザーがいない場合
         if (!$userVerification) {

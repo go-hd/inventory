@@ -3,27 +3,24 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\LotRequest;
-use App\Lot;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
+use App\Repositories\Lot\LotRepositoryInterface as LotRepository;
 
 class LotController extends Controller
 {
     /**
-     * ロットのインスタンス
-     *
-     * @var \App\Lot
+     * @var LotRepository
      */
-    private $lot;
+    private $lotRepository;
 
     /**
      * ロットコントローラーのインスタンスを作成
      *
-     * @param  \App\Lot $lot
+     * @param  LotRepository $lotRepository
      * @return void
      */
-    public function __construct(Lot $lot) {
-        $this->lot = $lot;
+    public function __construct(LotRepository $lotRepository) {
+        $this->lotRepository = $lotRepository;
     }
 
     /**
@@ -33,25 +30,7 @@ class LotController extends Controller
      */
     public function index(Request $request)
     {
-        $company_id = $request->get('company_id', null);
-        $product_id = $request->get('product_id', null);
-        $query = $this->lot->query()->orderBy('created_at', 'desc');
-        // 会社にひもづくロットを取得
-        if (!is_null($company_id)) {
-            $lots = $query->whereHas('product', function ($query) use ($company_id) {
-                $query->whereHas('brand', function ($query) use ($company_id) {
-                    $query->where('company_id', $company_id);
-                });
-            })->get();
-        // 商品にひもづくロットを取得
-        } elseif (!is_null($product_id)) {
-            $lots = $query->where('product_id', $product_id)->get();
-            // 全ロット取得
-        } else {
-            $lots = $query->get();
-        }
-
-        $lots->makeHidden(['stock_histories', 'product']);
+        $lots = $this->lotRepository->getList($request->all());
 
         return response()->json($lots, 200, [], JSON_PRETTY_PRINT);
     }
@@ -64,7 +43,7 @@ class LotController extends Controller
      */
     public function show($id)
     {
-        $lot = $this->lot->findOrFail($id);
+        $lot = $this->lotRepository->getOne($id);
 
         return response()->json($lot, 200, [], JSON_PRETTY_PRINT);
     }
@@ -77,7 +56,7 @@ class LotController extends Controller
      */
     public function store(LotRequest $request)
     {
-        $lot = $this->lot->create($request->all());
+        $lot = $this->lotRepository->store($request->all());
         $response = ['status' => 'OK', 'lot' => $lot];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
@@ -92,8 +71,7 @@ class LotController extends Controller
      */
     public function update($id, LotRequest $request)
     {
-        $lot = $this->lot->findOrFail($id);
-        $lot->update($request->all());
+        $this->lotRepository->update($id, $request->all());
         $response = ['status' => 'OK'];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
@@ -108,8 +86,7 @@ class LotController extends Controller
      */
     public function destroy($id)
     {
-        $lot = $this->lot->findOrFail($id);
-        $lot->delete();
+        $this->lotRepository->destroy($id);
         $response = ['status' => 'OK'];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);

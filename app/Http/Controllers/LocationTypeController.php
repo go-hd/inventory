@@ -3,25 +3,23 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\LocationTypeRequest;
-use App\LocationType;
+use App\Repositories\LocationType\LocationTypeRepositoryInterface as LocationTypeRepository;
 
 class LocationTypeController extends Controller
 {
     /**
-     * 拠点種別のインスタンス
-     *
-     * @var \App\LocationType
+     * @var LocationTypeRepository
      */
-    private $locationType;
+    private $locationTypeRepository;
 
     /**
      * 拠点種別コントローラーのインスタンスを作成
      *
-     * @param  \App\LocationType $locationType
+     * @param  LocationTypeRepository $locationTypeRepository
      * @return void
      */
-    public function __construct(LocationType $locationType) {
-        $this->locationType = $locationType;
+    public function __construct(LocationTypeRepository $locationTypeRepository) {
+        $this->locationTypeRepository = $locationTypeRepository;
     }
 
     /**
@@ -31,7 +29,7 @@ class LocationTypeController extends Controller
      */
     public function index()
     {
-        $locationTypes = $this->locationType->all();
+        $locationTypes = $this->locationTypeRepository->getList();
 
         return response()->json($locationTypes, 200, [], JSON_PRETTY_PRINT);
     }
@@ -44,7 +42,8 @@ class LocationTypeController extends Controller
      */
     public function show($id)
     {
-        $locationType = $this->locationType->findOrFail($id)->setAppends(['locations', 'company']);
+        $locationType = $this->locationTypeRepository->getOne($id);
+
         return response()->json($locationType, 200, [], JSON_PRETTY_PRINT);
     }
 
@@ -56,7 +55,7 @@ class LocationTypeController extends Controller
      */
     public function store(LocationTypeRequest $request)
     {
-        $this->locationType->create($request->all());
+        $this->locationTypeRepository->store($request->all());
         $response = ['status' => 'OK'];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
@@ -71,8 +70,7 @@ class LocationTypeController extends Controller
      */
     public function update($id, LocationTypeRequest $request)
     {
-        $locationType = $this->locationType->findOrFail($id);
-        $locationType->update($request->all());
+        $this->locationTypeRepository->update($id, $request->all());
         $response = ['status' => 'OK'];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
@@ -87,8 +85,7 @@ class LocationTypeController extends Controller
      */
     public function destroy($id)
     {
-        $locationType = $this->locationType->findOrFail($id);
-        $locationType->delete();
+        $this->locationTypeRepository->destroy($id);
         $response = ['status' => 'OK'];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);

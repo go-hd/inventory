@@ -3,43 +3,36 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\BrandRequest;
-use App\Brand;
 use App\Location;
 use Illuminate\Http\Request;
+use App\Repositories\Brand\BrandRepositoryInterface as BrandRepository;
 
 class BrandController extends Controller
 {
     /**
-     * ブランドのインスタンス
-     *
-     * @var \App\Brand
+     * @var BrandRepository
      */
-    private $brand;
+    private $brandRepository;
 
     /**
      * ブランドコントローラーのインスタンスを作成
      *
-     * @param  \App\Brand $brand
+     * @param  BrandRepository $brandRepository
      * @return void
      */
-    public function __construct(Brand $brand) {
-        $this->brand = $brand;
+    public function __construct(BrandRepository $brandRepository) {
+        $this->brandRepository = $brandRepository;
     }
 
     /**
      * 一覧
      *
+     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function index(Request $request)
     {
-        $company_id = $request->get('company_id', null);
-        if (!is_null($company_id)) {
-            $brands = $this->brand->where('company_id', $company_id)->orderBy('created_at', 'desc')->get()->makeHidden('products');
-
-        } else {
-            $brands = $this->brand->all()->makeHidden('products');
-        }
+        $brands = $this->brandRepository->getList($request->all());
 
         return response()->json($brands, 200, [], JSON_PRETTY_PRINT);
     }
@@ -52,7 +45,7 @@ class BrandController extends Controller
      */
     public function store(BrandRequest $request)
     {
-        $brand = $this->brand->create($request->all());
+        $brand = $this->brandRepository->store($request->all());
         $response = ['status' => 'OK', 'brand' => $brand];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
@@ -67,8 +60,7 @@ class BrandController extends Controller
      */
     public function update($id, BrandRequest $request)
     {
-        $brand = $this->brand->findOrFail($id);
-        $brand->update($request->all());
+        $this->brandRepository->update($id, $request->all());
         $response = ['status' => 'OK'];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
@@ -83,8 +75,7 @@ class BrandController extends Controller
      */
     public function destroy($id)
     {
-        $brand = $this->brand->findOrFail($id);
-        $brand->delete();
+        $this->brandRepository->destroy($id);
         $response = ['status' => 'OK'];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
@@ -94,33 +85,11 @@ class BrandController extends Controller
      * ロットが登録されているブランドのみを取得する
      *
      * @param Request $request
+     * @param Location $location
      * @return \Illuminate\Http\JsonResponse
      */
     public function getHasLots(Request $request, Location $location) {
-        $brands = [];
-        $company_id = $request->get('company_id', null);
-        $query = $this->brand->query()->where('company_id', $company_id);
-
-        if ($request->get('group_by_location')) {
-            // 拠点ごとに取得する
-            $locations = $location->query()->where('company_id', $company_id)->get();
-            foreach ($locations as $location) {
-                $query = $this->brand->query()->where('company_id', $company_id);
-                $brand = $query->whereHas('products', function($query) use ($location) {
-                    $query->whereHas('lots', function($query) use ($location) {
-                        $query->where('location_id', $location->id);
-                    });
-                })->get();
-                if (count($brand) !== 0) {
-                    $brands[$location->id] = $brand;
-                }
-            }
-        } else {
-            $query->whereHas('products', function($query) {
-                    $query->whereHas('lots');
-                });
-            $brands = $query->orderBy('created_at', 'desc')->get();
-        }
+        $brands = $this->brandRepository->getListHasLots($location, $request->all());
 
         return response()->json($brands, 200, [], JSON_PRETTY_PRINT);
     }

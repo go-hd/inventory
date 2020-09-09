@@ -3,26 +3,24 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StockHistoryTypeRequest;
-use App\StockHistoryType;
 use Illuminate\Http\Request;
+use App\Repositories\StockHistoryType\StockHistoryTypeRepositoryInterface as StockHistoryTypeRepository;
 
 class StockHistoryTypeController extends Controller
 {
     /**
-     * 在庫履歴のインスタンス
-     *
-     * @var \App\StockHistoryType
+     * @var StockHistoryTypeRepository
      */
-    private $stockHistoryType;
+    private $stockHistoryTypeRepository;
 
     /**
      * 在庫履歴コントローラーのインスタンスを作成
      *
-     * @param  \App\StockHistoryType $stockHistoryType
+     * @param StockHistoryTypeRepository $stockHistoryTypeRepository
      * @return void
      */
-    public function __construct(StockHistoryType $stockHistoryType) {
-        $this->stockHistoryType = $stockHistoryType;
+    public function __construct(StockHistoryTypeRepository $stockHistoryTypeRepository) {
+        $this->stockHistoryTypeRepository = $stockHistoryTypeRepository;
     }
 
     /**
@@ -33,12 +31,8 @@ class StockHistoryTypeController extends Controller
      */
     public function index(Request $request)
     {
-        $company_id = $request->get('company_id', null);
-        if (!is_null($company_id)) {
-            $stockHistoryTypes = $this->stockHistoryType->where('company_id', $company_id)->get()->makeHidden(['stock_histories']);
-        }else {
-            $stockHistoryTypes = $this->stockHistoryType->all()->makeHidden(['stock_histories']);
-        }
+        $stockHistoryTypes = $this->stockHistoryTypeRepository->getList($request->all());
+
         return response()->json($stockHistoryTypes, 200, [], JSON_PRETTY_PRINT);
     }
 
@@ -50,7 +44,7 @@ class StockHistoryTypeController extends Controller
      */
     public function show($id)
     {
-        $stockHistoryType = $this->stockHistoryType->findOrFail($id);
+        $stockHistoryType = $this->stockHistoryTypeRepository->getOne($id);
 
         return response()->json($stockHistoryType, 200, [], JSON_PRETTY_PRINT);
     }
@@ -63,7 +57,7 @@ class StockHistoryTypeController extends Controller
      */
     public function store(StockHistoryTypeRequest $request)
     {
-        $this->stockHistoryType->create($request->all());
+        $this->stockHistoryTypeRepository->store($request->all());
         $response = ['status' => 'OK'];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
@@ -78,8 +72,7 @@ class StockHistoryTypeController extends Controller
      */
     public function update($id, StockHistoryTypeRequest $request)
     {
-        $stockHistoryType = $this->stockHistoryType->findOrFail($id);
-        $stockHistoryType->update($request->all());
+        $this->stockHistoryTypeRepository->update($id, $request->all());
         $response = ['status' => 'OK'];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
@@ -94,8 +87,7 @@ class StockHistoryTypeController extends Controller
      */
     public function destroy($id)
     {
-        $stockHistoryType = $this->stockHistoryType->findOrFail($id);
-        $stockHistoryType->delete();
+        $this->stockHistoryTypeRepository->destroy($id);
         $response = ['status' => 'OK'];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);

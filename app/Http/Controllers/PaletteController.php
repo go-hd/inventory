@@ -2,45 +2,38 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\PaletteMoveRequest;
 use App\Http\Requests\PaletteRequest;
-use App\Palette;
 use Illuminate\Http\Request;
+use App\Repositories\Palette\PaletteRepositoryInterface as PaletteRepository;
 
 class PaletteController extends Controller
 {
     /**
      * パレットのインスタンスを作成
      *
-     * @var \App\Palette
+     * @var PaletteRepository
      */
-    private $palette;
+    private $paletteRepository;
 
     /**
      * パレットコントローラーのインスタンスを作成
      *
-     * @param  \App\Palette $palette
+     * @param PaletteRepository $paletteRepository
      * @return void
      */
-    public function __construct(Palette $palette) {
-        $this->palette = $palette;
+    public function __construct(PaletteRepository $paletteRepository) {
+        $this->paletteRepository = $paletteRepository;
     }
 
     /**
      * 一覧
      *
+     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function index(Request $request)
     {
-        $company_id = $request->get('company_id', null);
-        if (!is_null($company_id)) {
-            $palettes = $this->palette->whereHas('location', function ($query) use ($company_id) {
-                $query->where('company_id', $company_id);
-            })->orderBy('created_at', 'desc')->get();
-        } else {
-            $palettes = $this->palette->all()->makeHidden(['shared_locations']);
-        }
+        $palettes = $this->paletteRepository->getList($request->all());
 
         return response()->json($palettes, 200, [], JSON_PRETTY_PRINT);
     }
@@ -53,7 +46,7 @@ class PaletteController extends Controller
      */
     public function show($id)
     {
-        $palette = $this->palette->findOrFail($id);
+        $palette = $this->paletteRepository->getOne($id);
 
         return response()->json($palette, 200, [], JSON_PRETTY_PRINT);
     }
@@ -66,7 +59,7 @@ class PaletteController extends Controller
      */
     public function store(PaletteRequest $request)
     {
-        $palette = $this->palette->create($request->all());
+        $palette = $this->paletteRepository->store($request->all());
         $response = ['status' => 'OK', 'palette' => $palette];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
@@ -81,8 +74,7 @@ class PaletteController extends Controller
      */
     public function update($id, PaletteRequest $request)
     {
-        $palette = $this->palette->findOrFail($id);
-        $palette->update($request->all());
+        $palette = $this->paletteRepository->update($id, $request->all());
         $response = ['status' => 'OK', 'palette' => $palette];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
@@ -97,8 +89,7 @@ class PaletteController extends Controller
      */
     public function destroy($id)
     {
-        $palette = $this->palette->findOrFail($id);
-        $palette->delete();
+        $this->paletteRepository->destroy($id);
         $response = ['status' => 'OK'];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);

@@ -136,37 +136,4 @@ class StockMove extends Model
     {
         return $this->belongsTo(Lot::class);
     }
-
-    /**
-     * 出庫タスクを取得する
-     *
-     * @param $location_id
-     * @param $lot_id
-     * @return \Illuminate\Database\Eloquent\Builder|Model|object|null
-     */
-    public function getShippingTask($location_id, $lot_id)
-    {
-        return self::query()
-            ->where('shipping_location_id', $location_id)
-            ->where('lot_id', $lot_id)
-            ->whereNull('shipping_status')
-            ->get();
-    }
-
-    /**
-     * 入庫確認待ちタスクを取得する
-     *
-     * @param $location_id
-     * @param $lot_id
-     * @return \Illuminate\Database\Eloquent\Builder|Model|object|null
-     */
-    public function getreceivingTask($location_id, $lot_id)
-    {
-        return self::query()
-            ->where('receiving_location_id', $location_id)
-            ->whereNotNull('shipping_status')
-            ->where('lot_id', $lot_id)
-            ->whereNull('receiving_status')
-            ->get();
-    }
 }

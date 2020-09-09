@@ -6,24 +6,23 @@ use App\Http\Requests\CompanyRequest;
 use App\Company;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use App\Repositories\Company\CompanyRepositoryInterface as CompanyRepository;
 
 class CompanyController extends Controller
 {
     /**
-     * 会社のインスタンス
-     *
-     * @var \App\Company
+     * @var CompanyRepository
      */
-    private $company;
+    private $companyRepository;
 
     /**
      * 会社コントローラーのインスタンスを作成
      *
-     * @param  \App\Company $company
+     * @param  CompanyRepository $companyRepository
      * @return void
      */
-    public function __construct(Company $company) {
-        $this->company = $company;
+    public function __construct(CompanyRepository $companyRepository) {
+        $this->companyRepository = $companyRepository;
     }
 
     /**
@@ -34,14 +33,7 @@ class CompanyController extends Controller
      */
     public function index(Request $request)
     {
-        $condition = $request->get('search', null);
-        // TODO: 検索部分をServiceに切り分ける
-        if (!is_null($condition)) {
-            $name = $condition['name'];
-            $companies = $this->company->where('name', 'LIKE', "%$name%")->get();
-        } else {
-            $companies = $this->company->all();
-        }
+        $companies = $this->companyRepository->getList($request->get('search', null));
 
         return response()->json($companies, 200, [], JSON_PRETTY_PRINT);
     }
@@ -54,7 +46,8 @@ class CompanyController extends Controller
      */
     public function show($id)
     {
-        $company = $this->company->findOrFail($id)->setAppends(['locations']);
+        $company = $this->companyRepository->getOne($id);
+
         return response()->json($company, 200, [], JSON_PRETTY_PRINT);
     }
 
@@ -66,7 +59,7 @@ class CompanyController extends Controller
      */
     public function store(CompanyRequest $request)
     {
-        $this->company->create($request->all());
+        $this->companyRepository->store($request->all());
         $response = ['status' => 'OK'];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
@@ -81,8 +74,7 @@ class CompanyController extends Controller
      */
     public function update($id, CompanyRequest $request)
     {
-        $company = $this->company->findOrFail($id);
-        $company->update($request->all());
+        $this->companyRepository->update($id, $request->all());
         $response = ['status' => 'OK'];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
@@ -97,8 +89,7 @@ class CompanyController extends Controller
      */
     public function destroy($id)
     {
-        $company = $this->company->findOrFail($id);
-        $company->delete();
+        $this->companyRepository->delete($id);
         $response = ['status' => 'OK'];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);

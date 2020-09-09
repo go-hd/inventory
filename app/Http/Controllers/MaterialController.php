@@ -4,28 +4,27 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\MaterialMultiRequest;
 use App\Http\Requests\MaterialRequest;
-use App\Material;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
+use App\Repositories\Material\MaterialRepositoryInterface as MaterialRepository;
 
 class MaterialController extends Controller
 {
     /**
      * レシピのインスタンスを作成
      *
-     * @var \App\Material
+     * @var MaterialRepository
      */
-    private $material;
+    private $materialRepository;
 
     /**
      * レシピコントローラーのインスタンスを作成
      *
-     * @param  \App\Material $material
+     * @param  MaterialRepository $materialRepository
      * @return void
      */
-    public function __construct(Material $material) {
-        $this->material = $material;
+    public function __construct(MaterialRepository $materialRepository) {
+        $this->materialRepository = $materialRepository;
     }
 
     /**
@@ -36,10 +35,8 @@ class MaterialController extends Controller
      */
     public function index(Request $request)
     {
-        $query = $this->material->query()->orderBy('created_at', 'desc');
-        $materials = $request->has('parent_lot_id') ?
-            $query->where('parent_lot_id', $request->get('parent_lot_id'))->get() : $query->get();
-        $materials->makeHidden(['parent_lot', 'child_lot']);
+        $materials = $this->materialRepository->getList($request->all());
+
         return response()->json($materials, 200, [], JSON_PRETTY_PRINT);
     }
 
@@ -51,7 +48,7 @@ class MaterialController extends Controller
      */
     public function store(MaterialRequest $request)
     {
-        $this->material->create($request->all());
+        $this->materialRepository->store($request->all());
         $response = ['status' => 'OK'];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
@@ -68,18 +65,7 @@ class MaterialController extends Controller
         try {
             $materials = $request->get('materials');
             $deleted_ids = $request->get('deleted_ids', []);
-            foreach ($materials as $material) {
-                $targetMaterial = $this->material->where('parent_lot_id', $material['parent_lot_id'])
-                    ->where('child_lot_id', $material['child_lot_id'])->first();
-                if (empty($targetMaterial)) {
-                    $this->material->create($material);
-                } else {
-                    $targetMaterial->update($material);
-                }
-            }
-            foreach ($deleted_ids as $deleted_id) {
-                $this->material->findOrFail($deleted_id)->delete();
-            }
+            $this->materialRepository->updateMulti($materials, $deleted_ids);
             $response = ['status' => 'OK'];
             DB::commit();
         } catch (\Exception $e) {
@@ -100,8 +86,7 @@ class MaterialController extends Controller
      */
     public function update($id, MaterialRequest $request)
     {
-        $material = $this->material->findOrFail($id);
-        $material->update($request->all());
+        $this->materialRepository->update($id, $request->all());
         $response = ['status' => 'OK'];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
@@ -116,8 +101,7 @@ class MaterialController extends Controller
      */
     public function destroy($id)
     {
-        $material = $this->material->findOrFail($id);
-        $material->delete();
+        $this->materialRepository->delete($id);
         $response = ['status' => 'OK'];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);

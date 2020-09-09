@@ -2,53 +2,48 @@
 
 namespace App\Http\Controllers;
 
-use App\Company;
 use App\Http\Requests\UserInviteRequest;
-use App\Http\Requests\UserRegisterRequest;
 use App\Http\Requests\UserRequest;
 use App\Mail\UserInviteMail;
-use App\User;
-use App\UserInvite;
-use function foo\func;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use App\Repositories\User\UserRepositoryInterface as UserRepository;
+use App\Repositories\UserInvite\UserInviteRepositoryInterface as UserInviteRepository;
+use App\Repositories\Company\CompanyRepositoryInterface as CompanyRepository;
 
 class UserController extends Controller
 {
     /**
-     * ユーザーのインスタンス
-     *
-     * @var \App\User
+     * @var UserRepository
      */
-    private $user;
+    private $userRepository;
+
     /**
-     * ユーザー招待のインスタンス
-     *
-     * @var \App\UserInvite
+     * @var userInviteRepository
      */
-    private $userInvite;
+    private $userInviteRepository;
+
     /**
-     * 会社のインスタンス
-     *
-     * @var \App\Company
+     * @var CompanyRepository
      */
-    private $company;
+    private $companyRepository;
 
     /**
      * ユーザーコントローラーのインスタンスを作成
      *
-     * @param  \App\User $user
-     * @param  \App\UserInvite $userInvite
-     * @param  \App\Company $company
+     * @param  UserRepository $userRepository
+     * @param  userInviteRepository $userInviteRepository
+     * @param  CompanyRepository $companyRepository
      * @return void
      */
-    public function __construct(User $user, UserInvite $userInvite, Company $company) {
-        $this->user = $user;
-        $this->userInvite = $userInvite;
-        $this->company = $company;
+    public function __construct(
+        UserRepository $userRepository,
+        userInviteRepository $userInviteRepository,
+        CompanyRepository $companyRepository
+    ) {
+        $this->userRepository = $userRepository;
+        $this->userInviteRepository = $userInviteRepository;
+        $this->companyRepository = $companyRepository;
     }
 
     /**
@@ -59,14 +54,7 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $company_id = $request->get('company_id', null);
-        if (!is_null($company_id)) {
-            $users = $this->user->whereHas('location', function ($query) use ($company_id) {
-                $query->where('company_id', $company_id);
-            })->get();
-        } else {
-            $users = $this->user->all();
-        }
+        $users = $this->userRepository->getList($request->all());
 
         return response()->json($users, 200, [], JSON_PRETTY_PRINT);
     }
@@ -79,7 +67,7 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        $user = $this->user->findOrFail($id);
+        $user = $this->userRepository->getOne($id);
 
         return response()->json($user, 200, [], JSON_PRETTY_PRINT);
     }
@@ -92,7 +80,7 @@ class UserController extends Controller
      */
     public function store(UserRequest $request)
     {
-        $this->user->create($request->all());
+        $this->userRepository->store($request->all());
         $response = ['status' => 'OK'];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
@@ -107,12 +95,11 @@ class UserController extends Controller
      */
     public function update($id, UserRequest $request)
     {
-        $user = $this->user->findOrFail($id);
         $data = $request->all();
         if (empty($data['password'])) {
             unset($data['password']);
         }
-        $user->update($data);
+        $this->userRepository->update($id, $data);
         $response = ['status' => 'OK'];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
@@ -127,8 +114,7 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        $user = $this->user->findOrFail($id);
-        $user->delete();
+        $this->userRepository->destroy($id);
         $response = ['status' => 'OK'];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
@@ -152,12 +138,12 @@ class UserController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function invite(UserInviteRequest $request) {
-        $company = $this->company->findOrFail($request->get('company_id'));
+        $company = $this->companyRepository->getOne($request->get('company_id'));
         $email = $request->get('email');
         $token = str_random(30);
 
         // 招待テーブル更新
-        $this->userInvite->create([
+        $this->userInviteRepository->store([
             'company_id' => $company->id,
             'email' => $email,
             'token' => $token,

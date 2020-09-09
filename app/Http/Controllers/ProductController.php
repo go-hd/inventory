@@ -3,66 +3,55 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProductRequest;
-use App\Product;
-use App\StockHistory;
-use App\StockMove;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
+use App\Repositories\Product\ProductRepositoryInterface as ProductRepository;
+use App\Repositories\StockMove\StockMoveRepositoryInterface as StockMoveRepository;
+use App\Repositories\StockHistory\StockHistoryRepositoryInterface as StockHistoryRepository;
 
 class ProductController extends Controller
 {
     /**
-     * 商品のインスタンス
-     *
-     * @var \App\Product
+     * @var ProductRepository
      */
-    private $product;
+    private $productRepository;
+
     /**
-     * 在庫移動のインスタンス
-     *
-     * @var \App\StockMove
+     * @var StockMoveRepository
      */
-    private $stockMove;
+    private $stockMoveRepository;
+
     /**
-     * 在庫履歴のインスタンス
-     *
-     * @var \App\StockHistory
+     * @var StockHistoryRepository
      */
-    private $stockHistory;
+    private $stockHistoryRepository;
 
     /**
      * 商品コントローラーのインスタンスを作成
      *
-     * @param  \App\Product $product
-     * @param  \App\StockMove $stockMove
-     * @param  \App\StockHistory $stockHistory
+     * @param  ProductRepository $productRepository
+     * @param  StockMoveRepository $stockMoveRepository
+     * @param  StockHistoryRepository $stockHistoryRepository
      * @return void
      */
-    public function __construct(Product $product, StockMove $stockMove, StockHistory $stockHistory) {
-        $this->product = $product;
-        $this->stockMove = $stockMove;
-        $this->stockHistory = $stockHistory;
+    public function __construct(
+        ProductRepository $productRepository,
+        StockMoveRepository $stockMoveRepository,
+        StockHistoryRepository $stockHistoryRepository
+    ) {
+        $this->productRepository = $productRepository;
+        $this->stockMoveRepository = $stockMoveRepository;
+        $this->stockHistoryRepository = $stockHistoryRepository;
     }
 
     /**
      * 一覧
      *
+     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function index(Request $request)
     {
-        $company_id = $request->get('company_id', null);
-        $brand_id = $request->get('brand_id', null);
-        if (!is_null($company_id)) {
-            $products = $this->product->whereHas('brand', function ($query) use ($company_id) {
-                $query->where('company_id', $company_id);
-            })->get();
-        } elseif (!is_null($brand_id)) {
-            $products = $this->product->where('brand_id', $brand_id)->get();
-        }else {
-            $products = $this->product->all();
-        }
-        $products->makeHidden(['brand']);
+        $products = $this->productRepository->getList($request->all());
 
         // 在庫情報を付与する場合
         if ($request->has('with_stock')) {
@@ -72,13 +61,13 @@ class ProductController extends Controller
                 foreach ($product['lots'] as $lot_index => $lot) {
                     // 出庫待ち
                     $products[$index]['lots'][$lot_index]['shipping_tasks'] =
-                        $this->stockMove->getShippingTask($location_id, $lot['id']);
+                        $this->stockMoveRepository->getShippingTask($location_id, $lot['id']);
                     // 入庫確認待ち
                     $products[$index]['lots'][$lot_index]['receiving_tasks'] =
-                        $this->stockMove->getReceivingTask($location_id, $lot['id']);
+                        $this->stockMoveRepository->getReceivingTask($location_id, $lot['id']);
                     // 在庫数
                     $stockQuantity = 0;
-                    $stockHistories = $this->stockHistory->where('location_id', $location_id)->where('lot_id', $lot['id'])->get();
+                    $stockHistories = $this->stockHistoryRepository->getList($location_id, $lot['id']);
                     foreach ($stockHistories as $stockHistory) {
                         $stockQuantity += $stockHistory->quantity;
                     }
@@ -96,7 +85,6 @@ class ProductController extends Controller
             }
         }
 
-
         return response()->json($products, 200, [], JSON_PRETTY_PRINT);
     }
 
@@ -108,7 +96,7 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        $product = $this->product->findOrFail($id);
+        $product = $this->productRepository->getOne($id);
 
         return response()->json($product, 200, [], JSON_PRETTY_PRINT);
     }
@@ -121,7 +109,7 @@ class ProductController extends Controller
      */
     public function store(productRequest $request)
     {
-        $product = $this->product->create($request->all());
+        $product = $this->productRepository->store($request->all());
         $response = ['status' => 'OK', 'product' => $product];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
@@ -136,8 +124,7 @@ class ProductController extends Controller
      */
     public function update($id, productRequest $request)
     {
-        $product = $this->product->findOrFail($id);
-        $product->update($request->all());
+        $product = $this->productRepository->update($id, $request->all());
         $response = ['status' => 'OK', 'product' => $product];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
@@ -152,8 +139,7 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-        $product = $this->product->findOrFail($id);
-        $product->delete();
+        $this->productRepository->destroy($id);
         $response = ['status' => 'OK'];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);

@@ -3,42 +3,35 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\LocationRequest;
-use App\Location;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
+use App\Repositories\Location\LocationRepositoryInterface as LocationRepository;
 
 class LocationController extends Controller
 {
     /**
-     * 拠点のインスタンス
-     *
-     * @var \App\Location
+     * @var LocationRepository
      */
-    private $location;
+    private $locationRepository;
 
     /**
      * 拠点コントローラーのインスタンスを作成
      *
-     * @param  \App\Location $location
+     * @param  LocationRepository $locationRepository
      * @return void
      */
-    public function __construct(Location $location) {
-        $this->location = $location;
+    public function __construct(LocationRepository $locationRepository) {
+        $this->locationRepository = $locationRepository;
     }
 
     /**
      * 一覧
      *
+     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function index(Request $request)
     {
-        $company_id = $request->get('company_id', null);
-        if (!is_null($company_id)) {
-            $locations = $this->location->where('company_id', $company_id)->get()->makeHidden(['users', 'lots', 'own_palettes', 'shared_palettes']);
-        } else {
-            $locations = $this->location->all()->makeHidden(['users', 'lots', 'own_palettes', 'shared_palettes']);
-        }
+        $locations = $this->locationRepository->getList($request->all());
 
         return response()->json($locations, 200, [], JSON_PRETTY_PRINT);
     }
@@ -51,7 +44,7 @@ class LocationController extends Controller
      */
     public function show($id)
     {
-        $location = $this->location->findOrFail($id);
+        $location = $this->locationRepository->getOne($id);
 
         return response()->json($location, 200, [], JSON_PRETTY_PRINT);
     }
@@ -64,7 +57,7 @@ class LocationController extends Controller
      */
     public function store(LocationRequest $request)
     {
-        $location = $this->location->create($request->all());
+        $location = $this->locationRepository->store($request->all());
         $response = ['status' => 'OK', 'location' => $location];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
@@ -79,8 +72,7 @@ class LocationController extends Controller
      */
     public function update($id, LocationRequest $request)
     {
-        $location = $this->location->findOrFail($id);
-        $location->update($request->all());
+        $this->locationRepository->update($id, $request->all());
         $response = ['status' => 'OK'];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
@@ -95,8 +87,7 @@ class LocationController extends Controller
      */
     public function destroy($id)
     {
-        $location = $this->location->findOrFail($id);
-        $location->delete();
+        $this->locationRepository->destroy($id);
         $response = ['status' => 'OK'];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);

@@ -3,27 +3,25 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\PaletteMoveRequest;
-use App\Http\Requests\PaletteRequest;
-use App\Palette;
-use Illuminate\Http\Request;
+use App\Repositories\Palette\PaletteRepositoryInterface as PaletteRepository;
 
 class LocationPaletteController extends Controller
 {
     /**
      * パレットのインスタンスを作成
      *
-     * @var \App\Palette
+     * @var PaletteRepository
      */
-    private $palette;
+    private $paletteRepository;
 
     /**
      * パレットコントローラーのインスタンスを作成
      *
-     * @param  \App\Palette $palette
+     * @param  PaletteRepository $paletteRepository
      * @return void
      */
-    public function __construct(Palette $palette) {
-        $this->palette = $palette;
+    public function __construct(PaletteRepository $paletteRepository) {
+        $this->paletteRepository = $paletteRepository;
     }
 
     /**
@@ -34,13 +32,12 @@ class LocationPaletteController extends Controller
      */
     public function move(PaletteMoveRequest $request)
     {
-        $data = $request->all();
-        $palette = $this->palette->findOrFail($data['palette_id']);
-        if ($palette->locations()->where('locations.id', $data['location_id'])->exists()) {
-            $palette->locations()->updateExistingPivot($data['location_id'], ['quantity' => $data['quantity']], false);
-        } else {
-            $palette->locations()->attach($data['location_id'], ['quantity' => $data['quantity']]);
-        }
+        $palette = $this->paletteRepository->move(
+            $request->get('palette_id'),
+            $request->get('location_id'),
+            $request->get('quantity')
+        );
+
         $response = ['status' => 'OK', 'palette' => $palette];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);

@@ -3,35 +3,32 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StockMoveRequest;
-use App\StockHistory;
 use App\StockHistoryType;
-use App\StockMove;
 use Illuminate\Support\Facades\DB;
+use App\Repositories\StockMove\StockMoveRepositoryInterface as StockMoveRepository;
+use App\Repositories\StockHistory\StockHistoryRepositoryInterface as StockHistoryRepository;
 
 class StockMoveController extends Controller
 {
     /**
-     * 在庫移動のインスタンス
-     *
-     * @var \App\StockMove
+     * StockMoveRepository
      */
-    private $stockMove;
+    private $stockMoveRepository;
     /**
-     * 在庫履歴のインスタンス
-     *
-     * @var StockHistory
+     * @var StockHistoryRepository
      */
-    private $stockHistory;
+    private $stockHistoryRepository;
 
     /**
      * 在庫履歴コントローラーのインスタンスを作成
      *
-     * @param  \App\StockMove $stockMove
+     * @param StockMoveRepository $stockMoveRepository
+     * @param StockHistoryRepository $stockHistoryRepository
      * @return void
      */
-    public function __construct(StockMove $stockMove, StockHistory $stockHistory) {
-        $this->stockMove = $stockMove;
-        $this->stockHistory = $stockHistory;
+    public function __construct(StockMoveRepository $stockMoveRepository, StockHistoryRepository $stockHistoryRepository) {
+        $this->stockMoveRepository = $stockMoveRepository;
+        $this->stockHistoryRepository = $stockHistoryRepository;
     }
 
     /**
@@ -41,7 +38,7 @@ class StockMoveController extends Controller
      */
     public function index()
     {
-        $stockMoves = $this->stockMove->all();
+        $stockMoves = $this->stockMoveRepository->getAll();
 
         return response()->json($stockMoves, 200, [], JSON_PRETTY_PRINT);
     }
@@ -54,7 +51,7 @@ class StockMoveController extends Controller
      */
     public function show($id)
     {
-        $stockMove = $this->stockMove->findOrFail($id);
+        $stockMove = $this->stockMoveRepository->getOne($id);
 
         return response()->json($stockMove, 200, [], JSON_PRETTY_PRINT);
     }
@@ -67,7 +64,7 @@ class StockMoveController extends Controller
      */
     public function store(StockMoveRequest $request)
     {
-        $this->stockMove->create($request->all());
+        $this->stockMoveRepository->store($request->all());
         $response = ['status' => 'OK'];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
@@ -82,8 +79,7 @@ class StockMoveController extends Controller
      */
     public function update($id, StockMoveRequest $request)
     {
-        $stockMove = $this->stockMove->findOrFail($id);
-        $stockMove->update($request->all());
+        $this->stockMoveRepository->update($id, $request->all());
         $response = ['status' => 'OK'];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
@@ -98,8 +94,7 @@ class StockMoveController extends Controller
      */
     public function destroy($id)
     {
-        $stockMove = $this->stockMove->findOrFail($id);
-        $stockMove->delete();
+        $this->stockMoveRepository->destroy($id);
         $response = ['status' => 'OK'];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
@@ -115,17 +110,16 @@ class StockMoveController extends Controller
     {
         DB::beginTransaction();
         try {
-            $stockMove = $this->stockMove->findOrFail($id);
             // 出庫済みステータスにする
-            $stockMove->shipping_status = true;
-            $stockMove->save();
+            $stockMove = $this->stockMoveRepository->update($id, ['shipping_status' => true]);
             // 在庫数を更新する
-            $this->stockHistory->create([
+            $this->stockHistoryRepository->store([
                 'location_id' => $stockMove->shipping_location_id,
                 'lot_id' => $stockMove->lot_id,
                 'quantity' => -$stockMove->quantity,
                 'stock_history_type_id' => StockHistoryType::SHIPPING,
             ]);
+
             $response = ['status' => 'OK'];
             DB::commit();
         } catch (\Exception $e) {
@@ -148,17 +142,16 @@ class StockMoveController extends Controller
     {
         DB::beginTransaction();
         try {
-            $stockMove = $this->stockMove->findOrFail($id);
             // 入庫確認済みステータスにする
-            $stockMove->receiving_status = true;
-            $stockMove->save();
+            $stockMove = $this->stockMoveRepository->update($id, ['receiving_status' => true]);
             // 在庫数を更新する
-            $this->stockHistory->create([
+            $this->stockHistoryRepository->store([
                 'location_id' => $stockMove->receiving_location_id,
                 'lot_id' => $stockMove->lot_id,
                 'quantity' => $stockMove->quantity,
                 'stock_history_type_id' => StockHistoryType::RECEIVING,
             ]);
+
             $response = ['status' => 'OK'];
             DB::commit();
         } catch (\Exception $e) {
