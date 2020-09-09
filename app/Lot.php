@@ -61,7 +61,7 @@ class Lot extends Model
      * @var array
      */
     protected $hidden = [
-        'product_id',
+        //
     ];
 
     /**

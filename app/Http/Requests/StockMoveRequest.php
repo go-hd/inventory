@@ -28,6 +28,8 @@ class StockMoveRequest extends FormRequest
         return [
             'receiving_location_id' => 'required',
             'shipping_location_id' => 'required',
+            'brand_id' => 'required',
+            'product_id' => 'required',
             'lot_id' => 'required',
             'quantity' => [
                 'required',
